@@ -13,12 +13,12 @@
         <div class="card-body">
           <div class="d-flex align-items-center">
             <div class="flex-shrink-0">
-              <img src="{{ asset('template/admin/dist/assets/images/user/avatar-1.jpg') }}" alt="user-image"
+              <img src="{{ asset('template/admin/dist/assets/images/user/avatar-2.jpg') }}" alt="user-image"
                 class="user-avtar wid-45 rounded-circle" />
             </div>
             <div class="flex-grow-1 ms-3 me-2">
-              <h6 class="mb-0">Jonh Smith</h6>
-              <small>Administrator</small>
+              <h6 class="mb-0">{{ auth()->user()->name }}</h6>
+              <small>{{ auth()->user()->roles->pluck('name')->first() ?? 'No Role' }}</small>
             </div>
             <a class="btn btn-icon btn-link-secondary avtar" data-bs-toggle="collapse" href="#pc_sidebar_userlink">
               <svg class="pc-icon">
@@ -32,18 +32,13 @@
                 <i class="ti ti-user"></i>
                 <span>My Account</span>
               </a>
-              <a href="#!">
-                <i class="ti ti-settings"></i>
-                <span>Settings</span>
-              </a>
-              <a href="#!">
-                <i class="ti ti-lock"></i>
-                <span>Lock Screen</span>
-              </a>
-              <a href="#!">
+              <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="ti ti-power"></i>
                 <span>Logout</span>
               </a>
+              <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+              </form>
             </div>
           </div>
         </div>
