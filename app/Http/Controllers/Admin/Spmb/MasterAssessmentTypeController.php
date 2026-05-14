@@ -3,23 +3,22 @@
 namespace App\Http\Controllers\Admin\Spmb;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Interfaces\MasterTrackTypeRepositoryInterface;
+use App\Repositories\Interfaces\MasterAssessmentTypeRepositoryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
-class MasterTrackTypeController extends Controller
+class MasterAssessmentTypeController extends Controller
 {
     public function __construct(
-        protected MasterTrackTypeRepositoryInterface $repository
+        protected MasterAssessmentTypeRepositoryInterface $repository
     ) {}
 
     /**
-     * Tampilan utama halaman Master Jalur.
+     * Tampilan utama halaman Master Jenis Penilaian.
      */
     public function index()
     {
-        return view('admin.spmb.master.jalur.index');
+        return view('admin.spmb.master.jenis_penilaian.index');
     }
 
     /**
@@ -49,42 +48,50 @@ class MasterTrackTypeController extends Controller
                             </ul>
                         </div>';
             })
+            ->editColumn('input_type', function ($row) {
+                $badges = [
+                    'score' => '<span class="badge bg-light-info text-info">Angka (Score)</span>',
+                    'pass_fail' => '<span class="badge bg-light-warning text-warning">Lulus/Gagal</span>'
+                ];
+                return $badges[$row->input_type] ?? $row->input_type;
+            })
             ->addColumn('status', function ($row) {
                 $checked = $row->is_active ? 'checked' : '';
                 return '<div class="form-check form-switch">
                             <input class="form-check-input toggle-status" type="checkbox" data-id="'.$row->id.'" '.$checked.'>
                         </div>';
             })
-            ->rawColumns(['checkbox', 'status', 'action'])
+            ->rawColumns(['checkbox', 'input_type', 'status', 'action'])
             ->make(true);
     }
 
     /**
-     * Menyimpan data Jalur baru.
+     * Menyimpan data baru.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:100|unique:master_track_types,name',
+            'name' => 'required|max:100|unique:master_assessment_types,name',
+            'input_type' => 'required|in:score,pass_fail',
             'description' => 'nullable',
+            'is_active' => 'boolean'
         ]);
 
         try {
             $data = $validated;
-            $data['slug'] = Str::slug($validated['name']);
-            $data['is_active'] = $request->boolean('is_active');
+            $data['is_active'] = $request->boolean('is_active', true);
             $data['created_by'] = auth()->id();
 
             $this->repository->create($data);
 
-            return response()->json(['message' => 'Data Jalur berhasil disimpan']);
+            return response()->json(['message' => 'Jenis Penilaian berhasil disimpan']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Gagal menyimpan data: ' . $e->getMessage()], 500);
         }
     }
 
     /**
-     * Mengambil detail data untuk Edit/Detail Modal.
+     * Mengambil detail data.
      */
     public function show($id)
     {
@@ -93,24 +100,25 @@ class MasterTrackTypeController extends Controller
     }
 
     /**
-     * Memperbarui data Jalur.
+     * Memperbarui data.
      */
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'name' => 'required|max:100|unique:master_track_types,name,' . $id,
+            'name' => 'required|max:100|unique:master_assessment_types,name,' . $id,
+            'input_type' => 'required|in:score,pass_fail',
             'description' => 'nullable',
+            'is_active' => 'boolean'
         ]);
 
         try {
             $data = $validated;
-            $data['slug'] = Str::slug($validated['name']);
             $data['is_active'] = $request->boolean('is_active');
             $data['updated_by'] = auth()->id();
 
             $this->repository->update($id, $data);
 
-            return response()->json(['message' => 'Data Jalur berhasil diperbarui']);
+            return response()->json(['message' => 'Jenis Penilaian berhasil diperbarui']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Gagal memperbarui data'], 500);
         }
@@ -123,38 +131,39 @@ class MasterTrackTypeController extends Controller
     {
         try {
             $this->repository->delete($id);
-            return response()->json(['message' => 'Data Jalur berhasil dihapus']);
+            return response()->json(['message' => 'Jenis Penilaian berhasil dihapus']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Gagal menghapus data'], 500);
         }
     }
 
     /**
-     * Mengubah status aktif secara cepat.
+     * Toggle status aktif.
      */
     public function toggleStatus($id)
     {
         try {
-            $track = $this->repository->find($id);
-            $this->repository->update($id, ['is_active' => !$track->is_active]);
+            $model = $this->repository->find($id);
+            $this->repository->update($id, ['is_active' => !$model->is_active]);
             return response()->json(['message' => 'Status berhasil diubah']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Gagal mengubah status'], 500);
         }
     }
+
     /**
-     * Mengubah status aktif secara massal.
+     * Bulk update status.
      */
     public function bulkUpdateStatus(Request $request)
     {
         $validated = $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'exists:master_track_types,id',
+            'ids.*' => 'exists:master_assessment_types,id',
             'status' => 'required|boolean'
         ]);
 
         try {
-            \App\Models\MasterTrackType::whereIn('id', $validated['ids'])->update([
+            \App\Models\MasterAssessmentType::whereIn('id', $validated['ids'])->update([
                 'is_active' => $validated['status'],
                 'updated_by' => auth()->id()
             ]);

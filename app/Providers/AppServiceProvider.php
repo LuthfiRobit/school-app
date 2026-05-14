@@ -27,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\MasterTrackTypeRepositoryInterface::class,
             \App\Repositories\MasterTrackTypeRepository::class
         );
+        $this->app->bind(
+            \App\Repositories\Interfaces\MasterAssessmentTypeRepositoryInterface::class,
+            \App\Repositories\MasterAssessmentTypeRepository::class
+        );
     }
 
     /**

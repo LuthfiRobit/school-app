@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             AcademicYearSeeder::class,
             SchoolIdentitySeeder::class,
             RoleSeeder::class,
+            MasterTrackTypeSeeder::class,
+            MasterAssessmentTypeSeeder::class,
         ]);
         // User::factory(10)->create();
 

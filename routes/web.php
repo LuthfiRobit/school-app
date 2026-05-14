@@ -120,6 +120,21 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
                     Route::post('/{id}/toggle-status', 'toggleStatus')->name('toggle-status')->middleware('permission:spmb.master.jalur.edit');
                     Route::post('/bulk-status', 'bulkUpdateStatus')->name('bulk-status')->middleware('permission:spmb.master.jalur.edit');
                 });
+
+            // Master Jenis Penilaian
+            Route::controller(\App\Http\Controllers\Admin\Spmb\MasterAssessmentTypeController::class)
+                ->prefix('jenis-penilaian')
+                ->name('jenis-penilaian.')
+                ->group(function () {
+                    Route::get('/', 'index')->name('index')->middleware('permission:spmb.master.jenis-penilaian.view');
+                    Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.master.jenis-penilaian.view');
+                    Route::post('/', 'store')->name('store')->middleware('permission:spmb.master.jenis-penilaian.create');
+                    Route::get('/{id}', 'show')->name('show')->middleware('permission:spmb.master.jenis-penilaian.view');
+                    Route::put('/{id}', 'update')->name('update')->middleware('permission:spmb.master.jenis-penilaian.edit');
+                    Route::delete('/{id}', 'destroy')->name('destroy')->middleware('permission:spmb.master.jenis-penilaian.delete');
+                    Route::post('/{id}/toggle-status', 'toggleStatus')->name('toggle-status')->middleware('permission:spmb.master.jenis-penilaian.edit');
+                    Route::post('/bulk-status', 'bulkUpdateStatus')->name('bulk-status')->middleware('permission:spmb.master.jenis-penilaian.edit');
+                });
         });
     });
 
