@@ -32,7 +32,8 @@
                 <i class="ti ti-user"></i>
                 <span>My Account</span>
               </a>
-              <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <a href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="ti ti-power"></i>
                 <span>Logout</span>
               </a>
@@ -76,6 +77,28 @@
             <span class="pc-mtext">Tahun Pelajaran</span>
           </a>
         </li>
+
+        <!-- Menu SPMB -->
+        <li class="pc-item pc-caption">
+          <label>SPMB</label>
+          <svg class="pc-icon">
+            <use xlink:href="#custom-notification-status"></use>
+          </svg>
+        </li>
+        <li class="pc-item pc-hasmenu {{ Request::routeIs('admin.spmb.master.*') ? 'active pc-trigger' : '' }}">
+          <a href="#!" class="pc-link"><span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-level"></use>
+              </svg> </span><span class="pc-mtext">Master</span><span class="pc-arrow"><i
+                data-feather="chevron-right"></i></span>
+          </a>
+          <ul class="pc-submenu">
+            <li class="pc-item {{ Request::routeIs('admin.spmb.master.jalur.*') ? 'active' : '' }}">
+              <a class="pc-link" href="{{ route('admin.spmb.master.jalur.index') }}">Jalur</a>
+            </li>
+          </ul>
+        </li>
+        <!-- end menu SPMB -->
 
         <li class="pc-item pc-caption">
           <label>Setting</label>
@@ -146,15 +169,6 @@
             </li>
           </ul>
         </li>
-        <li class="pc-item"><a href="#!" class="pc-link">
-            <span class="pc-micon">
-              <svg class="pc-icon">
-                <use xlink:href="#custom-notification-status"></use>
-              </svg>
-            </span>
-            <span class="pc-mtext">Sample page</span></a>
-        </li>
-
       </ul>
     </div>
   </div>

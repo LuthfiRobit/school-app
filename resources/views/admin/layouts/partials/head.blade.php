@@ -8,6 +8,7 @@
 <meta name="keywords"
   content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard">
 <meta name="author" content="Phoenixcoded">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- [Favicon] icon -->
 <link rel="icon" href="{{ asset('template/admin/dist/assets/images/favicon.svg') }}" type="image/x-icon">

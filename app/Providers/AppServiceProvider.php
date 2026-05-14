@@ -23,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(\App\Repositories\Interfaces\RoleRepositoryInterface::class, \App\Repositories\RoleRepository::class);
         $this->app->bind(\App\Repositories\Interfaces\UserRepositoryInterface::class, \App\Repositories\UserRepository::class);
+        $this->app->bind(
+            \App\Repositories\Interfaces\MasterTrackTypeRepositoryInterface::class,
+            \App\Repositories\MasterTrackTypeRepository::class
+        );
     }
 
     /**

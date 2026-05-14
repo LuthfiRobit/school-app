@@ -100,4 +100,27 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     });
 
+    /**
+     * Modul SPMB (Pengelolaan Sistem Penerimaan Peserta Didik Baru)
+     * Mengelola data siswa baru, pendaftaran, dll.
+     */
+    Route::prefix('spmb')->name('spmb.')->group(function () {
+        Route::prefix('master')->name('master.')->group(function () {
+            // Master Jalur
+            Route::controller(\App\Http\Controllers\Admin\Spmb\MasterTrackTypeController::class)
+                ->prefix('jalur')
+                ->name('jalur.')
+                ->group(function () {
+                    Route::get('/', 'index')->name('index')->middleware('permission:spmb.master.jalur.view');
+                    Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.master.jalur.view');
+                    Route::post('/', 'store')->name('store')->middleware('permission:spmb.master.jalur.create');
+                    Route::get('/{id}', 'show')->name('show')->middleware('permission:spmb.master.jalur.edit');
+                    Route::put('/{id}', 'update')->name('update')->middleware('permission:spmb.master.jalur.edit');
+                    Route::delete('/{id}', 'destroy')->name('destroy')->middleware('permission:spmb.master.jalur.delete');
+                    Route::post('/{id}/toggle-status', 'toggleStatus')->name('toggle-status')->middleware('permission:spmb.master.jalur.edit');
+                    Route::post('/bulk-status', 'bulkUpdateStatus')->name('bulk-status')->middleware('permission:spmb.master.jalur.edit');
+                });
+        });
+    });
+
 });
