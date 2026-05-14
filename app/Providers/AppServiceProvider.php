@@ -31,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\MasterAssessmentTypeRepositoryInterface::class,
             \App\Repositories\MasterAssessmentTypeRepository::class
         );
+        $this->app->bind(
+            \App\Repositories\Interfaces\MasterFeeComponentRepositoryInterface::class,
+            \App\Repositories\MasterFeeComponentRepository::class
+        );
     }
 
     /**

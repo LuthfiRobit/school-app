@@ -135,6 +135,21 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
                     Route::post('/{id}/toggle-status', 'toggleStatus')->name('toggle-status')->middleware('permission:spmb.master.jenis-penilaian.edit');
                     Route::post('/bulk-status', 'bulkUpdateStatus')->name('bulk-status')->middleware('permission:spmb.master.jenis-penilaian.edit');
                 });
+
+            // Master Komponen Biaya
+            Route::controller(\App\Http\Controllers\Admin\Spmb\MasterFeeComponentController::class)
+                ->prefix('komponen-biaya')
+                ->name('komponen-biaya.')
+                ->group(function () {
+                    Route::get('/', 'index')->name('index')->middleware('permission:spmb.master.komponen-biaya.view');
+                    Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.master.komponen-biaya.view');
+                    Route::post('/', 'store')->name('store')->middleware('permission:spmb.master.komponen-biaya.create');
+                    Route::get('/{id}', 'show')->name('show')->middleware('permission:spmb.master.komponen-biaya.view');
+                    Route::put('/{id}', 'update')->name('update')->middleware('permission:spmb.master.komponen-biaya.edit');
+                    Route::delete('/{id}', 'destroy')->name('destroy')->middleware('permission:spmb.master.komponen-biaya.delete');
+                    Route::post('/{id}/toggle-status', 'toggleStatus')->name('toggle-status')->middleware('permission:spmb.master.komponen-biaya.edit');
+                    Route::post('/bulk-status', 'bulkUpdateStatus')->name('bulk-status')->middleware('permission:spmb.master.komponen-biaya.edit');
+                });
         });
     });
 

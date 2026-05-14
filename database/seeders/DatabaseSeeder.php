@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             MasterTrackTypeSeeder::class,
             MasterAssessmentTypeSeeder::class,
+            MasterFeeComponentSeeder::class,
         ]);
         // User::factory(10)->create();
 

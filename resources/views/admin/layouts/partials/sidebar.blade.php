@@ -99,6 +99,9 @@
             <li class="pc-item {{ Request::routeIs('admin.spmb.master.jenis-penilaian.*') ? 'active' : '' }}">
               <a class="pc-link" href="{{ route('admin.spmb.master.jenis-penilaian.index') }}">Jenis Penilaian</a>
             </li>
+            <li class="pc-item {{ Request::routeIs('admin.spmb.master.komponen-biaya.*') ? 'active' : '' }}">
+              <a class="pc-link" href="{{ route('admin.spmb.master.komponen-biaya.index') }}">Komponen Biaya</a>
+            </li>
           </ul>
         </li>
         <!-- end menu SPMB -->
