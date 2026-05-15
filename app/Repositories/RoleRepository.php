@@ -41,11 +41,24 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
 
         foreach ($permissions as $permission) {
             $parts = explode('.', $permission->name);
-            
-            // Pengelompokan: Module -> Resource -> Action
-            $module = (count($parts) > 0) ? ucfirst($parts[0]) : 'Umum';
-            $resource = (count($parts) > 1) ? ucfirst(str_replace('-', ' ', $parts[1])) : 'General';
-            $action = (count($parts) > 2) ? ucfirst($parts[2]) : 'Akses';
+            $count = count($parts);
+
+            if ($count === 1) {
+                $module = 'Umum';
+                $resource = 'General';
+                $action = ucfirst(str_replace('-', ' ', $parts[0]));
+            } elseif ($count === 2) {
+                $module = ucfirst(str_replace('-', ' ', $parts[0]));
+                $resource = 'General';
+                $action = ucfirst(str_replace('-', ' ', $parts[1]));
+            } else {
+                $module = ucfirst(str_replace('-', ' ', $parts[0]));
+                $action = ucfirst(str_replace('-', ' ', end($parts)));
+                
+                // Ambil semua bagian di tengah sebagai resource
+                $resourceParts = array_slice($parts, 1, -1);
+                $resource = ucfirst(str_replace(['-', '.'], ' ', implode(' ', $resourceParts)));
+            }
 
             $grouped[$module][$resource][] = [
                 'id' => $permission->id,
@@ -56,6 +69,11 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
 
         // Urutkan Module berdasarkan abjad
         ksort($grouped);
+
+        // Urutkan Resource di dalam setiap Module
+        foreach ($grouped as $module => $resources) {
+            ksort($grouped[$module]);
+        }
 
         return $grouped;
     }

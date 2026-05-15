@@ -61,8 +61,9 @@
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <h5 class="mb-0"><i class="ti ti-shield-lock me-2 text-primary"></i>Hak Akses (Permissions)</h5>
                         <div class="d-flex gap-2 align-items-center">
-                            <button type="button" class="btn btn-sm btn-light-info d-inline-flex align-items-center" @click="syncPermissions()">
-                                <i class="ti ti-refresh me-1"></i> Sync Permission
+                            <button type="button" class="btn btn-sm btn-light-info d-inline-flex align-items-center" @click="syncPermissions()" :disabled="loading">
+                                <i class="ti ti-refresh me-1" :class="loading ? 'spinner-border spinner-border-sm border-0' : ''"></i> 
+                                <span x-text="loading ? 'Syncing...' : 'Sync Permission'"></span>
                             </button>
                             <div class="form-check form-switch mb-0 ms-2">
                                 <input class="form-check-input" type="checkbox" id="checkAll" @change="toggleAll($event)">
@@ -72,30 +73,37 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
+                            <template x-if="Object.keys(groupedPermissions).length === 0">
+                                <div class="col-12 text-center py-5">
+                                    <i class="ti ti-shield-off text-muted mb-3" style="font-size: 3rem;"></i>
+                                    <p class="text-muted">Belum ada daftar hak akses. Silakan klik <strong>Sync Permission</strong>.</p>
+                                </div>
+                            </template>
+
                             <template x-for="(resources, module) in groupedPermissions" :key="module">
                                 <div class="col-12 mb-4">
-                                    <div class="card border border-opacity-50 shadow-none mb-0">
-                                        <div class="card-header bg-light py-2">
+                                    <div class="card border border-primary border-opacity-25 shadow-none mb-0">
+                                        <div class="card-header bg-light-primary py-2">
                                             <h6 class="fw-bold mb-0 text-primary">
-                                                <i class="ti ti-folder me-1"></i> Modul: <span x-text="module"></span>
+                                                <i class="ti ti-folder-check me-2"></i>Modul: <span x-text="module"></span>
                                             </h6>
                                         </div>
                                         <div class="card-body p-3">
                                             <div class="row g-3">
                                                 <template x-for="(perms, resource) in resources" :key="resource">
                                                     <div class="col-md-6 col-xl-4">
-                                                        <div class="p-3 border rounded-3 bg-white h-100">
-                                                            <div class="fw-bold mb-2 border-bottom pb-1 small text-muted">
-                                                                <i class="ti ti-subtask me-1"></i> <span x-text="resource"></span>
+                                                        <div class="p-3 border rounded-3 bg-white h-100 shadow-sm-hover transition-all">
+                                                            <div class="fw-bold mb-3 border-bottom pb-2 small text-primary-emphasis d-flex align-items-center">
+                                                                <i class="ti ti-category me-2"></i><span x-text="resource"></span>
                                                             </div>
                                                             <div class="d-flex flex-wrap gap-x-3 gap-y-2">
                                                                 <template x-for="perm in perms" :key="perm.id">
-                                                                    <div class="form-check me-2">
+                                                                    <div class="form-check me-2 mb-1">
                                                                         <input class="form-input-check-custom form-check-input" type="checkbox" 
                                                                             :value="perm.slug" 
                                                                             :id="'perm-'+perm.id" 
                                                                             x-model="formData.permissions">
-                                                                        <label class="form-check-label small" :for="'perm-'+perm.id" x-text="perm.name"></label>
+                                                                        <label class="form-check-label small fw-medium" :for="'perm-'+perm.id" x-text="perm.name"></label>
                                                                     </div>
                                                                 </template>
                                                             </div>
