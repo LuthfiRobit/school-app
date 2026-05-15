@@ -85,10 +85,11 @@
             <use xlink:href="#custom-notification-status"></use>
           </svg>
         </li>
+
         <li class="pc-item pc-hasmenu {{ Request::routeIs('admin.spmb.master.*') ? 'active pc-trigger' : '' }}">
           <a href="#!" class="pc-link"><span class="pc-micon">
               <svg class="pc-icon">
-                <use xlink:href="#custom-level"></use>
+                <use xlink:href="#custom-data"></use>
               </svg> </span><span class="pc-mtext">Master</span><span class="pc-arrow"><i
                 data-feather="chevron-right"></i></span>
           </a>
@@ -103,6 +104,17 @@
               <a class="pc-link" href="{{ route('admin.spmb.master.komponen-biaya.index') }}">Komponen Biaya</a>
             </li>
           </ul>
+        </li>
+
+        <li class="pc-item">
+          <a href="{{ route('admin.spmb.configurations.index') }}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-setting-2"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Konfigurasi</span>
+          </a>
         </li>
         <!-- end menu SPMB -->
 

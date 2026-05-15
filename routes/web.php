@@ -151,6 +151,17 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
                     Route::post('/bulk-status', 'bulkUpdateStatus')->name('bulk-status')->middleware('permission:spmb.master.komponen-biaya.edit');
                 });
         });
+
+        // Konfigurasi Tahun Ajaran SPMB
+        Route::controller(\App\Http\Controllers\Admin\Spmb\SpmbConfigurationController::class)
+            ->prefix('configurations')
+            ->name('configurations.')
+            ->group(function () {
+                Route::get('/', 'index')->name('index')->middleware('permission:spmb.configurations.view');
+                Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.configurations.view');
+                Route::get('/{academicYear}', 'show')->name('show')->middleware('permission:spmb.configurations.edit');
+                Route::put('/{academicYear}', 'update')->name('update')->middleware('permission:spmb.configurations.edit');
+            });
     });
 
 });

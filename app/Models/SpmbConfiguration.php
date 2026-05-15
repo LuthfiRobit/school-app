@@ -5,31 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class AcademicYear extends Model
+class SpmbConfiguration extends Model
 {
     use HasFactory;
 
-    protected $table = 'academic_years';
+    protected $table = 'spmb_configurations';
 
     protected $fillable = [
-        'name',
-        'start_date',
-        'end_date',
-        'is_active',
+        'academic_year_id',
+        'reg_start_date',
+        'reg_end_date',
+        'total_quota',
+        'status',
         'created_by',
         'updated_by',
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'is_active' => 'boolean',
+        'reg_start_date' => 'date',
+        'reg_end_date' => 'date',
+        'total_quota' => 'integer',
     ];
 
     /**
-     * Booted method untuk audit log otomatis.
+     * Booted method for automatic audit log.
      */
     protected static function booted()
     {
@@ -44,26 +44,25 @@ class AcademicYear extends Model
         });
     }
 
-    public function semesters(): HasMany
+    /**
+     * Relationship to the Academic Year.
+     */
+    public function academicYear(): BelongsTo
     {
-        return $this->hasMany(Semester::class, 'academic_year_id');
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
 
-    public function spmbConfiguration()
-    {
-        return $this->hasOne(SpmbConfiguration::class, 'academic_year_id');
-    }
-
-    public function activeSemester()
-    {
-        return $this->semesters()->where('is_active', true)->first();
-    }
-
+    /**
+     * Relationship to the user who created the record.
+     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * Relationship to the user who last updated the record.
+     */
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');

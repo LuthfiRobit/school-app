@@ -35,6 +35,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\MasterFeeComponentRepositoryInterface::class,
             \App\Repositories\MasterFeeComponentRepository::class
         );
+        $this->app->bind(
+            \App\Repositories\Interfaces\SpmbConfigurationRepositoryInterface::class,
+            \App\Repositories\SpmbConfigurationRepository::class
+        );
     }
 
     /**
