@@ -3,8 +3,12 @@
         return {
             loading: false,
             modalInstance: null,
+            cloneModalInstance: null,
             editId: null,
             detailData: null,
+            allConfigurations: [],
+            configurationsWithTracks: [],
+            configurationsWithoutTracks: [],
             formData: {
                 academic_year_id: null,
                 academic_year_name: '',
@@ -13,15 +17,27 @@
                 total_quota: '',
                 status: ''
             },
+            cloneData: {
+                source_configuration_id: '',
+                target_configuration_id: ''
+            },
             table: null,
 
             init() {
                 this.initDataTable();
                 this.setupEventListeners();
-                // We keep the modal instance for "Detail" view if needed
+                this.fetchConfigurations();
+                
                 const modalEl = document.getElementById('setupModal');
                 if (modalEl) {
                     this.modalInstance = new bootstrap.Modal(modalEl);
+                    modalEl.addEventListener('hide.bs.modal', () => document.activeElement?.blur());
+                }
+
+                const cloneModalEl = document.getElementById('cloneModal');
+                if (cloneModalEl) {
+                    this.cloneModalInstance = new bootstrap.Modal(cloneModalEl);
+                    cloneModalEl.addEventListener('hide.bs.modal', () => document.activeElement?.blur());
                 }
             },
 
@@ -106,6 +122,72 @@
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 } catch (error) {
                     Swal.fire('Gagal', 'Terjadi kesalahan saat memuat data', 'error');
+                } finally {
+                    this.loading = false;
+                }
+            },
+
+            async fetchConfigurations() {
+                try {
+                    const response = await axios.get("{{ route('admin.spmb.configurations.data') }}?length=-1");
+                    const list = response.data.data.filter(item => item.spmb_configuration !== null);
+                    
+                    this.allConfigurations = list.map(item => ({
+                        id: item.spmb_configuration.id,
+                        academic_year: { name: item.name },
+                        tracks_count: item.spmb_configuration.tracks_count
+                    }));
+                    
+                    // Sumber: Yang sudah punya jalur
+                    this.configurationsWithTracks = this.allConfigurations.filter(item => item.tracks_count > 0);
+                    
+                    // Target: Yang belum punya jalur (untuk tujuan clone)
+                    this.configurationsWithoutTracks = this.allConfigurations.filter(item => item.tracks_count == 0);
+                } catch (error) {
+                    console.error("Gagal memuat daftar tahun ajaran", error);
+                }
+            },
+
+            openCloneModal() {
+                this.cloneData = { source_configuration_id: '', target_configuration_id: '' };
+                this.cloneModalInstance.show();
+            },
+
+            async submitClone() {
+                if (!this.cloneData.source_configuration_id || !this.cloneData.target_configuration_id) {
+                    toastr.warning("Harap pilih sumber dan target clone.");
+                    return;
+                }
+
+                const result = await Swal.fire({
+                    title: 'Konfirmasi Clone',
+                    text: "Seluruh konfigurasi jalur akan disalin. Data di target akan ditimpa jika konflik. Lanjutkan?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Proses Clone!',
+                    cancelButtonText: 'Batal',
+                    target: document.getElementById('cloneModal')
+                });
+
+                if (!result.isConfirmed) return;
+
+                this.loading = true;
+                try {
+                    const response = await axios.post("{{ route('admin.spmb.configurations.clone') }}", this.cloneData);
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: response.data.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    this.cloneModalInstance.hide();
+                    this.table.ajax.reload();
+                } catch (error) {
+                    const message = error.response?.data?.message || 'Gagal melakukan clone';
+                    Swal.fire('Error', message, 'error');
                 } finally {
                     this.loading = false;
                 }

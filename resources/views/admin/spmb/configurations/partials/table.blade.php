@@ -2,9 +2,14 @@
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="ti ti-list me-2"></i>Daftar Konfigurasi SPMB</h5>
-            <button class="btn btn-sm btn-light-primary" @click="refreshTable">
-                <i class="ti ti-refresh me-1"></i> Refresh
-            </button>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-light-info" @click="openCloneModal">
+                    <i class="ti ti-copy me-1"></i> Clone
+                </button>
+                <button class="btn btn-sm btn-light-primary" @click="refreshTable">
+                    <i class="ti ti-refresh me-1"></i> Refresh
+                </button>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">

@@ -10,6 +10,15 @@
 
 @section('page_title', 'Konfigurasi Tahun Ajaran SPMB')
 
+@push('css')
+<style>
+    /* Fix SweetAlert2 behind bootstrap modal */
+    .swal2-container {
+        z-index: 9999 !important;
+    }
+</style>
+@endpush
+
 @section('content')
 <div x-data="configApp()" x-init="init()" x-cloak>
     <div class="row g-4">
@@ -20,8 +29,11 @@
         @include('admin.spmb.configurations.partials.table')
     </div>
 
-    {{-- Partial Modal Detail (Optional, but matching jalur structure) --}}
+    {{-- Partial Modal Detail --}}
     @include('admin.spmb.configurations.partials.modal')
+
+    {{-- Partial Modal Clone --}}
+    @include('admin.spmb.configurations.partials.clone-modal')
 </div>
 @endsection
 

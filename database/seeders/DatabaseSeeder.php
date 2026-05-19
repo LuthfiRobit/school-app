@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             MasterTrackTypeSeeder::class,
             MasterAssessmentTypeSeeder::class,
             MasterFeeComponentSeeder::class,
+            SpmbConfigurationSeeder::class,
+            SpmbTrackSeeder::class,
         ]);
         // User::factory(10)->create();
 

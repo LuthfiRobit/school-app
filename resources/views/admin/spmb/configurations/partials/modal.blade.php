@@ -1,5 +1,5 @@
 <!-- Setup Modal -->
-<div class="modal fade" id="setupModal" tabindex="-1" aria-labelledby="setupModalLabel" aria-hidden="true" x-ref="setupModal">
+<div class="modal fade" id="setupModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="setupModalLabel" x-ref="setupModal">
     <div class="modal-dialog modal-dialog-centered shadow-lg">
         <div class="modal-content border-0">
             <div class="modal-header bg-primary text-white py-3">

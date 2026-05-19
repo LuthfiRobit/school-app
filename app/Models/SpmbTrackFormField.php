@@ -5,28 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class SpmbConfiguration extends Model
+class SpmbTrackFormField extends Model
 {
     use HasFactory;
 
-    protected $table = 'spmb_configurations';
+    protected $table = 'spmb_track_form_fields';
 
     protected $fillable = [
-        'academic_year_id',
-        'reg_start_date',
-        'reg_end_date',
-        'total_quota',
-        'status',
+        'spmb_track_id',
+        'field_group',
+        'field_name',
+        'field_label',
+        'field_type',
+        'field_options',
+        'file_types',
+        'max_file_size',
+        'is_required',
+        'display_order',
         'created_by',
         'updated_by',
     ];
 
     protected $casts = [
-        'reg_start_date' => 'date',
-        'reg_end_date' => 'date',
-        'total_quota' => 'integer',
+        'field_options' => 'array',
+        'max_file_size' => 'integer',
+        'is_required' => 'boolean',
+        'display_order' => 'integer',
     ];
 
     /**
@@ -46,11 +51,11 @@ class SpmbConfiguration extends Model
     }
 
     /**
-     * Relationship to the Academic Year.
+     * Get the SPMB track that owns the form field mapping.
      */
-    public function academicYear(): BelongsTo
+    public function track(): BelongsTo
     {
-        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+        return $this->belongsTo(SpmbTrack::class, 'spmb_track_id');
     }
 
     /**
@@ -67,13 +72,5 @@ class SpmbConfiguration extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
-    }
-
-    /**
-     * Relationship to the tracks associated with this configuration.
-     */
-    public function tracks(): HasMany
-    {
-        return $this->hasMany(SpmbTrack::class, 'spmb_configuration_id');
     }
 }

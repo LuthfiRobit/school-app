@@ -5,28 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class SpmbConfiguration extends Model
+class SpmbTrackFee extends Model
 {
     use HasFactory;
 
-    protected $table = 'spmb_configurations';
+    protected $table = 'spmb_track_fees';
 
     protected $fillable = [
-        'academic_year_id',
-        'reg_start_date',
-        'reg_end_date',
-        'total_quota',
-        'status',
+        'spmb_track_id',
+        'master_fee_component_id',
+        'amount',
+        'category',
+        'display_order',
         'created_by',
         'updated_by',
     ];
 
     protected $casts = [
-        'reg_start_date' => 'date',
-        'reg_end_date' => 'date',
-        'total_quota' => 'integer',
+        'amount' => 'decimal:2',
+        'display_order' => 'integer',
     ];
 
     /**
@@ -46,11 +44,19 @@ class SpmbConfiguration extends Model
     }
 
     /**
-     * Relationship to the Academic Year.
+     * Get the SPMB track that owns the fee mapping.
      */
-    public function academicYear(): BelongsTo
+    public function track(): BelongsTo
     {
-        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+        return $this->belongsTo(SpmbTrack::class, 'spmb_track_id');
+    }
+
+    /**
+     * Get the master fee component associated with this mapping.
+     */
+    public function feeComponent(): BelongsTo
+    {
+        return $this->belongsTo(MasterFeeComponent::class, 'master_fee_component_id');
     }
 
     /**
@@ -67,13 +73,5 @@ class SpmbConfiguration extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
-    }
-
-    /**
-     * Relationship to the tracks associated with this configuration.
-     */
-    public function tracks(): HasMany
-    {
-        return $this->hasMany(SpmbTrack::class, 'spmb_configuration_id');
     }
 }

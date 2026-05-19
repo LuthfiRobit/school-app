@@ -32,14 +32,30 @@ class SpmbConfigurationController extends Controller
      */
     public function getData()
     {
-        $data = $this->academicYearRepository->all(['*'], ['spmbConfiguration']);
+        $data = $this->academicYearRepository->all(['*'], ['spmbConfiguration' => function($q) {
+            $q->withCount('tracks');
+        }]);
 
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
-                return '<button type="button" class="btn btn-sm btn-light-primary rounded-pill btn-setup" data-id="' . $row->id . '">
-                            <i class="ti ti-settings"></i> Setup
-                        </button>';
+                $setupBtn = '<li><a class="dropdown-item btn-setup" href="javascript:void(0)" data-id="' . $row->id . '"><i class="ti ti-settings me-2"></i>Setup Konfigurasi</a></li>';
+                $trackBtn = '';
+
+                if ($row->spmbConfiguration) {
+                    $route = route('admin.spmb.configurations.tracks.index', $row->spmbConfiguration->id);
+                    $trackBtn = '<li><a class="dropdown-item" href="' . $route . '"><i class="ti ti-route me-2"></i>Kelola Jalur</a></li>';
+                }
+
+                return '<div class="dropdown">
+                            <button class="btn btn-sm btn-light-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                               <i class="ti ti-settings"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                ' . $setupBtn . '
+                                ' . $trackBtn . '
+                            </ul>
+                        </div>';
             })
             ->addColumn('academic_year', function ($row) {
                 return '<span class="badge bg-light-primary text-primary">' . $row->name . '</span>';
@@ -123,6 +139,30 @@ class SpmbConfigurationController extends Controller
             DB::rollBack();
             return response()->json([
                 'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Clone konfigurasi dari tahun sebelumnya ke tahun target.
+     */
+    public function clone(Request $request, \App\Services\SpmbConfigurationCloneService $cloneService)
+    {
+        $validated = $request->validate([
+            'source_configuration_id' => 'required|exists:spmb_configurations,id',
+            'target_configuration_id' => 'required|exists:spmb_configurations,id',
+        ]);
+
+        try {
+            $cloneService->clone($validated['source_configuration_id'], $validated['target_configuration_id']);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Konfigurasi berhasil disalin (cloned).'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal melakukan clone konfigurasi: ' . $e->getMessage()
             ], 500);
         }
     }

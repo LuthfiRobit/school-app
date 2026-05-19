@@ -39,6 +39,22 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\SpmbConfigurationRepositoryInterface::class,
             \App\Repositories\SpmbConfigurationRepository::class
         );
+        $this->app->bind(
+            \App\Repositories\Interfaces\SpmbTrackRepositoryInterface::class,
+            \App\Repositories\SpmbTrackRepository::class
+        );
+        $this->app->bind(
+            \App\Repositories\Interfaces\SpmbTrackFeeRepositoryInterface::class,
+            \App\Repositories\SpmbTrackFeeRepository::class
+        );
+        $this->app->bind(
+            \App\Repositories\Interfaces\SpmbTrackAssessmentRepositoryInterface::class,
+            \App\Repositories\SpmbTrackAssessmentRepository::class
+        );
+        $this->app->bind(
+            \App\Repositories\Interfaces\SpmbTrackFormFieldRepositoryInterface::class,
+            \App\Repositories\SpmbTrackFormFieldRepository::class
+        );
     }
 
     /**

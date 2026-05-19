@@ -152,16 +152,54 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
                 });
         });
 
-        // Konfigurasi Tahun Ajaran SPMB
-        Route::controller(\App\Http\Controllers\Admin\Spmb\SpmbConfigurationController::class)
-            ->prefix('configurations')
-            ->name('configurations.')
-            ->group(function () {
+        // SPMB Configuration Management
+        Route::prefix('configurations')->name('configurations.')->group(function () {
+            
+            // 1. Academic Year Configurations
+            Route::controller(\App\Http\Controllers\Admin\Spmb\SpmbConfigurationController::class)->group(function () {
                 Route::get('/', 'index')->name('index')->middleware('permission:spmb.configurations.view');
                 Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.configurations.view');
                 Route::get('/{academicYear}', 'show')->name('show')->middleware('permission:spmb.configurations.edit');
                 Route::put('/{academicYear}', 'update')->name('update')->middleware('permission:spmb.configurations.edit');
+                Route::post('/clone', 'clone')->name('clone')->middleware('permission:spmb.configurations.edit');
             });
+
+            // 2. Tracks per Configuration
+            Route::prefix('{configuration}/tracks')->name('tracks.')->group(function () {
+                
+                // 2.1 Core Track Management
+                Route::controller(\App\Http\Controllers\Admin\Spmb\SpmbTrackController::class)->group(function () {
+                    Route::get('/', 'index')->name('index')->middleware('permission:spmb.configurations.track.view');
+                    Route::get('/data', 'data')->name('data')->middleware('permission:spmb.configurations.track.view');
+                    Route::post('/', 'store')->name('store')->middleware('permission:spmb.configurations.track.create');
+                    Route::get('/{track}', 'show')->name('show')->middleware('permission:spmb.configurations.track.view');
+                    Route::put('/{track}', 'update')->name('update')->middleware('permission:spmb.configurations.track.edit');
+                    Route::delete('/{track}', 'destroy')->name('destroy')->middleware('permission:spmb.configurations.track.delete');
+                    
+                    Route::post('/{track}/mappings', 'syncMappings')->name('sync-mappings')->middleware('permission:spmb.configurations.track.mapping.edit');
+                });
+
+                // 2.2 Track Fees (Mappings)
+                Route::prefix('{track}/fees')->name('fees.')->controller(\App\Http\Controllers\Admin\Spmb\SpmbTrackFeeController::class)->group(function () {
+                    Route::get('/master', 'masterData')->name('master')->middleware('permission:spmb.configurations.track.mapping.view');
+                    Route::get('/', 'index')->name('index')->middleware('permission:spmb.configurations.track.mapping.view');
+                    Route::post('/sync', 'sync')->name('sync')->middleware('permission:spmb.configurations.track.mapping.edit');
+                });
+
+                // 2.3 Track Assessments (Mappings)
+                Route::prefix('{track}/assessments')->name('assessments.')->controller(\App\Http\Controllers\Admin\Spmb\SpmbTrackAssessmentController::class)->group(function () {
+                    Route::get('/master', 'masterData')->name('master')->middleware('permission:spmb.configurations.track.mapping.view');
+                    Route::get('/', 'index')->name('index')->middleware('permission:spmb.configurations.track.mapping.view');
+                    Route::post('/sync', 'sync')->name('sync')->middleware('permission:spmb.configurations.track.mapping.edit');
+                });
+
+                // 2.4 Track Form Fields (Mappings)
+                Route::prefix('{track}/form-fields')->name('form-fields.')->controller(\App\Http\Controllers\Admin\Spmb\SpmbTrackFormFieldController::class)->group(function () {
+                    Route::get('/', 'index')->name('index')->middleware('permission:spmb.configurations.track.mapping.view');
+                    Route::post('/sync', 'sync')->name('sync')->middleware('permission:spmb.configurations.track.mapping.edit');
+                });
+            });
+        });
     });
 
 });
