@@ -55,9 +55,35 @@ class InvoiceGeneratorService
             // Fetch track fee mappings
             $trackFees = DB::table('spmb_track_fees')
                 ->where('spmb_track_id', $enrollment->spmb_track_id)
+                ->where('category', 're_registration')
                 ->get();
                 
             $totalAmount = $trackFees->sum('amount');
+            
+            // Check if payment mode is POST_PAYMENT, if so add registration fee
+            $paymentMode = $enrollment->spmbTrack->payment_mode->value ?? $enrollment->spmbTrack->payment_mode;
+            $hasRegistrationFee = false;
+            $registrationFee = 0;
+            if ($paymentMode === \App\Enums\PaymentMode::POST_PAYMENT->value || $paymentMode === \App\Enums\PaymentMode::POST_PAYMENT) {
+                // Find if there is a registration fee in spmb_track_fees
+                $regFees = DB::table('spmb_track_fees')
+                    ->where('spmb_track_id', $enrollment->spmb_track_id)
+                    ->where('category', 'registration')
+                    ->get();
+                    
+                if ($regFees->isNotEmpty()) {
+                    $totalAmount += $regFees->sum('amount');
+                    // We'll merge them for invoice_items iteration
+                    $trackFees = $trackFees->merge($regFees);
+                } else {
+                    // Fallback to track registration_fee if not mapped in spmb_track_fees
+                    $registrationFee = $enrollment->spmbTrack->registration_fee;
+                    if ($registrationFee > 0) {
+                        $totalAmount += $registrationFee;
+                        $hasRegistrationFee = true;
+                    }
+                }
+            }
             
             $invoice = Invoice::create([
                 'enrollment_id' => $enrollment->id,
@@ -76,6 +102,18 @@ class InvoiceGeneratorService
                     'fee_component_id' => $fee->master_fee_component_id,
                     'description' => DB::table('master_fee_components')->where('id', $fee->master_fee_component_id)->value('name') ?? 'Komponen Biaya',
                     'amount' => $fee->amount,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+            
+            // Add fallback registration fee if it was from spmb_tracks
+            if ($hasRegistrationFee) {
+                DB::table('invoice_items')->insert([
+                    'invoice_id' => $invoice->id,
+                    'fee_component_id' => null,
+                    'description' => 'Biaya Pendaftaran Jalur ' . $enrollment->spmbTrack->trackType->name,
+                    'amount' => $registrationFee,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

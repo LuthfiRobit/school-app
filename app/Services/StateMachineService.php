@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 class StateMachineService
 {
     public function __construct(
-        protected EnrollmentNumberService $enrollmentNumberService
+        protected EnrollmentNumberService $enrollmentNumberService,
+        protected InvoiceGeneratorService $invoiceGeneratorService
     ) {}
 
     /**
@@ -54,6 +55,21 @@ class StateMachineService
                 $to,
                 $reason ?? "Status diubah ke " . $to->label()
             );
+
+            // Trigger Invoices
+            if ($to === EnrollmentStatus::WAITING_PAYMENT_REG) {
+                // Generate Registration Invoice if not yet exists
+                if (!\App\Models\Invoice::where('enrollment_id', $enrollment->id)->where('category', 'registration')->exists()) {
+                    $this->invoiceGeneratorService->generateRegistrationInvoice($enrollment);
+                }
+            }
+
+            if ($to === EnrollmentStatus::PASSED) {
+                // Generate Re-Registration Invoice
+                if (!\App\Models\Invoice::where('enrollment_id', $enrollment->id)->where('category', 're_registration')->exists()) {
+                    $this->invoiceGeneratorService->generateReRegistrationInvoice($enrollment);
+                }
+            }
         });
 
         return true;

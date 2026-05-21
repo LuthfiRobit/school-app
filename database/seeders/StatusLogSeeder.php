@@ -120,6 +120,50 @@ class StatusLogSeeder extends Seeder
                     'changed_at' => $now->copy()->subDays(4),
                 ]);
             }
+            if ($enrollment->full_name === 'Ahmad Fauzi') {
+                // Ahmad: passed → waiting_payment_final → settled
+                $logs = [
+                    ['draft',                 'registered',           'Pendaftaran diinput manual oleh admin.',                        14],
+                    ['registered',            'verified_reg',         'Jalur Reguler - berkas terverifikasi.',                         13],
+                    ['verified_reg',          'in_review',            'Berkas mulai direview panitia.',                                12],
+                    ['in_review',             'passed',               'Lulus seleksi administrasi jalur Reguler.',                     10],
+                    ['passed',                'waiting_payment_final','Invoice daftar ulang di-generate otomatis.',                    10],
+                    ['waiting_payment_final', 'settled',              'Pembayaran daftar ulang Rp 5.000.000 dikonfirmasi admin.',        3],
+                ];
+                foreach ($logs as $i => [$from, $to, $reason, $daysAgo]) {
+                    DB::table('status_logs')->insert([
+                        'enrollment_id' => $enrollment->id,
+                        'changed_by'    => $adminId,
+                        'from_status'   => $from,
+                        'to_status'     => $to,
+                        'reason'        => $reason,
+                        'changed_at'    => $now->copy()->subDays($daysAgo)->addMinutes($i * 5),
+                    ]);
+                }
+            }
+
+            if ($enrollment->full_name === 'Dewi Rahayu') {
+                // Dewi: passed → waiting_payment_final → settled → permanent_student
+                $logs = [
+                    ['draft',                 'registered',           'Pendaftaran diinput manual oleh admin.',                        20],
+                    ['registered',            'verified_reg',         'Jalur Prestasi - berkas terverifikasi.',                        19],
+                    ['verified_reg',          'in_review',            'Berkas mulai direview panitia.',                                18],
+                    ['in_review',             'passed',               'Lulus seleksi jalur Prestasi - juara OSN Fisika.',              15],
+                    ['passed',                'waiting_payment_final','Invoice daftar ulang di-generate otomatis.',                    15],
+                    ['waiting_payment_final', 'settled',              'Pembayaran daftar ulang Rp 2.500.000 dikonfirmasi admin.',        8],
+                    ['settled',               'permanent_student',    'Finalisasi daftar ulang - Dewi Rahayu resmi menjadi Siswa Tetap.', 5],
+                ];
+                foreach ($logs as $i => [$from, $to, $reason, $daysAgo]) {
+                    DB::table('status_logs')->insert([
+                        'enrollment_id' => $enrollment->id,
+                        'changed_by'    => $adminId,
+                        'from_status'   => $from,
+                        'to_status'     => $to,
+                        'reason'        => $reason,
+                        'changed_at'    => $now->copy()->subDays($daysAgo)->addMinutes($i * 5),
+                    ]);
+                }
+            }
         }
     }
 }

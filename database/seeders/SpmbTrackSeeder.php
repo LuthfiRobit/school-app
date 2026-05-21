@@ -25,7 +25,7 @@ class SpmbTrackSeeder extends Seeder
         try {
             // Ambil beberapa master data
             $trackReguler = DB::table('master_track_types')->where('slug', 'jalur-reguler')->first();
-            $trackPrestasi = DB::table('master_track_types')->where('slug', 'jalur-prestasi')->first();
+            $trackPrestasi = DB::table('master_track_types')->where('slug', 'jalur-prestasi-tahfidz')->first();
 
             $feeRegistration = DB::table('master_fee_components')->where('category', 'registration')->first();
             $feeReRegistration1 = DB::table('master_fee_components')->where('category', 're_registration')->first();

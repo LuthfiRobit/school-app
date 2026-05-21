@@ -187,6 +187,17 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             });
         });
 
+        // Modul Daftar Ulang & Finalisasi
+        Route::prefix('daftar-ulang')->name('daftar-ulang.')->group(function () {
+            Route::controller(\App\Http\Controllers\Admin\Spmb\ReRegistrationController::class)->group(function () {
+                Route::get('/', 'index')->name('index')->middleware('permission:spmb.daftarulang.view');
+                Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.daftarulang.view');
+                Route::get('/{enrollment}', 'show')->name('show')->middleware('permission:spmb.daftarulang.view');
+                Route::post('/{enrollment}/finalize', 'finalize')->name('finalize')->middleware('permission:spmb.daftarulang.finalisasi');
+                Route::get('/{enrollment}/surat', 'downloadLetter')->name('surat')->middleware('permission:spmb.daftarulang.view');
+            });
+        });
+
         // SPMB Configuration Management
         Route::prefix('configurations')->name('configurations.')->group(function () {
             

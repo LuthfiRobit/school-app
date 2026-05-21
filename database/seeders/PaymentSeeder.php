@@ -42,20 +42,62 @@ class PaymentSeeder extends Seeder
             ]);
         }
 
-        // 3. Pending Payment for Siti
+        // 3. Pending Payment for Siti (belum dikonfirmasi)
         if ($sitiInvoice) {
             DB::table('payments')->insert([
-                'invoice_id' => $sitiInvoice->id,
-                'confirmed_by' => null,
-                'amount' => $sitiInvoice->total_amount,
-                'confirmed_amount' => null,
+                'invoice_id'         => $sitiInvoice->id,
+                'confirmed_by'       => null,
+                'amount'             => $sitiInvoice->total_amount,
+                'confirmed_amount'   => null,
                 'payment_proof_path' => 'proofs/2026/bukti_siti.png',
-                'status' => 'pending',
-                'rejection_reason' => null,
-                'input_method' => 'upload',
-                'confirmed_at' => null,
-                'created_at' => $now->copy()->subMinutes(30),
-                'updated_at' => $now->copy()->subMinutes(30),
+                'status'             => 'pending',
+                'rejection_reason'   => null,
+                'input_method'       => 'upload',
+                'confirmed_at'       => null,
+                'created_at'         => $now->copy()->subMinutes(30),
+                'updated_at'         => $now->copy()->subMinutes(30),
+            ]);
+        }
+
+        // 4. Confirmed Payment for Ahmad Fauzi (re_registration invoice)
+        $ahmadInvoice = DB::table('invoices')
+            ->where('invoice_number', 'INV-2026-000004')
+            ->first();
+
+        if ($ahmadInvoice) {
+            DB::table('payments')->insert([
+                'invoice_id'         => $ahmadInvoice->id,
+                'confirmed_by'       => $adminId,
+                'amount'             => $ahmadInvoice->total_amount,
+                'confirmed_amount'   => $ahmadInvoice->total_amount,
+                'payment_proof_path' => 'proofs/2026/bukti_ahmad.jpg',
+                'status'             => 'confirmed',
+                'rejection_reason'   => null,
+                'input_method'       => 'upload',
+                'confirmed_at'       => $now->copy()->subDays(2),
+                'created_at'         => $now->copy()->subDays(3),
+                'updated_at'         => $now->copy()->subDays(2),
+            ]);
+        }
+
+        // 4. Confirmed Payment for Dewi Rahayu (re_registration invoice)
+        $dewiInvoice = DB::table('invoices')
+            ->where('invoice_number', 'INV-2026-000005')
+            ->first();
+
+        if ($dewiInvoice) {
+            DB::table('payments')->insert([
+                'invoice_id'         => $dewiInvoice->id,
+                'confirmed_by'       => $adminId,
+                'amount'             => $dewiInvoice->total_amount,
+                'confirmed_amount'   => $dewiInvoice->total_amount,
+                'payment_proof_path' => 'proofs/2026/bukti_dewi.jpg',
+                'status'             => 'confirmed',
+                'rejection_reason'   => null,
+                'input_method'       => 'upload',
+                'confirmed_at'       => $now->copy()->subDays(5),
+                'created_at'         => $now->copy()->subDays(7),
+                'updated_at'         => $now->copy()->subDays(5),
             ]);
         }
     }

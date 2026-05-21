@@ -155,6 +155,19 @@
           </a>
         </li>
         @endcan
+
+        @can('spmb.daftarulang.view')
+        <li class="pc-item {{ Request::routeIs('admin.spmb.daftar-ulang.*') ? 'active' : '' }}">
+          <a href="{{ route('admin.spmb.daftar-ulang.index') }}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-note-1"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Daftar Ulang</span>
+          </a>
+        </li>
+        @endcan
         <!-- end menu SPMB -->
 
         <li class="pc-item pc-caption">
