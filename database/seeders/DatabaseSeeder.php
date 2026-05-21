@@ -22,6 +22,13 @@ class DatabaseSeeder extends Seeder
             MasterFeeComponentSeeder::class,
             SpmbConfigurationSeeder::class,
             SpmbTrackSeeder::class,
+            ApplicantSeeder::class,
+            ApplicantEnrollmentSeeder::class,
+            ApplicantFormDataSeeder::class,
+            InvoiceSeeder::class,
+            PaymentSeeder::class,
+            AssessmentSeeder::class,
+            StatusLogSeeder::class,
         ]);
         // User::factory(10)->create();
 

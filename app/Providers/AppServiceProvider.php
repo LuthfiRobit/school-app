@@ -55,6 +55,30 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\SpmbTrackFormFieldRepositoryInterface::class,
             \App\Repositories\SpmbTrackFormFieldRepository::class
         );
+        $this->app->bind(
+            \App\Repositories\Interfaces\ApplicantRepositoryInterface::class,
+            \App\Repositories\ApplicantRepository::class
+        );
+        $this->app->bind(
+            \App\Repositories\Interfaces\ApplicantEnrollmentRepositoryInterface::class,
+            \App\Repositories\ApplicantEnrollmentRepository::class
+        );
+        $this->app->bind(
+            \App\Repositories\Interfaces\InvoiceRepositoryInterface::class,
+            \App\Repositories\InvoiceRepository::class
+        );
+        $this->app->bind(
+            \App\Repositories\Interfaces\PaymentRepositoryInterface::class,
+            \App\Repositories\PaymentRepository::class
+        );
+        $this->app->bind(
+            \App\Repositories\Interfaces\AssessmentRepositoryInterface::class,
+            \App\Repositories\AssessmentRepository::class
+        );
+        $this->app->bind(
+            \App\Repositories\Interfaces\StatusLogRepositoryInterface::class,
+            \App\Repositories\StatusLogRepository::class
+        );
     }
 
     /**
