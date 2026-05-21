@@ -175,6 +175,18 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             });
         });
 
+        // Modul Penilaian & Penetapan Kelulusan (Assessment & Graduation Decision)
+        Route::prefix('penilaian')->name('penilaian.')->group(function () {
+            Route::controller(\App\Http\Controllers\Admin\Spmb\AssessmentController::class)->group(function () {
+                Route::get('/', 'index')->name('index')->middleware('permission:spmb.penilaian.view');
+                Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.penilaian.view');
+                Route::post('/bulk-decision', 'bulkDecision')->name('bulk-decision')->middleware('permission:spmb.penilaian.kelulusan');
+                Route::get('/{enrollment}', 'show')->name('show')->middleware('permission:spmb.penilaian.view');
+                Route::post('/{enrollment}/upsert', 'upsert')->name('upsert')->middleware('permission:spmb.penilaian.input');
+                Route::post('/{enrollment}/decision', 'setDecision')->name('decision')->middleware('permission:spmb.penilaian.kelulusan');
+            });
+        });
+
         // SPMB Configuration Management
         Route::prefix('configurations')->name('configurations.')->group(function () {
             

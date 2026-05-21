@@ -10,14 +10,7 @@
 
 @section('page_title', 'Konfigurasi Tahun Ajaran SPMB')
 
-@push('css')
-<style>
-    /* Fix SweetAlert2 behind bootstrap modal */
-    .swal2-container {
-        z-index: 9999 !important;
-    }
-</style>
-@endpush
+
 
 @section('content')
 <div x-data="configApp()" x-init="init()" x-cloak>

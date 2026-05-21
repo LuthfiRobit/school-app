@@ -142,6 +142,19 @@
           </a>
         </li>
         @endcan
+
+        @can('spmb.penilaian.view')
+        <li class="pc-item {{ Request::routeIs('admin.spmb.penilaian.*') ? 'active' : '' }}">
+          <a href="{{ route('admin.spmb.penilaian.index') }}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-award"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Penilaian & Kelulusan</span>
+          </a>
+        </li>
+        @endcan
         <!-- end menu SPMB -->
 
         <li class="pc-item pc-caption">

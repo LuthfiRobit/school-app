@@ -32,6 +32,11 @@
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 <style>
+  /* Fix SweetAlert2 behind bootstrap modal globally */
+  .swal2-container {
+    z-index: 9999 !important;
+  }
+
   /* === Select2: Sesuaikan ukuran dengan Able Pro form-control === */
 
   .select2-container {
