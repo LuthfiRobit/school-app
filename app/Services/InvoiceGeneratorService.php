@@ -86,12 +86,21 @@ class InvoiceGeneratorService
     }
 
     /**
-     * Generate unique invoice number.
+     * Generate a unique sequential invoice number: INV-{YEAR}-{SEQUENCE}
+     * Uses DB max+1 within a transaction — safe for low-concurrency SPMB context.
      */
     private function generateInvoiceNumber(): string
     {
         $year = date('Y');
-        $random = str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
-        return "INV-{$year}-{$random}";
+
+        // Count existing invoices this year to derive a safe sequential number
+        $count = DB::table('invoices')
+            ->whereYear('created_at', $year)
+            ->lockForUpdate()
+            ->count();
+
+        $sequence = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
+
+        return "INV-{$year}-{$sequence}";
     }
 }

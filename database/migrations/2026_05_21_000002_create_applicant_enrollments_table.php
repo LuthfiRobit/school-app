@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('applicant_id')->constrained('applicants')->cascadeOnDelete();
             $table->foreignId('spmb_track_id')->constrained('spmb_tracks')->cascadeOnDelete();
-            $table->string('enrollment_number', 30)->unique();
+            $table->string('enrollment_number', 30)->nullable()->unique();
             $table->enum('status', [
                 'draft', 
                 'registered', 
