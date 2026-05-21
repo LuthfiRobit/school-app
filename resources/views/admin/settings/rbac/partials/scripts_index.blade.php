@@ -23,6 +23,9 @@
             },
 
             initDataTable() {
+                if ($.fn.DataTable.isDataTable('#role-table')) {
+                    $('#role-table').DataTable().destroy();
+                }
                 this.table = $('#role-table').DataTable({
                     processing: true,
                     serverSide: true,

@@ -152,6 +152,29 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
                 });
         });
 
+        // Modul Pendaftar (Enrollment)
+        Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
+            Route::controller(\App\Http\Controllers\Admin\Spmb\EnrollmentController::class)->group(function () {
+                Route::get('/', 'index')->name('index')->middleware('permission:spmb.pendaftar.view');
+                Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.pendaftar.view');
+                Route::get('/{id}', 'show')->name('show')->middleware('permission:spmb.pendaftar.view');
+                Route::post('/{id}/status', 'updateStatus')->name('status')->middleware('permission:spmb.pendaftar.status');
+                Route::post('/bulk-status', 'bulkStatus')->name('bulk-status')->middleware('permission:spmb.pendaftar.bulk-status');
+            });
+        });
+
+        // Modul Pembayaran (Payment Verification & Manual Input)
+        Route::prefix('pembayaran')->name('pembayaran.')->group(function () {
+            Route::controller(\App\Http\Controllers\Admin\Spmb\PaymentController::class)->group(function () {
+                Route::get('/', 'index')->name('index')->middleware('permission:spmb.pembayaran.view');
+                Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.pembayaran.view');
+                Route::get('/{id}', 'show')->name('show')->middleware('permission:spmb.pembayaran.view');
+                Route::post('/{id}/confirm', 'confirm')->name('confirm')->middleware('permission:spmb.pembayaran.verify');
+                Route::post('/{id}/reject', 'reject')->name('reject')->middleware('permission:spmb.pembayaran.verify');
+                Route::post('/manual', 'storeManual')->name('manual')->middleware('permission:spmb.pembayaran.input');
+            });
+        });
+
         // SPMB Configuration Management
         Route::prefix('configurations')->name('configurations.')->group(function () {
             

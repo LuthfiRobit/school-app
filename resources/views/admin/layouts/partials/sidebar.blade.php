@@ -116,6 +116,32 @@
             <span class="pc-mtext">Konfigurasi</span>
           </a>
         </li>
+
+        @can('spmb.pendaftar.view')
+        <li class="pc-item {{ Request::routeIs('admin.spmb.pendaftar.*') ? 'active' : '' }}">
+          <a href="{{ route('admin.spmb.pendaftar.index') }}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-presentation-chart"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Pendaftar</span>
+          </a>
+        </li>
+        @endcan
+
+        @can('spmb.pembayaran.view')
+        <li class="pc-item {{ Request::routeIs('admin.spmb.pembayaran.*') ? 'active' : '' }}">
+          <a href="{{ route('admin.spmb.pembayaran.index') }}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-notification-status"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Verifikasi Pembayaran</span>
+          </a>
+        </li>
+        @endcan
         <!-- end menu SPMB -->
 
         <li class="pc-item pc-caption">
