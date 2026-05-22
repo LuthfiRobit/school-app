@@ -79,6 +79,14 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\StatusLogRepositoryInterface::class,
             \App\Repositories\StatusLogRepository::class
         );
+        $this->app->bind(
+            \App\Repositories\Interfaces\ReportRepositoryInterface::class,
+            \App\Repositories\ReportRepository::class
+        );
+        $this->app->bind(
+            \App\Repositories\Interfaces\DashboardRepositoryInterface::class,
+            \App\Repositories\DashboardRepository::class
+        );
     }
 
     /**

@@ -61,6 +61,7 @@
           </a>
         </li>
 
+        @can('akademik.tahun-pelajaran.view')
         <li class="pc-item pc-caption">
           <label>Akademik</label>
           <svg class="pc-icon">
@@ -77,15 +78,19 @@
             <span class="pc-mtext">Tahun Pelajaran</span>
           </a>
         </li>
+        @endcan
 
         <!-- Menu SPMB -->
+        @canany(['spmb.master.jalur.view', 'spmb.master.jenis-penilaian.view', 'spmb.master.komponen-biaya.view', 'spmb.configurations.view', 'spmb.pendaftar.view', 'spmb.pembayaran.view', 'spmb.penilaian.view', 'spmb.daftarulang.view', 'spmb.laporan.view'])
         <li class="pc-item pc-caption">
           <label>SPMB</label>
           <svg class="pc-icon">
             <use xlink:href="#custom-notification-status"></use>
           </svg>
         </li>
+        @endcanany
 
+        @canany(['spmb.master.jalur.view', 'spmb.master.jenis-penilaian.view', 'spmb.master.komponen-biaya.view'])
         <li class="pc-item pc-hasmenu {{ Request::routeIs('admin.spmb.master.*') ? 'active pc-trigger' : '' }}">
           <a href="#!" class="pc-link"><span class="pc-micon">
               <svg class="pc-icon">
@@ -94,18 +99,26 @@
                 data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
+            @can('spmb.master.jalur.view')
             <li class="pc-item {{ Request::routeIs('admin.spmb.master.jalur.*') ? 'active' : '' }}">
               <a class="pc-link" href="{{ route('admin.spmb.master.jalur.index') }}">Jalur</a>
             </li>
+            @endcan
+            @can('spmb.master.jenis-penilaian.view')
             <li class="pc-item {{ Request::routeIs('admin.spmb.master.jenis-penilaian.*') ? 'active' : '' }}">
               <a class="pc-link" href="{{ route('admin.spmb.master.jenis-penilaian.index') }}">Jenis Penilaian</a>
             </li>
+            @endcan
+            @can('spmb.master.komponen-biaya.view')
             <li class="pc-item {{ Request::routeIs('admin.spmb.master.komponen-biaya.*') ? 'active' : '' }}">
               <a class="pc-link" href="{{ route('admin.spmb.master.komponen-biaya.index') }}">Komponen Biaya</a>
             </li>
+            @endcan
           </ul>
         </li>
+        @endcanany
 
+        @can('spmb.configurations.view')
         <li class="pc-item">
           <a href="{{ route('admin.spmb.configurations.index') }}" class="pc-link">
             <span class="pc-micon">
@@ -116,6 +129,7 @@
             <span class="pc-mtext">Konfigurasi</span>
           </a>
         </li>
+        @endcan
 
         @can('spmb.pendaftar.view')
         <li class="pc-item {{ Request::routeIs('admin.spmb.pendaftar.*') ? 'active' : '' }}">
@@ -147,8 +161,13 @@
         <li class="pc-item {{ Request::routeIs('admin.spmb.penilaian.*') ? 'active' : '' }}">
           <a href="{{ route('admin.spmb.penilaian.index') }}" class="pc-link">
             <span class="pc-micon">
-              <svg class="pc-icon">
-                <use xlink:href="#custom-award"></use>
+              <svg xmlns="http://w3.org" class="pc-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12 14a6 6 0 1 0 -6 -6" />
+                <path d="M12 14a6 6 0 1 1 6 -6" />
+                <path d="M12 14v7l3 -2l3 2v-7" />
+                <path d="M12 14v7l-3 -2l-3 2v-7" />
+                <path d="M6 8h12" />
               </svg>
             </span>
             <span class="pc-mtext">Penilaian & Kelulusan</span>
@@ -168,14 +187,30 @@
           </a>
         </li>
         @endcan
+
+        @can('spmb.laporan.view')
+        <li class="pc-item {{ Request::routeIs('admin.spmb.laporan.*') ? 'active' : '' }}">
+          <a href="{{ route('admin.spmb.laporan.index') }}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-document-text"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Laporan SPMB</span>
+          </a>
+        </li>
+        @endcan
         <!-- end menu SPMB -->
 
+        @canany(['settings.school.view', 'settings.rbac.view', 'settings.user.view'])
         <li class="pc-item pc-caption">
           <label>Setting</label>
           <svg class="pc-icon">
             <use xlink:href="#custom-setting-2"></use>
           </svg>
         </li>
+        @endcanany
+        @can('settings.school.view')
         <li class="pc-item">
           <a href="{{ route('admin.settings.school.index') }}" class="pc-link">
             <span class="pc-micon">
@@ -186,6 +221,8 @@
             <span class="pc-mtext">Sekolah</span>
           </a>
         </li>
+        @endcan
+        @canany(['settings.rbac.view', 'settings.user.view'])
         <li class="pc-item pc-hasmenu {{ Request::routeIs('admin.settings.rbac.*') ? 'active pc-trigger' : '' }}">
           <a href="#!" class="pc-link">
             <span class="pc-micon">
@@ -197,15 +234,21 @@
             <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
+            @can('settings.rbac.view')
             <li class="pc-item {{ Request::routeIs('admin.settings.rbac.index') ? 'active' : '' }}">
               <a class="pc-link" href="{{ route('admin.settings.rbac.index') }}">RBAC</a>
             </li>
+            @endcan
+            @can('settings.user.view')
             <li class="pc-item {{ Request::routeIs('admin.settings.user.index') ? 'active' : '' }}">
               <a class="pc-link" href="{{ route('admin.settings.user.index') }}">Pengguna</a>
             </li>
+            @endcan
           </ul>
         </li>
+        @endcanany
 
+        {{--
         <li class="pc-item pc-caption">
           <label>Other</label>
           <svg class="pc-icon">
@@ -239,6 +282,7 @@
             </li>
           </ul>
         </li>
+        --}}
       </ul>
     </div>
   </div>

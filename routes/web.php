@@ -30,9 +30,7 @@ Route::post('/logout', [LoginController::class, 'logout'])
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Dashboard Utama
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
     /**
      * Modul Akademik
@@ -195,6 +193,16 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
                 Route::get('/{enrollment}', 'show')->name('show')->middleware('permission:spmb.daftarulang.view');
                 Route::post('/{enrollment}/finalize', 'finalize')->name('finalize')->middleware('permission:spmb.daftarulang.finalisasi');
                 Route::get('/{enrollment}/surat', 'downloadLetter')->name('surat')->middleware('permission:spmb.daftarulang.view');
+            });
+        });
+
+        // Modul Laporan (Reporting)
+        Route::prefix('laporan')->name('laporan.')->group(function () {
+            Route::controller(\App\Http\Controllers\Admin\Spmb\ReportController::class)->group(function () {
+                Route::get('/', 'index')->name('index')->middleware('permission:spmb.laporan.view');
+                Route::get('/summary', 'summary')->name('summary')->middleware('permission:spmb.laporan.view');
+                Route::get('/export/excel', 'exportExcel')->name('export.excel')->middleware('permission:spmb.laporan.export');
+                Route::get('/export/pdf', 'exportPdf')->name('export.pdf')->middleware('permission:spmb.laporan.export');
             });
         });
 
