@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\Akademik\AcademicYearController;
 use App\Http\Controllers\Admin\Settings\SchoolIdentityController;
 use App\Http\Controllers\Applicant\Auth\ApplicantAuthController;
 use App\Http\Controllers\Applicant\PublicTrackController;
+use App\Http\Controllers\Applicant\ApplicantDashboardController;
+use App\Http\Controllers\Applicant\ApplicantEnrollmentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,10 +37,31 @@ Route::post('/portal/keluar', [ApplicantAuthController::class, 'logout'])
 
 // === PORTAL APPLICANT (Auth + Role Applicant) ===
 Route::prefix('portal')->name('portal.')->middleware(['auth', 'applicant'])->group(function () {
-    Route::get('/dashboard', function () {
-        return 'Portal Dashboard Placeholder';
-    })->name('dashboard');
-    // Sprint 3, 4, 5, 6, 7 akan ditambahkan di sini
+    Route::get('/dashboard', [ApplicantDashboardController::class, 'index'])->name('dashboard');
+    
+    Route::prefix('pendaftaran')->name('enrollment.')->controller(ApplicantEnrollmentController::class)->group(function () {
+        Route::get('/pilih-jalur', 'selectTrack')->name('select-track');
+        Route::get('/jalur-lain', 'reapplySelect')->name('reapply-select');
+        Route::post('/jalur-lain/{trackId}', 'reapplySubmit')->name('reapply-submit');
+        Route::get('/daftar/{trackId}', 'showForm')->name('form');
+        Route::post('/daftar/{trackId}/draft', 'saveDraft')->name('draft');
+        Route::post('/daftar/{trackId}/submit', 'submit')->name('submit');
+        Route::get('/{enrollmentId}', 'show')->name('show');
+    });
+
+    Route::prefix('pembayaran')->name('payment.')->group(function () {
+        Route::get('/{enrollmentId}', function () { return 'Show Payment'; })->name('show');
+        Route::post('/{enrollmentId}/upload', function () { return 'Upload Proof'; })->name('upload');
+    });
+
+    Route::prefix('daftar-ulang')->name('re-registration.')->group(function () {
+        Route::get('/{enrollmentId}', function () { return 'Show Re-registration'; })->name('show');
+        Route::post('/{enrollmentId}/upload', function () { return 'Upload Re-registration Proof'; })->name('upload');
+        Route::post('/{enrollmentId}/finalisasi', function () { return 'Finalize'; })->name('finalize');
+    });
+
+    Route::get('/surat/{enrollmentId}', function () { return 'Download Letter'; })->name('letter.download');
+    Route::get('/riwayat', function () { return 'History'; })->name('history.index');
 });
 
 // === RUTE AUTENTIKASI ADMIN ===
