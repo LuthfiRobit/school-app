@@ -11,4 +11,9 @@ interface SpmbConfigurationRepositoryInterface extends EloquentRepositoryInterfa
      * Get configuration by academic year ID.
      */
     public function findByAcademicYear(int $academicYearId): ?Model;
+
+    /**
+     * Get the active SPMB configuration.
+     */
+    public function getActiveConfiguration(): ?Model;
 }

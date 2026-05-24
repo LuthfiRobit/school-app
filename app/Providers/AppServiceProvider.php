@@ -87,6 +87,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Interfaces\DashboardRepositoryInterface::class,
             \App\Repositories\DashboardRepository::class
         );
+        $this->app->bind(
+            \App\Repositories\Interfaces\BankAccountRepositoryInterface::class,
+            \App\Repositories\BankAccountRepository::class
+        );
     }
 
     /**

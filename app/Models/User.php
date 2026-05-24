@@ -64,4 +64,12 @@ class User extends Authenticatable
         // Cek apakah ada role yang memiliki scope yang dicari
         return $userRoles->whereIn('scope', $scopes)->isNotEmpty();
     }
+
+    /**
+     * Get the applicant profile associated with the user.
+     */
+    public function applicant(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Applicant::class, 'user_id');
+    }
 }

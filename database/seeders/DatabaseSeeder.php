@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             AcademicYearSeeder::class,
             SchoolIdentitySeeder::class,
             RoleSeeder::class,
+            BankAccountSeeder::class,
             MasterTrackTypeSeeder::class,
             MasterAssessmentTypeSeeder::class,
             MasterFeeComponentSeeder::class,

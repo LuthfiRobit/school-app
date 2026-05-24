@@ -11,4 +11,20 @@ class SpmbTrackRepository extends BaseRepository implements SpmbTrackRepositoryI
     {
         parent::__construct($model);
     }
+
+    /**
+     * Get active tracks with quota count and relations.
+     */
+    public function getActiveTracksWithQuota(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->model->where('status', 'active')
+            ->withCount(['enrollments' => function ($query) {
+                $query->whereNotIn('status', [
+                    \App\Enums\EnrollmentStatus::REJECTED,
+                    \App\Enums\EnrollmentStatus::DRAFT
+                ]);
+            }])
+            ->with(['trackType', 'spmbConfiguration.academicYear'])
+            ->get();
+    }
 }

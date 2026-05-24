@@ -20,4 +20,12 @@ class SpmbConfigurationRepository extends BaseRepository implements SpmbConfigur
     {
         return $this->model->where('academic_year_id', $academicYearId)->first();
     }
+
+    /**
+     * Get the active SPMB configuration.
+     */
+    public function getActiveConfiguration(): ?Model
+    {
+        return $this->model->where('status', 'active')->first();
+    }
 }

@@ -20,4 +20,12 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         return $this->model->with('roles')->get();
     }
+
+    /**
+     * Cek apakah username sudah digunakan.
+     */
+    public function usernameExists(string $username): bool
+    {
+        return $this->model->where('username', $username)->exists();
+    }
 }

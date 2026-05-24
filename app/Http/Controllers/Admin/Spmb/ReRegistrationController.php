@@ -3,26 +3,36 @@
 namespace App\Http\Controllers\Admin\Spmb;
 
 use App\Http\Controllers\Controller;
-use App\Models\ApplicantEnrollment;
 use App\Enums\EnrollmentStatus;
 use App\Services\StateMachineService;
 use App\Services\PdfGeneratorService;
+use App\Repositories\Interfaces\AcademicYearRepositoryInterface;
+use App\Repositories\Interfaces\SpmbTrackRepositoryInterface;
+use App\Repositories\Interfaces\ApplicantEnrollmentRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ReRegistrationController extends Controller
 {
     public function __construct(
         protected StateMachineService $stateMachineService,
-        protected PdfGeneratorService $pdfGeneratorService
+        protected PdfGeneratorService $pdfGeneratorService,
+        protected AcademicYearRepositoryInterface $academicYearRepo,
+        protected SpmbTrackRepositoryInterface $spmbTrackRepo,
+        protected ApplicantEnrollmentRepositoryInterface $applicantEnrollmentRepo
     ) {}
 
-    public function index()
+    /**
+     * Tampilkan halaman utama daftar ulang.
+     */
+    public function index(): View
     {
-        $academicYears = \App\Models\AcademicYear::all();
-        $tracks = \App\Models\SpmbTrack::with(['trackType', 'spmbConfiguration.academicYear'])->get();
+        $academicYears = $this->academicYearRepo->all();
+        $tracks = $this->spmbTrackRepo->all(['*'], ['trackType', 'spmbConfiguration.academicYear']);
         
         $statuses = [
             EnrollmentStatus::PASSED,
@@ -34,34 +44,12 @@ class ReRegistrationController extends Controller
         return view('admin.spmb.daftar_ulang.index', compact('academicYears', 'tracks', 'statuses'));
     }
 
-    public function getData(Request $request)
+    /**
+     * Ambil data untuk DataTables.
+     */
+    public function getData(Request $request): JsonResponse
     {
-        $query = ApplicantEnrollment::with(['applicant', 'spmbTrack.trackType', 'spmbTrack.spmbConfiguration.academicYear', 'invoices' => function($q) {
-                $q->where('category', 're_registration');
-            }])
-            ->whereIn('status', [
-                EnrollmentStatus::PASSED,
-                EnrollmentStatus::WAITING_PAYMENT_FINAL,
-                EnrollmentStatus::SETTLED,
-                EnrollmentStatus::PERMANENT_STUDENT
-            ]);
-
-        // Filter academic_year_id
-        if ($request->filled('academic_year_id')) {
-            $query->whereHas('spmbTrack.spmbConfiguration', function ($q) use ($request) {
-                $q->where('academic_year_id', $request->academic_year_id);
-            });
-        }
-
-        // Filter spmb_track_id
-        if ($request->filled('spmb_track_id')) {
-            $query->where('spmb_track_id', $request->spmb_track_id);
-        }
-
-        // Filter status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
+        $query = $this->applicantEnrollmentRepo->getReRegistrationQuery($request->all());
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -108,9 +96,12 @@ class ReRegistrationController extends Controller
             ->make(true);
     }
 
-    public function show($id)
+    /**
+     * Tampilkan detail pendaftar.
+     */
+    public function show(int $id): JsonResponse
     {
-        $enrollment = ApplicantEnrollment::with([
+        $enrollment = $this->applicantEnrollmentRepo->find($id, ['*'], [
             'applicant',
             'spmbTrack',
             'invoices' => function($q) {
@@ -119,16 +110,21 @@ class ReRegistrationController extends Controller
             'invoices.payments' => function($q) {
                 $q->where('status', 'confirmed');
             }
-        ])->findOrFail($id);
+        ]);
 
         return response()->json($enrollment);
     }
 
-    public function finalize(Request $request, $id)
+    /**
+     * Finalisasi daftar ulang menjadi Siswa Tetap.
+     */
+    public function finalize(Request $request, int $id): JsonResponse
     {
-        $enrollment = ApplicantEnrollment::with(['invoices' => function($q) {
-            $q->where('category', 're_registration');
-        }])->findOrFail($id);
+        $enrollment = $this->applicantEnrollmentRepo->find($id, ['*'], [
+            'invoices' => function($q) {
+                $q->where('category', 're_registration');
+            }
+        ]);
 
         // Validasi: Finalisasi hanya diizinkan dari status SETTLED (Lunas Daftar Ulang)
         // Sesuai State Machine: SETTLED → PERMANENT_STUDENT
@@ -176,9 +172,12 @@ class ReRegistrationController extends Controller
         }
     }
 
-    public function downloadLetter($id)
+    /**
+     * Unduh surat pernyataan.
+     */
+    public function downloadLetter(int $id): Response
     {
-        $enrollment = ApplicantEnrollment::with(['applicant', 'spmbTrack.trackType'])->findOrFail($id);
+        $enrollment = $this->applicantEnrollmentRepo->find($id, ['*'], ['applicant', 'spmbTrack.trackType']);
 
         if ($enrollment->status !== EnrollmentStatus::PERMANENT_STUDENT) {
             abort(403, 'Siswa belum berstatus Siswa Tetap.');

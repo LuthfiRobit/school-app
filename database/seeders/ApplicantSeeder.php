@@ -14,7 +14,7 @@ class ApplicantSeeder extends Seeder
     public function run(): void
     {
         $now = now();
-        $calonSiswaRole = DB::table('roles')->where('name', 'Calon Siswa')->first();
+        $applicantRole = DB::table('roles')->where('name', 'Applicant')->first();
 
         // 1. Applicant 1 (linked to a User account)
         $userId1 = DB::table('users')->insertGetId([
@@ -27,9 +27,9 @@ class ApplicantSeeder extends Seeder
             'updated_at' => $now,
         ]);
 
-        if ($calonSiswaRole) {
+        if ($applicantRole) {
             DB::table('model_has_roles')->insert([
-                'role_id' => $calonSiswaRole->id,
+                'role_id' => $applicantRole->id,
                 'model_type' => 'App\Models\User',
                 'model_id' => $userId1,
             ]);
@@ -66,9 +66,9 @@ class ApplicantSeeder extends Seeder
             'updated_at' => $now,
         ]);
 
-        if ($calonSiswaRole) {
+        if ($applicantRole) {
             DB::table('model_has_roles')->insert([
-                'role_id' => $calonSiswaRole->id,
+                'role_id' => $applicantRole->id,
                 'model_type' => 'App\Models\User',
                 'model_id' => $userId2,
             ]);

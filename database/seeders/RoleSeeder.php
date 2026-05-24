@@ -55,7 +55,7 @@ class RoleSeeder extends Seeder
             ['name' => 'Siswa Reguler', 'scope' => RoleScope::SISWA->value, 'guard_name' => 'web'],
             ['name' => 'Pengurus OSIS', 'scope' => RoleScope::SISWA->value, 'guard_name' => 'web'],
             ['name' => 'Ketua Kelas', 'scope' => RoleScope::SISWA->value, 'guard_name' => 'web'],
-            ['name' => 'Calon Siswa', 'scope' => RoleScope::SISWA->value, 'guard_name' => 'web'],
+            ['name' => 'Applicant', 'scope' => RoleScope::SISWA->value, 'guard_name' => 'web'],
         ];
 
         // Insert atau Update Roles

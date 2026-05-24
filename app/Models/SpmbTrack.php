@@ -90,6 +90,14 @@ class SpmbTrack extends Model
     }
 
     /**
+     * Get the enrollments associated with the track.
+     */
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(ApplicantEnrollment::class, 'spmb_track_id');
+    }
+
+    /**
      * Relationship to the user who created the record.
      */
     public function creator(): BelongsTo

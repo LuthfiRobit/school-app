@@ -11,4 +11,9 @@ interface UserRepositoryInterface extends EloquentRepositoryInterface
      * Ambil user beserta role-nya.
      */
     public function getAllWithRoles(): Collection;
+
+    /**
+     * Cek apakah username sudah digunakan.
+     */
+    public function usernameExists(string $username): bool;
 }

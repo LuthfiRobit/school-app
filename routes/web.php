@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Akademik\AcademicYearController;
 use App\Http\Controllers\Admin\Settings\SchoolIdentityController;
+use App\Http\Controllers\Applicant\Auth\ApplicantAuthController;
+use App\Http\Controllers\Applicant\PublicTrackController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -11,12 +13,35 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// --- Rute Landing ---
-Route::get('/', function () {
-    return redirect()->route('login');
-})->name('home');
+// === HALAMAN PUBLIK ===
+Route::get('/', [PublicTrackController::class, 'index'])->name('public.landing');
 
-// --- Rute Autentikasi ---
+// === AUTH APPLICANT (Guest Only) ===
+Route::middleware('guest')->group(function () {
+    Route::get('/daftar', [ApplicantAuthController::class, 'showRegister'])->name('applicant.register');
+    Route::post('/daftar', [ApplicantAuthController::class, 'register'])->name('applicant.register.submit');
+    Route::get('/masuk', [ApplicantAuthController::class, 'showLogin'])->name('applicant.login');
+    Route::post('/masuk', [ApplicantAuthController::class, 'login'])->name('applicant.login.submit');
+    Route::get('/lupa-password', [ApplicantAuthController::class, 'showForgotPassword'])->name('applicant.password.request');
+    Route::post('/lupa-password', [ApplicantAuthController::class, 'sendResetLink'])->name('applicant.password.email');
+    Route::get('/reset-password/{token}', [ApplicantAuthController::class, 'showResetForm'])->name('applicant.password.reset');
+    Route::post('/reset-password', [ApplicantAuthController::class, 'resetPassword'])->name('applicant.password.update');
+});
+
+// Logout tidak perlu guest middleware
+Route::post('/portal/keluar', [ApplicantAuthController::class, 'logout'])
+    ->name('applicant.logout')
+    ->middleware('auth');
+
+// === PORTAL APPLICANT (Auth + Role Applicant) ===
+Route::prefix('portal')->name('portal.')->middleware(['auth', 'applicant'])->group(function () {
+    Route::get('/dashboard', function () {
+        return 'Portal Dashboard Placeholder';
+    })->name('dashboard');
+    // Sprint 3, 4, 5, 6, 7 akan ditambahkan di sini
+});
+
+// === RUTE AUTENTIKASI ADMIN ===
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
