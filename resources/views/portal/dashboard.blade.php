@@ -334,7 +334,7 @@
                       @foreach($enrollment->assessments as $assessment)
                         <li class="col-sm-6 mb-1 small">
                           <i class="fa-solid fa-circle-chevron-right me-1 text-primary"></i> 
-                          <strong>{{ $assessment->assessmentType->name }}</strong>: 
+                          <strong>{{ $assessment->trackAssessment->assessmentType->name ?? '' }}</strong>: 
                           <span class="badge {{ $assessment->score ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' }}">
                             {{ $assessment->score ? 'Nilai: ' . $assessment->score : 'Belum Dinilai' }}
                           </span>

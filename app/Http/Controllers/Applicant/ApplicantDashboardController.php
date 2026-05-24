@@ -45,7 +45,7 @@ class ApplicantDashboardController extends Controller
                     'invoices.payments' => function ($q) {
                         $q->orderBy('created_at', 'desc');
                     },
-                    'assessments.assessmentType'
+                    'assessments.trackAssessment.assessmentType'
                 ]);
 
                 // Fetch status logs for this enrollment
