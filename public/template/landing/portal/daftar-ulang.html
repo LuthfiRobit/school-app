@@ -1,0 +1,1145 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daftar Ulang & Cicilan - Portal SPMB Tunas Luhur</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/img/logo/logo-sma.png">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/typography.css">
+  <link rel="stylesheet" href="../assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/index.css">
+  <link rel="stylesheet" href="../assets/css/portal.css">
+
+  <!-- AOS (Animate on Scroll) CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    /* Styling enhancements specific to daftar-ulang.html */
+    .upload-dropzone {
+      border: 2px dashed var(--color-divider);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      background-color: #f8fafc;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: var(--color-primary-400);
+      background-color: var(--color-primary-50);
+    }
+    .upload-icon-wrapper {
+      width: 48px;
+      height: 48px;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: var(--shadow-sm);
+      color: var(--color-primary-600);
+      font-size: 1.25rem;
+      transition: all 0.3s ease;
+    }
+    .upload-dropzone:hover .upload-icon-wrapper {
+      transform: scale(1.1);
+      color: var(--color-primary-700);
+    }
+    .copy-toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--color-primary-900);
+      color: white;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .glass-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 74, 111, 0.55);
+      backdrop-filter: blur(6px);
+      z-index: 1500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .glass-modal-content {
+      background: white;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: var(--shadow-xl);
+      max-width: 550px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .file-preview-card {
+      border: 1px solid var(--color-divider);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .btn-pulse-success {
+      background: linear-gradient(135deg, var(--color-success), #1e7e34);
+      color: white !important;
+      box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+      animation: pulse-success 1.6s infinite;
+      font-weight: bold;
+      letter-spacing: 0.3px;
+    }
+    @keyframes pulse-success {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+      }
+      70% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+      }
+    }
+    .receipt-mock {
+      background-color: #fcfcfc;
+      border: 1px solid #e2e8f0;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+      color: #333;
+    }
+    .niss-card {
+      background: radial-gradient(circle at 100% 0%, var(--color-primary-50) 0%, transparent 60%);
+      border: 1px solid var(--color-primary-100);
+      border-radius: var(--radius-md);
+    }
+  </style>
+</head>
+
+<body class="portal-bg" x-data="reRegApp()">
+
+  <!-- TOP NAVBAR -->
+  <header class="portal-navbar">
+    <div class="container-xxl d-flex align-items-center justify-content-between h-100">
+
+      <!-- Brand Logo -->
+      <a href="dashboard.html" class="portal-navbar-brand">
+        <img src="../assets/img/logo/logo-sma.png" alt="SPMB Tunas Luhur Logo">
+        <div>
+          <div class="portal-brand-title">SPMB Tunas Luhur</div>
+          <div class="portal-brand-tagline">Portal Calon Siswa</div>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="portal-nav-links d-none d-md-flex align-items-center" aria-label="Navigasi portal">
+        <a href="dashboard.html"><i class="fa-solid fa-chart-line me-1"></i> Dashboard</a>
+        <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left me-1"></i> Riwayat</a>
+        <a href="https://wa.me/6281234567890" target="_blank"><i class="fa-solid fa-headset me-1"></i> Bantuan</a>
+      </nav>
+
+      <!-- Profile Dropdown (Right) -->
+      <div class="portal-navbar-profile position-relative" x-data="{ openProfile: false }"
+        @click.outside="openProfile = false">
+        <button class="portal-profile-trigger d-flex align-items-center" @click="openProfile = !openProfile"
+          aria-haspopup="true" :aria-expanded="openProfile">
+          <div class="portal-avatar">AS</div>
+          <span class="portal-username d-none d-sm-inline">Ahmad Syarif</span>
+          <i class="fa-solid fa-chevron-down ms-2 fs-xs"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div class="portal-dropdown-menu" x-show="openProfile" x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 transform scale-95"
+          x-transition:enter-end="opacity-100 transform scale-100" style="display: none;">
+          <div class="dropdown-header border-bottom pb-2 mb-1">
+            <h6 class="mb-0 fw-bold text-primary-900">Ahmad Syarif</h6>
+            <small class="text-muted">No. Reg: Reg-202604001</small>
+          </div>
+          <a href="#" class="portal-dropdown-item"><i class="fa-regular fa-user me-2"></i> Profil Saya</a>
+          <a href="#" class="portal-dropdown-item"><i class="fa-solid fa-gear me-2"></i> Pengaturan</a>
+          <div class="dropdown-divider"></div>
+          <a href="masuk.html" class="portal-dropdown-item text-error"><i
+              class="fa-solid fa-right-from-bracket me-2"></i> Keluar</a>
+        </div>
+      </div>
+
+      <!-- Hamburger Menu Toggle (Mobile) -->
+      <button class="portal-nav-toggle d-md-none" id="portalNavToggle" @click="mobileMenuOpen = !mobileMenuOpen"
+        aria-label="Buka navigasi mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Navigation -->
+  <div class="portal-mobile-drawer d-md-none" :class="{ 'open': mobileMenuOpen }" style="display: none;"
+    x-show="mobileMenuOpen" @click.outside="mobileMenuOpen = false" x-transition>
+    <nav class="d-flex flex-column p-4" aria-label="Navigasi mobile portal">
+      <a href="dashboard.html" class="py-3 border-bottom"><i
+          class="fa-solid fa-chart-line me-2 text-primary-600"></i> Dashboard</a>
+      <a href="riwayat.html" class="py-3 border-bottom"><i class="fa-solid fa-clock-rotate-left me-2 text-primary-600"></i> Riwayat
+        Pendaftaran</a>
+      <a href="https://wa.me/6281234567890" target="_blank" class="py-3 border-bottom"><i
+          class="fa-solid fa-headset me-2 text-primary-600"></i> Hubungi Bantuan</a>
+      <a href="masuk.html" class="py-3 text-error"><i class="fa-solid fa-right-from-bracket me-2"></i> Keluar Akun</a>
+    </nav>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container-xxl py-4 py-lg-5 portal-content">
+
+    <!-- Page Header & Breadcrumb -->
+    <div class="mb-4" data-aos="fade-down" data-aos-duration="600">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-2 small">
+          <li class="breadcrumb-item"><a href="dashboard.html" class="text-primary-600 text-decoration-none">Dashboard</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Daftar Ulang & Cicilan</li>
+        </ol>
+      </nav>
+      <div class="d-flex align-items-center gap-3">
+        <div class="rounded-circle bg-primary-100 text-primary-700 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+          <i class="fa-solid fa-file-invoice-dollar fs-5"></i>
+        </div>
+        <div>
+          <h4 class="fw-bold text-primary-900 mb-0">Daftar Ulang & Cicilan Biaya</h4>
+          <p class="text-muted small mb-0">Selesaikan pelunasan administrasi masuk untuk memperoleh Nomor Induk Siswa Tetap</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. NOT ELIGIBLE BANNER (IF NOT PASSED / NOT RE_REGISTRATION / NOT PERMANENT) -->
+    <div class="card p-4 border-start-primary shadow-sm mb-4" x-show="!['passed', 're_registration', 'permanent'].includes(status)" x-transition data-aos="fade-up">
+      <div class="d-flex flex-column align-items-center text-center py-4">
+        <div class="rounded-circle bg-primary-50 text-primary d-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px;">
+          <i class="fa-solid fa-triangle-exclamation fs-1"></i>
+        </div>
+        <h5 class="fw-bold text-primary-900 mb-2">Akses Terkunci</h5>
+        <p class="text-muted small mb-4" style="max-width: 500px;">
+          Mohon maaf, halaman daftar ulang & cicilan biaya administrasi ini hanya diperuntukkan bagi calon pendaftar yang telah dinyatakan **LULUS Ujian Seleksi**. Silakan pantau berkas pendaftaran Anda di dashboard.
+        </p>
+        <a href="dashboard.html" class="btn btn-primary px-4"><i class="fa-solid fa-chevron-left me-2"></i> Kembali ke Dashboard</a>
+      </div>
+    </div>
+
+    <!-- ACTIVE WORKSPACE GRID (IF ELIGIBLE) -->
+    <div class="row g-4" x-show="['passed', 're_registration', 'permanent'].includes(status)">
+
+      <!-- FULL WIDTH STATUS & FINANCIAL PROGRESS CARD -->
+      <div class="col-12" data-aos="fade-up" data-aos-duration="600">
+        <div class="card shadow-sm border-0 border-top-primary">
+          <div class="card-body p-4">
+            <div class="row align-items-center g-4">
+              <!-- Left: Progress figures -->
+              <div class="col-md-5">
+                <span class="text-muted small text-uppercase tracking-wider fw-bold mb-1 d-block"><i class="fa-solid fa-chart-pie me-2 text-primary-600"></i> Progress Pelunasan Administrasi</span>
+                <h3 class="fw-bold text-primary-900 mb-0 d-flex align-items-baseline gap-2">
+                  <span x-text="formatCurrency(totalPaid)">Rp 1.500.000</span>
+                  <span class="text-muted fs-xs fw-normal">dari total</span>
+                  <span class="text-secondary-600 fs-md fw-bold" x-text="formatCurrency(totalFee)">Rp 4.500.000</span>
+                </h3>
+                <div class="d-flex align-items-center gap-2 mt-2">
+                  <span class="badge px-2.5 py-1 text-white" :class="isPaidOff ? 'bg-success' : 'bg-warning text-dark'">
+                    <i class="fa-solid" :class="isPaidOff ? 'fa-check-circle' : 'fa-spinner fa-spin-pulse'"></i>
+                    <span x-text="isPaidOff ? 'LUNAS' : 'Belum Lunas'"></span>
+                  </span>
+                  <span class="text-muted small" x-show="!isPaidOff">Sisa tagihan yang harus dibayar: <strong class="text-error" x-text="formatCurrency(totalFee - totalPaid)">Rp 3.000.000</strong></span>
+                  <span class="text-muted small" x-show="isPaidOff">Pembayaran selesai! Lakukan <strong>Finalisasi Daftar Ulang</strong> di kolom kanan.</span>
+                </div>
+              </div>
+
+              <!-- Right: Progress bar -->
+              <div class="col-md-7">
+                <div class="d-flex justify-content-between mb-2 fs-xs">
+                  <span class="text-muted">Persentase Pelunasan:</span>
+                  <strong class="text-primary-900" x-text="paidPercentage + '%'">33%</strong>
+                </div>
+                <div class="progress" style="height: 18px; border-radius: 9px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                  <div class="progress-bar bg-success progress-bar-striped progress-bar-animated transition-all" 
+                       role="progressbar" 
+                       :style="'width: ' + paidPercentage + '%'" 
+                       :aria-valuenow="paidPercentage" 
+                       aria-valuemin="0" 
+                       aria-valuemax="100">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEFT COLUMN: PAYMENT UPLOAD & HISTORY -->
+      <div class="col-lg-8" data-aos="fade-right" data-aos-duration="600" data-aos-delay="100">
+        
+        <!-- BILLING INSTRUCTIONS & DEADLINE BANNER -->
+        <div class="alert alert-warning border-0 shadow-sm d-flex align-items-start gap-3 p-3 mb-4 rounded-xl" x-show="!isFinalized && !isPaidOff">
+          <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+            <i class="fa-solid fa-circle-exclamation fs-5"></i>
+          </div>
+          <div>
+            <strong class="text-warning d-block mb-0.5">Batas Pelunasan Administrasi</strong>
+            <span class="text-muted small">Pelunasan atau pembayaran cicilan awal daftar ulang paling lambat diserahkan pada tanggal <strong>30 Juni 2026</strong>. Siswa yang tidak melakukan cicilan awal hingga batas tersebut dianggap mengundurkan diri.</span>
+          </div>
+        </div>
+
+        <div class="alert alert-success border-0 shadow-sm d-flex align-items-start gap-3 p-3 mb-4 rounded-xl" x-show="isPaidOff && !isFinalized">
+          <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+            <i class="fa-solid fa-medal fs-5"></i>
+          </div>
+          <div>
+            <strong class="text-success d-block mb-0.5">Tagihan Selesai Terbayar!</strong>
+            <span class="text-muted small">Administrasi daftar ulang Anda telah Lunas 100%. Mohon segera tandatangani pakta integritas dan klik tombol <strong>Finalisasi Daftar Ulang</strong> di sidebar kanan untuk mengamankan kursi Anda.</span>
+          </div>
+        </div>
+
+        <div class="alert alert-primary border-0 shadow-sm d-flex align-items-start gap-3 p-3 mb-4 rounded-xl" x-show="isFinalized">
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+            <i class="fa-solid fa-graduation-cap fs-5"></i>
+          </div>
+          <div>
+            <strong class="text-primary-900 d-block mb-0.5">Selamat Datang Siswa Baru Tetap!</strong>
+            <span class="text-muted small">Anda telah resmi terdaftar sebagai Siswa Tetap SMA Tunas Luhur TA 2026/2027. Surat Keputusan Kelulusan & Surat Pernyataan resmi dapat diunduh di sebelah kanan.</span>
+          </div>
+        </div>
+
+        <!-- INSTALLMENT UPLOAD FORM (SHOWN ONLY IF NOT FULLY PAID) -->
+        <div class="card mb-4 shadow-sm" x-show="!isPaidOff" x-transition>
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-900 mb-3"><i class="fa-solid fa-money-bill-transfer me-2 text-primary-600"></i> Setor Pembayaran Cicilan Baru</h6>
+            
+            <p class="text-muted small mb-4">
+              Anda dapat mencicil biaya daftar ulang di atas secara fleksibel (minimal Rp 500.000 sekali transaksi). Silakan transfer ke rekening resmi institusi dan unggah bukti transfernya di bawah.
+            </p>
+
+            <form @submit.prevent="submitInstallment()">
+              <div class="row g-3 mb-4">
+                <!-- Nominal input -->
+                <div class="col-md-6">
+                  <label class="form-label" for="nominalCicilan">Nominal Setoran Cicilan (Rp):</label>
+                  <div class="input-group">
+                    <span class="input-group-text fw-bold text-primary-900">Rp</span>
+                    <input type="text" id="nominalCicilan" class="form-control fw-bold text-primary-900" 
+                           placeholder="500.000" x-model="inputAmountRaw" @input="formatInputAmount($event)" required>
+                  </div>
+                  <small class="text-muted fs-xs">Contoh minimal setor cicilan: Rp 500.000</small>
+                </div>
+                
+                <!-- Description input -->
+                <div class="col-md-6">
+                  <label class="form-label" for="keteranganCicilan">Keterangan / Tujuan Setor:</label>
+                  <input type="text" id="keteranganCicilan" class="form-control" 
+                         placeholder="Contoh: Pembayaran Cicilan Ke-2" x-model="inputNote" required>
+                </div>
+              </div>
+
+              <!-- Drag & Drop Zone -->
+              <div class="upload-dropzone mb-3" 
+                   :class="{ 'dragover': dragOver }"
+                   @dragover.prevent="dragOver = true"
+                   @dragleave.prevent="dragOver = false"
+                   @drop.prevent="handleDrop($event)"
+                   @click="fileInputTrigger()">
+                <input type="file" x-ref="fileInput" class="d-none" accept=".jpg,.jpeg,.png,.pdf" @change="handleFileSelect($event)">
+                
+                <div class="upload-icon-wrapper">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <h6 class="fw-bold text-primary-900 mb-1">Tarik dan letakkan berkas bukti transfer di sini</h6>
+                <p class="text-muted small mb-0">atau klik untuk mencari berkas di folder Anda</p>
+              </div>
+
+              <!-- Selected file info card -->
+              <div class="file-preview-card mb-4" x-show="selectedFile" x-transition style="display: none;">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="rounded bg-light text-primary-600 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                    <i class="fa-solid" :class="selectedFile ? (selectedFile.type === 'application/pdf' ? 'fa-file-pdf text-danger' : 'fa-file-image text-primary') : 'fa-file'"></i>
+                  </div>
+                  <div style="max-width: 250px;">
+                    <span class="fw-bold text-primary-900 small d-block text-truncate" x-text="selectedFile ? selectedFile.name : ''"></span>
+                    <span class="text-muted fs-xs" x-text="selectedFile ? formatBytes(selectedFile.size) : ''"></span>
+                  </div>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-sm btn-outline-danger p-1 rounded-circle" @click.stop="removeSelectedFile()" aria-label="Hapus file">
+                    <i class="fa-solid fa-xmark px-1"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Image preview block -->
+              <div class="mb-4 text-center p-3 border rounded bg-light" x-show="imagePreviewUrl" x-transition style="display: none;">
+                <span class="text-muted small d-block mb-2">Pratinjau Resi Cicilan:</span>
+                <img :src="imagePreviewUrl" alt="Pratinjau Resi Cicilan" class="img-fluid rounded shadow-xs" style="max-height: 200px;">
+              </div>
+
+              <!-- File error alert -->
+              <div class="alert alert-danger py-2 px-3 small rounded mb-4" x-show="fileError" x-transition style="display: none;">
+                <i class="fa-solid fa-circle-exclamation me-2"></i> <span x-text="fileError"></span>
+              </div>
+
+              <!-- Simulating progress bar -->
+              <div class="mb-4" x-show="isUploading" x-transition style="display: none;">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-muted small">Mengunggah bukti transaksi...</span>
+                  <span class="fw-bold text-primary-900 small" x-text="uploadProgress + '%'"></span>
+                </div>
+                <div class="progress" style="height: 8px; border-radius: 4px;">
+                  <div class="progress-bar bg-success transition-all" role="progressbar" :style="'width: ' + uploadProgress + '%'"></div>
+                </div>
+              </div>
+
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary w-100 py-2.5 d-flex align-items-center justify-content-center gap-2"
+                :disabled="!selectedFile || isUploading || !inputAmountRaw">
+                <i class="fa-solid fa-paper-plane" x-show="!isUploading"></i>
+                <span class="spinner-border spinner-border-sm" role="status" x-show="isUploading" style="display: none;"></span>
+                <span>Kirim Bukti Cicilan</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- UPLOAD DISABLED CARD (SHOWN ONLY IF LUNAS) -->
+        <div class="card mb-4 shadow-sm border-start-success" x-show="isPaidOff" x-transition style="display: none;">
+          <div class="card-body p-4 text-center py-4">
+            <div class="rounded-circle bg-success-light text-success d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px;">
+              <i class="fa-solid fa-check-double fs-4"></i>
+            </div>
+            <h5 class="fw-bold text-primary-900 mb-1">Administrasi Anda Telah Lunas</h5>
+            <p class="text-muted small mb-0">Seluruh biaya daftar ulang pendaftaran sebesar Rp 4.500.000 telah lunas terverifikasi di sistem keuangan kami. Formulir setoran cicilan ditutup.</p>
+          </div>
+        </div>
+
+        <!-- LIST OF HISTORY INSTALLMENTS -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-900 mb-3"><i class="fa-solid fa-receipt me-2 text-primary-600"></i> Riwayat Pembayaran Cicilan</h6>
+            
+            <div class="table-responsive">
+              <table class="table table-hover table-borderless align-middle small mb-0">
+                <thead>
+                  <tr class="border-bottom text-muted">
+                    <th>Cicilan Ke-</th>
+                    <th>Tanggal Setor</th>
+                    <th>Nominal</th>
+                    <th>Keterangan / Berkas</th>
+                    <th>Status</th>
+                    <th>Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="(item, index) in installments" :key="item.id">
+                    <tr class="border-bottom">
+                      <td class="fw-bold text-primary-900" x-text="'#' + (installments.length - index)"></td>
+                      <td class="text-muted" x-text="item.date"></td>
+                      <td class="fw-bold text-primary-900" x-text="formatCurrency(item.amount)"></td>
+                      <td>
+                        <div>
+                          <strong class="d-block text-primary-900" x-text="item.note"></strong>
+                          <span class="text-muted fs-xs"><i class="fa-solid fa-paperclip me-1"></i> <span x-text="item.file"></span></span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge px-2 py-1"
+                          :class="{
+                            'bg-warning text-dark': item.status === 'Pending',
+                            'bg-success': item.status === 'Confirmed',
+                            'bg-danger': item.status === 'Rejected'
+                          }" x-text="item.status">
+                        </span>
+                      </td>
+                      <td>
+                        <button class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded border fs-xs" @click="viewMockReceipt(item)" aria-label="Lihat detail kuitansi">
+                          <i class="fa-regular fa-eye me-1"></i> Lihat
+                        </button>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: FINANCIAL DETAILS & FINALIZATION -->
+      <div class="col-lg-4" data-aos="fade-left" data-aos-duration="600" data-aos-delay="150">
+
+        <!-- FINALIZATION WIDGET (PULSING IF PAID OFF) -->
+        <div class="card mb-4 shadow-sm border-0 border-start-success overflow-hidden">
+          <div class="bg-success text-white p-3 d-flex align-items-center gap-2" x-show="isPaidOff">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span class="fw-bold text-uppercase tracking-wider small">Siap Untuk Finalisasi</span>
+          </div>
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-900 mb-2"><i class="fa-solid fa-stamp me-2 text-primary-600"></i> Penguncian Data Siswa Tetap</h6>
+            
+            <p class="text-muted small leading-relaxed mb-4">
+              Setelah seluruh administrasi lunas, Anda wajib memfinalisasi pendaftaran Anda agar data terkirim ke Kementerian Pendidikan untuk penerbitan NISN resmi institusi.
+            </p>
+
+            <!-- Disabled message if not paid -->
+            <div class="p-3 bg-light rounded-md border border-secondary-subtle mb-4 text-center text-muted small" x-show="!isPaidOff">
+              <i class="fa-solid fa-lock mb-2 fs-4 text-muted"></i>
+              <p class="mb-0">Tombol finalisasi terkunci. Selesaikan sisa pelunasan sebesar <strong class="text-error" x-text="formatCurrency(totalFee - totalPaid)">Rp 3.000.000</strong> terlebih dahulu.</p>
+            </div>
+
+            <!-- Pulsing Active Finalize Button (If fully paid and not finalized) -->
+            <div class="d-grid mb-4" x-show="isPaidOff && !isFinalized" x-transition>
+              <button class="btn btn-pulse-success py-3 d-flex align-items-center justify-content-center gap-2" @click="showIntegrityModal = true">
+                <i class="fa-solid fa-stamp fs-5"></i>
+                <span>FINALISASI SEKARANG</span>
+              </button>
+            </div>
+
+            <!-- Already Finalized Banner -->
+            <div class="p-4 niss-card text-center mb-4" x-show="isFinalized" x-transition>
+              <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 48px; height: 48px;">
+                <i class="fa-solid fa-id-card fs-4"></i>
+              </div>
+              <span class="text-muted small d-block">Nomor Induk Siswa Sementara (NISS):</span>
+              <h4 class="fw-bold text-primary-900 tracking-wider mb-2">2627-010-092</h4>
+              <span class="badge bg-success small"><i class="fa-solid fa-circle-check me-1"></i> STATUS: SISWA TETAP</span>
+            </div>
+
+            <!-- Print permanent student certificates if finalized -->
+            <div class="d-grid gap-2" x-show="isFinalized" x-transition>
+              <a href="surat.html" class="btn btn-success text-white py-2 fw-bold">
+                <i class="fa-solid fa-file-arrow-down me-2"></i> Unduh Surat Pernyataan & SK
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- BREAKDOWN COMPONENTS OF RE-REGISTRATION FEE -->
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-800 text-uppercase tracking-wider mb-3"><i class="fa-solid fa-circle-info me-2 text-primary-600"></i> Rincian Komponen Biaya</h6>
+            
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered align-middle small mb-0">
+                <thead>
+                  <tr class="table-light fw-bold text-primary-900">
+                    <th>Komponen Administrasi</th>
+                    <th class="text-end" style="width: 120px;">Nominal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span class="fw-bold text-primary-900">Uang Pangkal Gedung</span>
+                      <small class="text-muted d-block">Sumbangan sarana & fasilitas belajar</small>
+                    </td>
+                    <td class="text-end fw-semibold text-primary-900">Rp 2.000.000</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="fw-bold text-primary-900">Seragam & Atribut Sekolah</span>
+                      <small class="text-muted d-block">Bahan 5 stel seragam & kelengkapan logo</small>
+                    </td>
+                    <td class="text-end fw-semibold text-primary-900">Rp 1.200.000</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="fw-bold text-primary-900">Uang Kegiatan Kesiswaan</span>
+                      <small class="text-muted d-block">Ekstrakurikuler & OSIS (1 Tahun)</small>
+                    </td>
+                    <td class="text-end fw-semibold text-primary-900">Rp 800.000</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="fw-bold text-primary-900">SPP Pembayaran Bulan Juli</span>
+                      <small class="text-muted d-block">SPP bulan pertama masuk sekolah</small>
+                    </td>
+                    <td class="text-end fw-semibold text-primary-900">Rp 500.000</td>
+                  </tr>
+                  <tr class="table-warning-light border-top">
+                    <td class="fw-bold text-primary-900 text-end">Total Biaya Daftar Ulang:</td>
+                    <td class="text-end fw-bold text-primary-900">Rp 4.500.000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- INTEGRITY MODAL FOR FINALIZATION (GLASSMORPHISM) -->
+  <div class="glass-modal-backdrop" x-show="showIntegrityModal" style="display: none;" @click.self="showIntegrityModal = false" x-transition>
+    <div class="glass-modal-content p-4" data-aos="scale-up" data-aos-duration="300">
+      <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+        <h6 class="fw-bold text-primary-900 mb-0"><i class="fa-solid fa-stamp me-2 text-primary-600"></i> Pakta Integritas & Finalisasi Siswa Baru</h6>
+        <button class="btn btn-sm btn-close" @click="showIntegrityModal = false" aria-label="Tutup modal"></button>
+      </div>
+
+      <div class="text-center py-3">
+        <div class="rounded-circle bg-primary-50 text-primary-600 d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px;">
+          <i class="fa-solid fa-shield-halved fs-3"></i>
+        </div>
+        <h5 class="fw-bold text-primary-900 mb-2">Penandatanganan Pakta Integritas</h5>
+        <p class="text-muted small px-3">Dengan menyetujui formulir di bawah ini, data calon pendaftar atas nama <strong>Ahmad Syarif</strong> akan dikunci permanen di sistem sekolah:</p>
+      </div>
+
+      <div class="p-3 bg-light rounded-md border mb-4">
+        <!-- Integrity Check 1 -->
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="integrity1" x-model="integrityChecked1">
+          <label class="form-check-input-label text-primary-900 small fw-semibold cursor-pointer" for="integrity1">
+            Saya menyatakan dengan sadar bahwa seluruh berkas fisik & digital yang diunggah dan diisi adalah data yang asli, absah, dan dapat dipertanggungjawabkan kebenarannya.
+          </label>
+        </div>
+
+        <!-- Integrity Check 2 -->
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="integrity2" x-model="integrityChecked2">
+          <label class="form-check-input-label text-primary-900 small fw-semibold cursor-pointer" for="integrity2">
+            Saya menyetujui seluruh aturan tata tertib kesiswaan, tata cara pemakaian seragam, dan jadwal kegiatan belajar mengajar resmi di SMA Tunas Luhur TA 2026/2027.
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary w-50" @click="showIntegrityModal = false">Batal</button>
+        <button class="btn btn-success w-50" 
+                :disabled="!integrityChecked1 || !integrityChecked2"
+                @click="finalizeReregistration()">
+          <i class="fa-solid fa-check me-2"></i> Ya, Finalisasi Sekarang
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW INSTALLMENT RECEIPT MODAL (GLASSMORPHISM) -->
+  <div class="glass-modal-backdrop" x-show="showMockModal" style="display: none;" @click.self="showMockModal = false" x-transition>
+    <div class="glass-modal-content p-4" data-aos="scale-up" data-aos-duration="300">
+      <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+        <h6 class="fw-bold text-primary-900 mb-0"><i class="fa-regular fa-image me-2 text-primary-600"></i> Pratinjau Kuitansi Cicilan</h6>
+        <button class="btn btn-sm btn-close" @click="showMockModal = false" aria-label="Tutup modal"></button>
+      </div>
+
+      <div class="receipt-mock mb-3 small" x-show="modalItem">
+        <div class="text-center mb-3">
+          <strong class="text-uppercase d-block" x-text="modalItem ? modalItem.bankName || 'BANK SYARIAH INDONESIA' : ''"></strong>
+          <span class="fs-xs text-muted">BUKTI TRANSFER DIGITAL DAFTAR ULANG SISWA</span>
+        </div>
+        <hr class="my-2" style="border-top: 1px dashed #cbd5e1;">
+        <div class="d-flex justify-content-between my-1">
+          <span>NO TRANSAKSI:</span>
+          <span x-text="modalItem ? modalItem.trxId || 'TRX-502816223' : ''"></span>
+        </div>
+        <div class="d-flex justify-content-between my-1">
+          <span>TANGGAL:</span>
+          <span x-text="modalItem ? modalItem.date || '20 Mei 2026' : ''"></span>
+        </div>
+        <div class="d-flex justify-content-between my-1">
+          <span>SISWA:</span>
+          <span>AHMAD SYARIF (REG-202604001)</span>
+        </div>
+        <div class="d-flex justify-content-between my-1">
+          <span>KETERANGAN:</span>
+          <span class="fw-bold" x-text="modalItem ? modalItem.note : ''"></span>
+        </div>
+        <hr class="my-2" style="border-top: 1px dashed #cbd5e1;">
+        <div class="d-flex justify-content-between my-1 fw-bold text-lg">
+          <span>NOMINAL SETOR:</span>
+          <span x-text="modalItem ? formatCurrency(modalItem.amount) : ''"></span>
+        </div>
+        <div class="d-flex justify-content-between my-1">
+          <span>STATUS:</span>
+          <span class="fw-bold" :class="modalItem && modalItem.status === 'Confirmed' ? 'text-success' : (modalItem && modalItem.status === 'Rejected' ? 'text-error' : 'text-warning')" x-text="modalItem ? modalItem.status.toUpperCase() : ''"></span>
+        </div>
+        <hr class="my-2" style="border-top: 1px dashed #cbd5e1;">
+        <div class="text-center fs-xs text-muted mt-2">
+          Terima kasih atas pelunasan bertahap yang Anda lakukan.<br>Simpan kuitansi digital ini dengan baik.
+        </div>
+      </div>
+
+      <div class="alert alert-secondary py-2 px-3 small border-0 mb-0 d-flex gap-2">
+        <i class="fa-solid fa-circle-info text-primary-600 mt-1 fs-5 flex-shrink-0"></i>
+        <span class="text-muted fs-xs">Pratinjau di atas disimulasikan dari berkas asli yang diunggah pendaftar (<strong><span x-text="modalItem ? modalItem.file : ''"></span></strong>) untuk memvalidasi nomor rekening dan kecocokan nominal.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST FEEDBACK -->
+  <div class="copy-toast" x-show="showToast" style="display: none;"
+    x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
+    x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2">
+    <i class="fa-solid fa-circle-check text-success"></i>
+    <span x-text="toastMessage">Teks disalin!</span>
+  </div>
+
+  <!-- CONFETTI EFFECT CONTAINER -->
+  <div class="confetti-container" x-show="showConfetti" style="display: none;">
+    <template x-for="i in 50">
+      <div class="confetti-piece"
+        :style="'left: ' + (Math.random() * 100) + '%; transform: rotate(' + (Math.random() * 360) + 'deg); background-color: ' + getRandomColor() + '; animation-delay: ' + (Math.random() * 2.5) + 's; animation-duration: ' + (2 + Math.random() * 2.5) + 's;'">
+      </div>
+    </template>
+  </div>
+
+  <!-- FLOATING PROTOTYPE STATUS SIMULATOR (PROTOTYPE ONLY) -->
+  <div class="portal-simulator-widget shadow-lg" x-data="{ collapsed: false }" :class="{ 'collapsed': collapsed }">
+    <div
+      class="widget-header d-flex align-items-center justify-content-between border-bottom pb-2 mb-2 bg-primary-600 text-white rounded-top p-2"
+      style="margin: -10px -10px 10px -10px;">
+      <span class="fw-bold small"><i class="fa-solid fa-vial me-1"></i> SIMULATOR DAFTAR ULANG</span>
+      <button class="btn btn-sm text-white p-0" @click="collapsed = !collapsed" aria-label="Toggle simulator">
+        <i class="fa-solid" :class="collapsed ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+      </button>
+    </div>
+
+    <div class="widget-content" x-show="!collapsed">
+      <p class="small text-muted mb-2">Simulasikan pelunasan cicilan pendaftar lulus:</p>
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-sm btn-outline-primary text-start"
+          :class="{ 'active bg-primary text-white': paidPercentage === 33 && !isFinalized }" 
+          @click="setSimulatedPaid(1500000)">1. Setor Awal (33% - Rp 1.5M)</button>
+        
+        <button class="btn btn-sm btn-outline-info text-start position-relative"
+          :class="{ 'active bg-info text-white': hasPendingInstallment }" 
+          @click="approvePendingInstallment()"
+          :disabled="!hasPendingInstallment">
+          2. Setujui Cicilan Pending
+          <span class="position-absolute top-50 end-0 translate-middle-y me-2 badge bg-danger rounded-circle" x-show="hasPendingInstallment">1</span>
+        </button>
+
+        <button class="btn btn-sm btn-outline-success text-start"
+          :class="{ 'active bg-success text-white fw-bold': paidPercentage === 100 && !isFinalized }" 
+          @click="setSimulatedPaid(4500000)">3. Simulasikan Lunas (Rp 4.5M)</button>
+
+        <button class="btn btn-sm btn-outline-success text-start"
+          :class="{ 'active bg-success text-white fw-bold': isFinalized }" 
+          @click="simulateFinalizedPermanent()">4. Siswa Baru Tetap 🎉</button>
+      </div>
+
+      <hr class="my-2">
+      <p class="small text-muted mb-1">Kembali Ke Global State:</p>
+      <div class="d-grid">
+        <button class="btn btn-xs btn-outline-secondary py-1 text-center" @click="resetToPassed()">Reset Ke Lulus Ujian (Belum Daftar Ulang)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="../assets/js/vendor/bootstrap.bundle.min.js"></script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- AOS Animation Script -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true });
+
+    function reRegApp() {
+      return {
+        mobileMenuOpen: false,
+        status: localStorage.getItem('spmb_simulated_status') || 're_registration',
+        
+        // Financial values
+        totalFee: 4500000,
+        totalPaid: parseInt(localStorage.getItem('spmb_re_registration_paid')) || 1500000,
+        
+        // List installments
+        installments: [],
+        
+        // form parameters
+        inputAmountRaw: '',
+        inputNote: '',
+        dragOver: false,
+        selectedFile: null,
+        fileError: null,
+        isUploading: false,
+        uploadProgress: 0,
+        imagePreviewUrl: null,
+
+        // Modals
+        showIntegrityModal: false,
+        integrityChecked1: false,
+        integrityChecked2: false,
+        showMockModal: false,
+        modalItem: null,
+
+        // Confetti & Toast
+        showConfetti: false,
+        showToast: false,
+        toastMessage: '',
+
+        init() {
+          // Verify if state is perm
+          if (this.status === 'permanent') {
+            this.totalPaid = 4500000;
+          }
+          this.loadInstallments();
+        },
+
+        get paidPercentage() {
+          return Math.round((this.totalPaid / this.totalFee) * 100);
+        },
+
+        get isPaidOff() {
+          return this.totalPaid >= this.totalFee;
+        },
+
+        get isFinalized() {
+          return this.status === 'permanent';
+        },
+
+        get hasPendingInstallment() {
+          return this.installments.some(item => item.status === 'Pending');
+        },
+
+        loadInstallments() {
+          const stored = localStorage.getItem('spmb_installments_log');
+          if (stored) {
+            this.installments = JSON.parse(stored);
+          } else {
+            // default confirmed first installment
+            this.installments = [
+              {
+                id: 1,
+                date: '20 Mei 2026, 09:15 WIB',
+                amount: 1500000,
+                note: 'Cicilan 1 - Pembayaran Awal Uang Gedung',
+                status: 'Confirmed',
+                file: 'bukti_bayar_cicilan_1.jpg',
+                bankName: 'BANK SYARIAH INDONESIA',
+                trxId: 'TRX-508216738'
+              }
+            ];
+            this.saveInstallments();
+          }
+        },
+
+        saveInstallments() {
+          localStorage.setItem('spmb_installments_log', JSON.stringify(this.installments));
+        },
+
+        formatInputAmount(event) {
+          let value = event.target.value.replace(/[^0-9]/g, '');
+          if (value) {
+            this.inputAmountRaw = parseInt(value).toLocaleString('id-ID');
+          } else {
+            this.inputAmountRaw = '';
+          }
+        },
+
+        handleFileSelect(event) {
+          const files = event.target.files;
+          if (files.length > 0) {
+            this.processFile(files[0]);
+          }
+        },
+
+        handleDrop(event) {
+          this.dragOver = false;
+          const files = event.dataTransfer.files;
+          if (files.length > 0) {
+            this.processFile(files[0]);
+          }
+        },
+
+        processFile(file) {
+          this.fileError = null;
+          this.selectedFile = null;
+          this.imagePreviewUrl = null;
+
+          const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+          if (!allowedTypes.includes(file.type)) {
+            this.fileError = 'Format berkas tidak didukung! Pastikan berupa JPG, JPEG, PNG, atau PDF.';
+            return;
+          }
+
+          if (file.size > 2 * 1024 * 1024) {
+            this.fileError = 'Ukuran berkas bukti transfer melebihi batas 2MB!';
+            return;
+          }
+
+          this.selectedFile = file;
+          if (file.type !== 'application/pdf') {
+            this.imagePreviewUrl = URL.createObjectURL(file);
+          }
+        },
+
+        removeSelectedFile() {
+          this.selectedFile = null;
+          this.imagePreviewUrl = null;
+          this.fileError = null;
+          if (this.$refs.fileInput) {
+            this.$refs.fileInput.value = '';
+          }
+        },
+
+        fileInputTrigger() {
+          this.$refs.fileInput.click();
+        },
+
+        submitInstallment() {
+          if (!this.selectedFile || !this.inputAmountRaw) return;
+
+          const numericAmount = parseInt(this.inputAmountRaw.replace(/[^0-9]/g, '')) || 0;
+          if (numericAmount < 500000) {
+            this.fileError = 'Nominal setor cicilan minimal adalah Rp 500.000!';
+            return;
+          }
+
+          // Check if overpaying
+          if (this.totalPaid + numericAmount > this.totalFee) {
+            this.fileError = 'Nominal cicilan melebihi sisa tagihan Anda yang hanya sebesar ' + this.formatCurrency(this.totalFee - this.totalPaid) + '!';
+            return;
+          }
+
+          this.isUploading = true;
+          this.uploadProgress = 0;
+
+          const interval = setInterval(() => {
+            this.uploadProgress += 10;
+            if (this.uploadProgress >= 100) {
+              clearInterval(interval);
+              setTimeout(() => {
+                this.isUploading = false;
+                
+                // Add to installments
+                const newId = this.installments.length > 0 ? Math.max(...this.installments.map(i => i.id)) + 1 : 1;
+                this.installments.unshift({
+                  id: newId,
+                  date: 'Hari ini, ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
+                  amount: numericAmount,
+                  note: this.inputNote || 'Cicilan Tambahan',
+                  status: 'Pending',
+                  file: this.selectedFile.name,
+                  bankName: 'BANK SYARIAH INDONESIA',
+                  trxId: 'TRX-' + Math.floor(100000000 + Math.random() * 900000000)
+                });
+                
+                this.saveInstallments();
+
+                // Set simulated status if still passed
+                if (this.status === 'passed') {
+                  this.status = 're_registration';
+                  localStorage.setItem('spmb_simulated_status', 're_registration');
+                }
+
+                // Reset fields
+                this.inputAmountRaw = '';
+                this.inputNote = '';
+                this.removeSelectedFile();
+
+                this.showFeedbackToast('Bukti setoran cicilan terkirim! Admin akan memverifikasi nominal Anda.');
+              }, 450);
+            }
+          }, 150);
+        },
+
+        finalizeReregistration() {
+          if (!this.integrityChecked1 || !this.integrityChecked2) return;
+
+          this.showIntegrityModal = false;
+          this.status = 'permanent';
+          localStorage.setItem('spmb_simulated_status', 'permanent');
+          
+          this.triggerConfetti();
+          this.showFeedbackToast('Selamat! Finalisasi pendaftaran berhasil.');
+        },
+
+        viewMockReceipt(item) {
+          this.modalItem = item;
+          this.showMockModal = true;
+        },
+
+        // Simulator commands
+        setSimulatedPaid(amount) {
+          this.totalPaid = amount;
+          localStorage.setItem('spmb_re_registration_paid', amount.toString());
+          
+          if (amount === 1500000) {
+            this.status = 're_registration';
+            localStorage.setItem('spmb_simulated_status', 're_registration');
+            this.installments = [
+              {
+                id: 1,
+                date: '20 Mei 2026, 09:15 WIB',
+                amount: 1500000,
+                note: 'Cicilan 1 - Pembayaran Awal Uang Gedung',
+                status: 'Confirmed',
+                file: 'bukti_bayar_cicilan_1.jpg',
+                bankName: 'BANK SYARIAH INDONESIA',
+                trxId: 'TRX-508216738'
+              }
+            ];
+          } else if (amount === 4500000) {
+            this.status = 're_registration';
+            localStorage.setItem('spmb_simulated_status', 're_registration');
+            
+            // Confirm all in list
+            this.installments = [
+              {
+                id: 2,
+                date: 'Hari ini, 10:15 WIB',
+                amount: 3000000,
+                note: 'Pelunasan Cicilan Biaya Daftar Ulang',
+                status: 'Confirmed',
+                file: 'bukti_pelunasan_lunas.png',
+                bankName: 'BANK SYARIAH INDONESIA',
+                trxId: 'TRX-827618291'
+              },
+              {
+                id: 1,
+                date: '20 Mei 2026, 09:15 WIB',
+                amount: 1500000,
+                note: 'Cicilan 1 - Pembayaran Awal Uang Gedung',
+                status: 'Confirmed',
+                file: 'bukti_bayar_cicilan_1.jpg',
+                bankName: 'BANK SYARIAH INDONESIA',
+                trxId: 'TRX-508216738'
+              }
+            ];
+            this.triggerConfetti();
+          }
+          this.saveInstallments();
+        },
+
+        approvePendingInstallment() {
+          const pending = this.installments.find(item => item.status === 'Pending');
+          if (pending) {
+            pending.status = 'Confirmed';
+            this.totalPaid += pending.amount;
+            localStorage.setItem('spmb_re_registration_paid', this.totalPaid.toString());
+            this.saveInstallments();
+
+            if (this.isPaidOff) {
+              this.triggerConfetti();
+            }
+            this.showFeedbackToast('Cicilan pending berhasil disetujui administrasi sekolah!');
+          }
+        },
+
+        simulateFinalizedPermanent() {
+          this.totalPaid = 4500000;
+          localStorage.setItem('spmb_re_registration_paid', '4500000');
+          this.status = 'permanent';
+          localStorage.setItem('spmb_simulated_status', 'permanent');
+          
+          this.installments = [
+            {
+              id: 2,
+              date: 'Hari ini, 10:15 WIB',
+              amount: 3000000,
+              note: 'Pelunasan Cicilan Biaya Daftar Ulang',
+              status: 'Confirmed',
+              file: 'bukti_pelunasan_lunas.png',
+              bankName: 'BANK SYARIAH INDONESIA',
+              trxId: 'TRX-827618291'
+            },
+            {
+              id: 1,
+              date: '20 Mei 2026, 09:15 WIB',
+              amount: 1500000,
+              note: 'Cicilan 1 - Pembayaran Awal Uang Gedung',
+              status: 'Confirmed',
+              file: 'bukti_bayar_cicilan_1.jpg',
+              bankName: 'BANK SYARIAH INDONESIA',
+              trxId: 'TRX-508216738'
+            }
+          ];
+          this.saveInstallments();
+          this.triggerConfetti();
+        },
+
+        resetToPassed() {
+          this.totalPaid = 0;
+          localStorage.setItem('spmb_re_registration_paid', '0');
+          this.status = 'passed';
+          localStorage.setItem('spmb_simulated_status', 'passed');
+          
+          // Clear history or empty
+          this.installments = [];
+          this.saveInstallments();
+          this.showFeedbackToast('Status dikembalikan ke Seleksi Lulus.');
+        },
+
+        copyToClipboard(text) {
+          navigator.clipboard.writeText(text).then(() => {
+            this.showFeedbackToast('Nomor rekening resmi disalin!');
+          });
+        },
+
+        showFeedbackToast(message) {
+          this.toastMessage = message;
+          this.showToast = true;
+          setTimeout(() => {
+            this.showToast = false;
+          }, 3000);
+        },
+
+        triggerConfetti() {
+          this.showConfetti = true;
+          setTimeout(() => {
+            this.showConfetti = false;
+          }, 6000);
+        },
+
+        getRandomColor() {
+          const colors = ['#f2c94c', '#0b4a6f', '#28a745', '#e53935', '#0077cc', '#a855f7', '#ec4899'];
+          return colors[Math.floor(Math.random() * colors.length)];
+        },
+
+        formatBytes(bytes, decimals = 2) {
+          if (!+bytes) return '0 Bytes';
+          const k = 1024;
+          const dm = decimals < 0 ? 0 : decimals;
+          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        },
+
+        formatCurrency(amount) {
+          return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

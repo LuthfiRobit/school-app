@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formulir Pendaftaran - Portal SPMB Tunas Luhur</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../../assets/img/logo/logo-sma.png">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/typography.css">
+  <link rel="stylesheet" href="../../assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/css/index.css">
+  <link rel="stylesheet" href="../../assets/css/portal.css">
+
+  <!-- AOS (Animate on Scroll) CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    /* Premium file upload card styling */
+    .upload-dropzone {
+      border: 2px dashed var(--color-divider);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      background-color: var(--color-surface);
+      transition: all var(--transition-base);
+      cursor: pointer;
+      position: relative;
+    }
+    .upload-dropzone:hover {
+      border-color: var(--color-primary-400);
+      background-color: var(--color-primary-50);
+    }
+    .upload-dropzone input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .file-preview-card {
+      border: 1px solid var(--color-divider);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+      box-shadow: var(--shadow-xs);
+    }
+    .preview-thumbnail {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      border: 1px solid var(--color-divider);
+      margin-right: 0.75rem;
+    }
+    .save-badge-container {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-full);
+      transition: all 0.3s ease;
+    }
+    .save-badge-saved {
+      background-color: rgba(40, 167, 69, 0.1);
+      color: var(--color-success);
+      border: 1px solid rgba(40, 167, 69, 0.2);
+    }
+    .save-badge-saving {
+      background-color: rgba(11, 74, 111, 0.1);
+      color: var(--color-primary-700);
+      border: 1px solid rgba(11, 74, 111, 0.2);
+    }
+  </style>
+</head>
+
+<body class="portal-bg" x-data="pendaftaranFormApp()">
+
+  <!-- TOP NAVBAR -->
+  <header class="portal-navbar">
+    <div class="container-xxl d-flex align-items-center justify-content-between h-100">
+
+      <!-- Brand Logo -->
+      <a href="../../index.html" class="portal-navbar-brand">
+        <img src="../../assets/img/logo/logo-sma.png" alt="SPMB Tunas Luhur Logo">
+        <div>
+          <div class="portal-brand-title">SPMB Tunas Luhur</div>
+          <div class="portal-brand-tagline">Portal Calon Siswa</div>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="portal-nav-links d-none d-md-flex align-items-center" aria-label="Navigasi portal">
+        <a href="../dashboard.html"><i class="fa-solid fa-chart-line me-1"></i> Dashboard</a>
+        <a href="../riwayat.html"><i class="fa-solid fa-clock-rotate-left me-1"></i> Riwayat</a>
+        <a href="https://wa.me/6281234567890" target="_blank"><i class="fa-solid fa-headset me-1"></i> Bantuan</a>
+      </nav>
+
+      <!-- Profile Dropdown (Right) -->
+      <div class="portal-navbar-profile position-relative" x-data="{ openProfile: false }"
+        @click.outside="openProfile = false">
+        <button class="portal-profile-trigger d-flex align-items-center" @click="openProfile = !openProfile"
+          aria-haspopup="true" :aria-expanded="openProfile">
+          <div class="portal-avatar">AS</div>
+          <span class="portal-username d-none d-sm-inline">Ahmad Syarif</span>
+          <i class="fa-solid fa-chevron-down ms-2 fs-xs"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div class="portal-dropdown-menu" x-show="openProfile" x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 transform scale-95"
+          x-transition:enter-end="opacity-100 transform scale-100" style="display: none;">
+          <div class="dropdown-header border-bottom pb-2 mb-1">
+            <h6 class="mb-0 fw-bold text-primary-900">Ahmad Syarif</h6>
+            <small class="text-muted">No. Reg: Reg-202604001</small>
+          </div>
+          <a href="#" class="portal-dropdown-item"><i class="fa-regular fa-user me-2"></i> Profil Saya</a>
+          <a href="#" class="portal-dropdown-item"><i class="fa-solid fa-gear me-2"></i> Pengaturan</a>
+          <div class="dropdown-divider"></div>
+          <a href="../masuk.html" class="portal-dropdown-item text-error"><i
+              class="fa-solid fa-right-from-bracket me-2"></i> Keluar</a>
+        </div>
+      </div>
+
+      <!-- Hamburger Menu Toggle (Mobile) -->
+      <button class="portal-nav-toggle d-md-none" id="portalNavToggle" @click="mobileMenuOpen = !mobileMenuOpen"
+        aria-label="Buka navigasi mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Navigation -->
+  <div class="portal-mobile-drawer d-md-none" :class="{ 'open': mobileMenuOpen }" style="display: none;"
+    x-show="mobileMenuOpen" @click.outside="mobileMenuOpen = false" x-transition>
+    <nav class="d-flex flex-column p-4" aria-label="Navigasi mobile portal">
+      <a href="../dashboard.html" class="py-3 border-bottom"><i class="fa-solid fa-chart-line me-2 text-primary-600"></i> Dashboard</a>
+      <a href="../riwayat.html" class="py-3 border-bottom"><i class="fa-solid fa-clock-rotate-left me-2 text-primary-600"></i> Riwayat Pendaftaran</a>
+      <a href="https://wa.me/6281234567890" target="_blank" class="py-3 border-bottom"><i class="fa-solid fa-headset me-2 text-primary-600"></i> Hubungi Bantuan</a>
+      <a href="../masuk.html" class="py-3 text-error"><i class="fa-solid fa-right-from-bracket me-2"></i> Keluar Akun</a>
+    </nav>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container-xxl py-4 py-lg-5 portal-content">
+
+    <!-- Page Header & Breadcrumb -->
+    <div class="mb-4" data-aos="fade-up" data-aos-duration="600">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-2 small">
+          <li class="breadcrumb-item"><a href="../dashboard.html" class="text-primary-600 text-decoration-none">Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="pilih-jalur.html" class="text-primary-600 text-decoration-none">Pilih Jalur</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Formulir Pendaftaran</li>
+        </ol>
+      </nav>
+      
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+        <div>
+          <h4 class="fw-bold text-primary-900 mb-1">Formulir Pendaftaran Online</h4>
+          <p class="text-muted mb-0">Lengkapi berkas dan isian data secara bertahap untuk jalur yang telah Anda tentukan.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex align-items-center gap-3">
+          <!-- Draft Auto-save Indicator Badge -->
+          <div class="save-badge-container" :class="saveStatus === 'saved' ? 'save-badge-saved' : 'save-badge-saving'">
+            <i class="fa-solid fa-circle-notch fa-spin me-2" x-show="saveStatus === 'saving'"></i>
+            <i class="fa-regular fa-floppy-disk me-2" x-show="saveStatus === 'saved'"></i>
+            <span x-text="saveMessage"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layout Grid -->
+    <div class="row g-4">
+
+      <!-- LEFT COLUMN: MULTI-STEP FORM -->
+      <div class="col-lg-8" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+        
+        <!-- STEP INDICATOR WIDGET (Symmetric Downscaled 3 Steps) -->
+        <div class="card p-3 mb-4 shadow-sm border-0">
+          <div class="position-relative mx-auto mt-2 mb-2" style="max-width: 480px; min-width: 280px;">
+            <!-- Line connector -->
+            <div class="position-absolute translate-middle-y" style="height: 3px; left: 32px; right: 32px; top: 16px; z-index: 0;">
+              <div class="position-absolute top-0 start-0 w-100 bg-secondary-subtle" style="height: 3px;"></div>
+              <div class="position-absolute top-0 start-0 bg-success transition-all" style="height: 3px; transition: width 0.4s ease;"
+                :style="'width: ' + ((step - 1) * 50) + '%'"></div>
+            </div>
+
+            <!-- Indicator circles -->
+            <div class="d-flex justify-content-between position-relative" style="z-index: 1;">
+              <!-- Step 1 -->
+              <div class="text-center" style="width: 64px;">
+                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold border border-2 transition-all"
+                  :class="step > 1 ? 'bg-success text-white border-success' : (step === 1 ? 'bg-primary text-white border-primary shadow' : 'bg-light text-muted border-secondary-subtle')"
+                  style="width: 32px; height: 32px;">
+                  <i class="fa-solid fa-check" x-show="step > 1"></i>
+                  <span x-show="step === 1">1</span>
+                </div>
+                <span class="small fw-semibold d-block text-truncate" :class="step === 1 ? 'text-primary' : 'text-secondary'">Profil</span>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="text-center" style="width: 64px;">
+                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold border border-2 transition-all"
+                  :class="step > 2 ? 'bg-success text-white border-success' : (step === 2 ? 'bg-primary text-white border-primary shadow' : 'bg-light text-muted border-secondary-subtle')"
+                  style="width: 32px; height: 32px;">
+                  <i class="fa-solid fa-check" x-show="step > 2"></i>
+                  <span x-show="step <= 2">2</span>
+                </div>
+                <span class="small fw-semibold d-block text-truncate" :class="step === 2 ? 'text-primary' : 'text-secondary'">Form Jalur</span>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="text-center" style="width: 64px;">
+                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold border border-2 transition-all"
+                  :class="step === 3 ? 'bg-primary text-white border-primary shadow' : 'bg-light text-muted border-secondary-subtle'"
+                  style="width: 32px; height: 32px;">
+                  <span x-show="step <= 3">3</span>
+                </div>
+                <span class="small fw-semibold d-block text-truncate" :class="step === 3 ? 'text-primary' : 'text-secondary'">Berkas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM CARD -->
+        <div class="card shadow-sm border-0 p-4">
+          
+          <!-- STEP 1: PROFIL & AKADEMIK DASAR -->
+          <div x-show="step === 1" x-transition.opacity>
+            <h5 class="fw-bold text-primary-900 border-bottom pb-2 mb-4"><i class="fa-regular fa-address-card me-2 text-primary-600"></i> Profil & Akademik Dasar</h5>
+            
+            <div class="alert alert-info border border-info border-opacity-25 p-3 rounded-md mb-4 d-flex align-items-start">
+              <i class="fa-solid fa-circle-info text-primary-600 fs-5 mt-1 me-3"></i>
+              <div class="small">
+                <strong>Data Profil Terkunci:</strong> Kolom profil dasar di bawah diimpor langsung dari akun registrasi Anda. Jika terjadi kesalahan data, hubungi bagian administrasi institusi.
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label text-primary-800">Nama Lengkap</label>
+                <input type="text" class="form-control bg-light" x-model="form.fullName" readonly disabled>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label text-primary-800">NISN (Nomor Induk Siswa Nasional)</label>
+                <input type="text" class="form-control bg-light" x-model="form.nisn" readonly disabled>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label text-primary-800">Nomor Telepon/WhatsApp</label>
+                <input type="text" class="form-control bg-light" x-model="form.phone" readonly disabled>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label text-primary-800">Sekolah Asal (SMP/MTs Sederajat)</label>
+                <input type="text" class="form-control bg-light" x-model="form.schoolOrigin" readonly disabled>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="raporAvg" class="form-label text-primary-800">Rata-rata Nilai Rapor Semester 1-5 <span class="text-error">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text border-end-0"><i class="fa-solid fa-calculator"></i></span>
+                <input type="number" step="0.01" min="0" max="100" class="form-control border-start-0 ps-0" id="raporAvg" x-model="form.raporAvg" @input="saveDraft()" placeholder="Contoh: 88.50" required>
+              </div>
+              <div class="form-text text-muted mt-2"><i class="fa-solid fa-circle-info me-1"></i>Masukkan nilai rata-rata dari seluruh mata pelajaran (Skala 0-100).</div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-primary px-4 py-2" @click="nextStep()" :disabled="!isStepValid(1)">
+                Simpan & Lanjutkan <i class="fa-solid fa-arrow-right ms-2 fs-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 2: FORM DINAMIS KHUSUS JALUR -->
+          <div x-show="step === 2" x-transition.opacity style="display: none;">
+            <h5 class="fw-bold text-primary-900 border-bottom pb-2 mb-4">
+              <i class="fa-solid fa-sliders me-2 text-primary-600"></i> Formulir Khusus: <span class="text-primary-700" x-text="trackInfo.name"></span>
+            </h5>
+
+            <!-- DYNAMIC FIELDS FOR JALUR PRESTASI (trackId === 1) -->
+            <div x-show="trackId === 1">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="prestasiType" class="form-label text-primary-800">Jenis Prestasi <span class="text-error">*</span></label>
+                  <select class="form-select" id="prestasiType" x-model="form.prestasiType" @change="saveDraft()" required>
+                    <option value="" disabled selected>Pilih jenis prestasi</option>
+                    <option value="akademik">Akademik (Sains, Bahasa, dll)</option>
+                    <option value="non_akademik">Non-Akademik (Olahraga, Seni, Pramuka, dll)</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="prestasiLevel" class="form-label text-primary-800">Tingkat Prestasi Terbesar <span class="text-error">*</span></label>
+                  <select class="form-select" id="prestasiLevel" x-model="form.prestasiLevel" @change="saveDraft()" required>
+                    <option value="" disabled selected>Pilih tingkat prestasi</option>
+                    <option value="kabupaten">Tingkat Kabupaten/Kota</option>
+                    <option value="provinsi">Tingkat Provinsi</option>
+                    <option value="nasional">Tingkat Nasional</option>
+                    <option value="internasional">Tingkat Internasional</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="prestasiName" class="form-label text-primary-800">Nama Kejuaraan/Lomba <span class="text-error">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text border-end-0"><i class="fa-solid fa-trophy"></i></span>
+                  <input type="text" class="form-control border-start-0 ps-0" id="prestasiName" x-model="form.prestasiName" @input="saveDraft()" placeholder="Contoh: Olimpiade Sains Matematika Provinsi Jawa Timur" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="prestasiRank" class="form-label text-primary-800">Peringkat / Juara <span class="text-muted">(Opsional)</span></label>
+                <input type="text" class="form-control" id="prestasiRank" x-model="form.prestasiRank" @input="saveDraft()" placeholder="Contoh: Juara 1 Emas / Harapan 2">
+              </div>
+            </div>
+
+            <!-- DYNAMIC FIELDS FOR JALUR TES TULIS CBT (trackId === 2) -->
+            <div x-show="trackId === 2">
+              <div class="mb-3">
+                <label for="cbtLocation" class="form-label text-primary-800">Pilihan Lokasi Ujian CBT <span class="text-error">*</span></label>
+                <select class="form-select" id="cbtLocation" x-model="form.cbtLocation" @change="saveDraft()" required>
+                  <option value="" disabled selected>Pilih lokasi ujian</option>
+                  <option value="kampus_utama">Lab Komputer Utama - SMA Tunas Luhur</option>
+                  <option value="kampus_timur">Lab Komputer Cabang Wilayah Timur</option>
+                </select>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="major1" class="form-label text-primary-800">Pilihan Peminatan Jurusan 1 <span class="text-error">*</span></label>
+                  <select class="form-select" id="major1" x-model="form.major1" @change="saveDraft()" required>
+                    <option value="" disabled selected>Pilih peminatan 1</option>
+                    <option value="mipa">Matematika & Ilmu Pengetahuan Alam (MIPA)</option>
+                    <option value="ips">Ilmu Pengetahuan Sosial (IPS)</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="major2" class="form-label text-primary-800">Pilihan Peminatan Jurusan 2 <span class="text-muted">(Cadangan)</span></label>
+                  <select class="form-select" id="major2" x-model="form.major2" @change="saveDraft()">
+                    <option value="" selected>Pilih peminatan 2 (Opsional)</option>
+                    <option value="mipa">Matematika & Ilmu Pengetahuan Alam (MIPA)</option>
+                    <option value="ips">Ilmu Pengetahuan Sosial (IPS)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- DYNAMIC FIELDS FOR JALUR TAHFIDZ & BOARDING (trackId === 3) -->
+            <div x-show="trackId === 3">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="tahfidzJuz" class="form-label text-primary-800">Jumlah Juz Hafalan Quran <span class="text-error">*</span></label>
+                  <select class="form-select" id="tahfidzJuz" x-model="form.tahfidzJuz" @change="saveDraft()" required>
+                    <option value="" disabled selected>Pilih jumlah juz</option>
+                    <option value="3">3 Juz</option>
+                    <option value="4">4 Juz</option>
+                    <option value="5">5 - 9 Juz</option>
+                    <option value="10">10 - 19 Juz</option>
+                    <option value="20">20 - 29 Juz</option>
+                    <option value="30">Kamil / 30 Juz</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="boardingProgram" class="form-label text-primary-800">Program Boarding Pilihan <span class="text-error">*</span></label>
+                  <select class="form-select" id="boardingProgram" x-model="form.boardingProgram" @change="saveDraft()" required>
+                    <option value="" disabled selected>Pilih program asrama</option>
+                    <option value="tahfidz_intensif">Program Tahfidz Intensif (Karantina)</option>
+                    <option value="tahfidz_reguler">Program Reguler Pesantren Sekolah</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="tahfidzInstitution" class="form-label text-primary-800">Pondok Pesantren / Madrasah Asal <span class="text-error">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text border-end-0"><i class="fa-solid fa-mosque"></i></span>
+                  <input type="text" class="form-control border-start-0 ps-0" id="tahfidzInstitution" x-model="form.tahfidzInstitution" @input="saveDraft()" placeholder="Nama Madrasah / Rumah Quran sebelumnya" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- DYNAMIC FIELDS FOR JALUR UMUM (trackId === 4) -->
+            <div x-show="trackId === 4">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="distanceKm" class="form-label text-primary-800">Jarak Rumah ke Sekolah (km) <span class="text-error">*</span></label>
+                  <input type="number" step="0.1" min="0" class="form-control" id="distanceKm" x-model="form.distanceKm" @input="saveDraft()" placeholder="Jarak dalam km, contoh: 2.5" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="transportation" class="form-label text-primary-800">Transportasi Utama Pilihan</label>
+                  <select class="form-select" id="transportation" x-model="form.transportation" @change="saveDraft()">
+                    <option value="" selected>Pilih alat transportasi</option>
+                    <option value="sepeda">Sepeda</option>
+                    <option value="sepeda_motor">Sepeda Motor Mandiri/Jemput</option>
+                    <option value="jemputan">Jemputan Bus Sekolah</option>
+                    <option value="umum">Angkutan Umum</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="nik" class="form-label text-primary-800">Nomor Induk Kependudukan (NIK) <span class="text-error">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text border-end-0"><i class="fa-solid fa-id-card"></i></span>
+                  <input type="text" maxlength="16" class="form-control border-start-0 ps-0" id="nik" x-model="form.nik" @input="saveDraft()" placeholder="16 Digit NIK sesuai KK" required>
+                </div>
+                <div class="form-text text-error mt-1" x-show="form.nik !== '' && form.nik.length !== 16">
+                  <i class="fa-solid fa-triangle-exclamation"></i> NIK harus bernilai 16 digit.
+                </div>
+              </div>
+            </div>
+
+            <!-- Wizard Navigation -->
+            <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-outline-secondary px-4 py-2 border-primary text-primary-600" @click="prevStep()">
+                <i class="fa-solid fa-arrow-left me-2 fs-xs"></i> Sebelumnya
+              </button>
+              <button type="button" class="btn btn-primary px-4 py-2" @click="nextStep()" :disabled="!isStepValid(2)">
+                Simpan & Lanjutkan <i class="fa-solid fa-arrow-right ms-2 fs-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 3: UNGGAH BERKAS PENDUKUNG -->
+          <div x-show="step === 3" x-transition.opacity style="display: none;">
+            <h5 class="fw-bold text-primary-900 border-bottom pb-2 mb-4"><i class="fa-solid fa-cloud-arrow-up me-2 text-primary-600"></i> Pengunggahan Dokumen Wajib</h5>
+            
+            <p class="text-muted small mb-4">Silakan unggah dokumen yang disyaratkan di bawah ini. File harus bertipe PDF, JPG, atau PNG dengan ukuran maksimal 2MB per file.</p>
+
+            <!-- 1. Pasfoto Calon Siswa (Wajib) -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-primary-800">Pasfoto Resmi Calon Siswa (Berwarna, Formal) <span class="text-error">*</span></label>
+              
+              <div class="upload-dropzone" x-show="!form.fileFoto">
+                <i class="fa-solid fa-camera-retro fs-3 text-muted mb-2"></i>
+                <div class="small fw-semibold text-primary-700">Pilih Foto Diri atau Seret Kemari</div>
+                <span class="text-muted d-block" style="font-size:0.75rem;">Maksimal 2MB (MIME: JPG, JPEG, PNG)</span>
+                <input type="file" accept="image/png, image/jpeg, image/jpg" @change="handleFileUpload($event, 'foto')">
+              </div>
+
+              <!-- Preview Foto -->
+              <div class="file-preview-card" x-show="form.fileFoto">
+                <div class="d-flex align-items-center">
+                  <img :src="filePreviews.foto" alt="Preview Pasfoto" class="preview-thumbnail" x-show="filePreviews.foto">
+                  <div class="rounded bg-light text-primary-800 d-flex align-items-center justify-content-center" style="width:48px;height:48px;" x-show="!filePreviews.foto">
+                    <i class="fa-solid fa-image"></i>
+                  </div>
+                  <div>
+                    <strong class="text-primary-900 small d-block" x-text="form.fileFoto ? form.fileFoto.name : ''"></strong>
+                    <span class="text-muted text-xxs d-block" x-text="form.fileFoto ? (Math.round(form.fileFoto.size / 1024) + ' KB') : ''"></span>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" @click="removeFile('foto')">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. Scan Rapor (Wajib) -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-primary-800">Scan Buku Rapor Semester 1-5 (Menyatu dalam 1 Berkas) <span class="text-error">*</span></label>
+              
+              <div class="upload-dropzone" x-show="!form.fileRapor">
+                <i class="fa-solid fa-file-pdf fs-3 text-muted mb-2"></i>
+                <div class="small fw-semibold text-primary-700">Pilih File Rapor atau Seret Kemari</div>
+                <span class="text-muted d-block" style="font-size:0.75rem;">Maksimal 2MB (MIME: PDF, JPG, PNG)</span>
+                <input type="file" accept="application/pdf, image/png, image/jpeg, image/jpg" @change="handleFileUpload($event, 'rapor')">
+              </div>
+
+              <!-- Preview Rapor -->
+              <div class="file-preview-card" x-show="form.fileRapor">
+                <div class="d-flex align-items-center">
+                  <div class="rounded bg-primary bg-opacity-10 text-primary-700 d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;font-size:1.4rem;">
+                    <i class="fa-solid fa-file-pdf"></i>
+                  </div>
+                  <div>
+                    <strong class="text-primary-900 small d-block" x-text="filePreviews.rapor"></strong>
+                    <span class="text-muted text-xxs d-block" x-text="form.fileRapor ? (Math.round(form.fileRapor.size / 1024) + ' KB') : ''"></span>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" @click="removeFile('rapor')">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- 3. Berkas Kualifikasi Jalur (Wajib/Opsional tergantung jalur) -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-primary-800">
+                <span x-show="trackId === 1">Sertifikat/Piagam Prestasi Terbaik <span class="text-error">*</span></span>
+                <span x-show="trackId === 3">Sertifikat/Syahadah Tahfidz Al-Quran <span class="text-error">*</span></span>
+                <span x-show="trackId === 2 || trackId === 4">Scan Kartu Keluarga (KK) Resmi <span class="text-error">*</span></span>
+              </label>
+              
+              <div class="upload-dropzone" x-show="!form.fileSupporting">
+                <i class="fa-solid fa-award fs-3 text-muted mb-2" x-show="trackId === 1 || trackId === 3"></i>
+                <i class="fa-solid fa-users-rectangle fs-3 text-muted mb-2" x-show="trackId === 2 || trackId === 4"></i>
+                <div class="small fw-semibold text-primary-700">Pilih Berkas Pendukung atau Seret Kemari</div>
+                <span class="text-muted d-block" style="font-size:0.75rem;">Maksimal 2MB (MIME: PDF, JPG, PNG)</span>
+                <input type="file" accept="application/pdf, image/png, image/jpeg, image/jpg" @change="handleFileUpload($event, 'supporting')">
+              </div>
+
+              <!-- Preview Berkas Pendukung -->
+              <div class="file-preview-card" x-show="form.fileSupporting">
+                <div class="d-flex align-items-center">
+                  <div class="rounded bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;font-size:1.4rem;">
+                    <i class="fa-solid fa-circle-check"></i>
+                  </div>
+                  <div>
+                    <strong class="text-primary-900 small d-block" x-text="filePreviews.supporting"></strong>
+                    <span class="text-muted text-xxs d-block" x-text="form.fileSupporting ? (Math.round(form.fileSupporting.size / 1024) + ' KB') : ''"></span>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" @click="removeFile('supporting')">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Check Alert -->
+            <div class="alert alert-warning border border-warning border-opacity-25 p-3 rounded-md mb-4 d-flex align-items-start" x-show="isStepValid(3)">
+              <i class="fa-solid fa-triangle-exclamation text-warning fs-5 mt-1 me-3"></i>
+              <div class="small">
+                <strong>Verifikasi Akhir:</strong> Dengan mengirimkan pendaftaran ini, Anda menyatakan bahwa seluruh isian data dan dokumen yang diunggah adalah sah, asli, dan valid. Kesalahan penulisan data dapat menyebabkan pembatalan berkas.
+              </div>
+            </div>
+
+            <!-- Wizard Navigation -->
+            <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-outline-secondary px-4 py-2 border-primary text-primary-600" @click="prevStep()">
+                <i class="fa-solid fa-arrow-left me-2 fs-xs"></i> Sebelumnya
+              </button>
+              <button type="button" class="btn btn-success px-4 py-2" :disabled="!isStepValid(3)" @click="submitForm()">
+                <i class="fa-solid fa-paper-plane me-2 fs-xs"></i> Kirim Pendaftaran
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: SIDEBAR SUMMARY -->
+      <div class="col-lg-4" data-aos="fade-left" data-aos-duration="600" data-aos-delay="150">
+        
+        <!-- TRACK INFORMATION SUMMARY CARD -->
+        <div class="card mb-4 shadow-sm border-0">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-800 text-uppercase tracking-wider mb-3"><i class="fa-solid fa-graduation-cap me-2"></i> Pilihan Jalur</h6>
+            
+            <div class="d-flex align-items-center mb-3 p-3 bg-light rounded-md border">
+              <div class="rounded bg-primary bg-opacity-10 text-primary-700 d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px; font-size: 1.6rem;">
+                <span x-text="trackInfo.icon"></span>
+              </div>
+              <div>
+                <strong class="text-primary-900 d-block" x-text="trackInfo.name"></strong>
+                <span class="text-muted small">SPMB Tahun Ajaran 2026/2027</span>
+              </div>
+            </div>
+
+            <div class="border-top pt-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small">Biaya Formulir:</span>
+                <strong class="text-primary-900 small" x-text="formatCurrency(trackInfo.fee)"></strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small">Status Pengisian:</span>
+                <span class="fw-bold text-primary-800 small" x-text="filledRequiredFields + ' dari ' + totalRequiredFields + ' Kolom'"></span>
+              </div>
+              <div class="mt-3">
+                <div class="progress" style="height: 8px; border-radius: 4px;">
+                  <div class="progress-bar bg-primary" role="progressbar" :style="'width: ' + filledPercentage + '%'" :aria-valuenow="filledPercentage" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="text-end text-muted small mt-1" x-text="filledPercentage + '% Lengkap'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE BRIEF -->
+        <div class="card mb-4 shadow-sm border-0">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-800 text-uppercase tracking-wider mb-3"><i class="fa-regular fa-user me-2"></i> Biodata Pendaftar</h6>
+            <div class="d-flex align-items-center mb-3">
+              <div class="portal-avatar me-3" style="width: 44px; height: 44px; font-size: 1.2rem;">AS</div>
+              <div>
+                <h6 class="fw-bold text-primary-900 mb-0">Ahmad Syarif</h6>
+                <small class="text-muted">No. Reg: Reg-202604001</small>
+              </div>
+            </div>
+            <div class="border-top pt-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted small">NISN:</span>
+                <span class="fw-bold text-primary-900 small">0087654321</span>
+              </div>
+              <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted small">Asal Sekolah:</span>
+                <span class="fw-bold text-primary-900 small text-end">SMP Negeri 1 Probolinggo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIMULATOR CONTROLS NOTICE -->
+        <div class="card shadow-sm border-0 bg-light-blue p-4">
+          <h6 class="fw-bold text-primary-800 mb-2"><i class="fa-solid fa-wand-magic-sparkles me-2"></i> Alat Bantu Demo</h6>
+          <p class="text-muted small mb-0">Gunakan simulator di pojok kanan bawah untuk melakukan pengisian otomatis (auto-fill) guna mempercepat simulasi pengiriman data pendaftaran.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FLOATING PROTOTYPE STATE SIMULATOR (PROTOTYPE ONLY) -->
+  <div class="portal-simulator-widget shadow-lg" x-data="{ collapsed: false }" :class="{ 'collapsed': collapsed }">
+    <div
+      class="widget-header d-flex align-items-center justify-content-between border-bottom pb-2 mb-2 bg-primary-600 text-white rounded-top p-2"
+      style="margin: -10px -10px 10px -10px;">
+      <span class="fw-bold small"><i class="fa-solid fa-vial me-1"></i> SIMULATOR FORM</span>
+      <button class="btn btn-sm text-white p-0" @click="collapsed = !collapsed">
+        <i class="fa-solid" :class="collapsed ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+      </button>
+    </div>
+
+    <div class="widget-content" x-show="!collapsed">
+      <p class="small text-muted mb-2">Simulasikan pengisian cepat dan peralihan jalur pendaftaran:</p>
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-sm btn-success text-white fw-bold" @click="autoFillDemo()">
+          ⚡ Auto-Fill Data Demo (Lengkap)
+        </button>
+        <div class="dropdown-divider my-2"></div>
+        <span class="text-xxs text-muted d-block mb-1">GANTI JALUR DYNAMIC FORM (STEP 2):</span>
+        <button class="btn btn-sm btn-outline-primary text-start" :class="trackId === 1 && 'active bg-primary text-white'" @click="switchSimulatorTrack(1)">
+          1. Jalur Prestasi (Form Khusus)
+        </button>
+        <button class="btn btn-sm btn-outline-primary text-start" :class="trackId === 2 && 'active bg-primary text-white'" @click="switchSimulatorTrack(2)">
+          2. Jalur Ujian CBT (Form Khusus)
+        </button>
+        <button class="btn btn-sm btn-outline-primary text-start" :class="trackId === 3 && 'active bg-primary text-white'" @click="switchSimulatorTrack(3)">
+          3. Jalur Tahfidz/Boarding (Form Khusus)
+        </button>
+        <button class="btn btn-sm btn-outline-primary text-start" :class="trackId === 4 && 'active bg-primary text-white'" @click="switchSimulatorTrack(4)">
+          4. Jalur Umum/Zonasi (Form Khusus)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Bootstrap Bundle JS -->
+  <script src="../../assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <!-- AOS Animation JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true });
+
+    function pendaftaranFormApp() {
+      return {
+        step: 1,
+        mobileMenuOpen: false,
+        trackId: 1, // 1: Prestasi, 2: CBT, 3: Tahfidz, 4: Umum
+        saveStatus: 'saved', // 'saving', 'saved'
+        saveMessage: 'Draf Tersimpan secara Lokal',
+        
+        // Form fields
+        form: {
+          fullName: 'Ahmad Syarif',
+          nisn: '0087654321',
+          phone: '0812-3456-7890',
+          schoolOrigin: 'SMP Negeri 1 Probolinggo',
+          raporAvg: '',
+          
+          // Prestasi fields
+          prestasiType: '',
+          prestasiLevel: '',
+          prestasiName: '',
+          prestasiRank: '',
+          
+          // CBT fields
+          cbtLocation: '',
+          major1: '',
+          major2: '',
+          
+          // Tahfidz fields
+          tahfidzJuz: '',
+          tahfidzInstitution: '',
+          boardingProgram: '',
+          
+          // Umum fields
+          distanceKm: '',
+          nik: '',
+          transportation: '',
+          
+          // Files (simulated objects)
+          fileFoto: null,
+          fileRapor: null,
+          fileSupporting: null
+        },
+
+        // File name and preview storage
+        filePreviews: {
+          foto: null,
+          rapor: null,
+          supporting: null
+        },
+
+        init() {
+          // Parse track query parameter
+          const params = new URLSearchParams(window.location.search);
+          const trackParam = params.get('track');
+          if (trackParam) {
+            this.trackId = parseInt(trackParam);
+          }
+          
+          // Load draft if exists
+          const savedDraft = localStorage.getItem('spmb_form_draft_track_' + this.trackId);
+          if (savedDraft) {
+            try {
+              const parsed = JSON.parse(savedDraft);
+              // Restore form fields (except file objects)
+              Object.keys(parsed).forEach(key => {
+                if (key !== 'fileFoto' && key !== 'fileRapor' && key !== 'fileSupporting') {
+                  this.form[key] = parsed[key];
+                }
+              });
+            } catch(e) {
+              console.error('Failed to parse draft', e);
+            }
+          }
+
+          // Restore simulated file previews if saved in string
+          const savedPreviews = localStorage.getItem('spmb_previews_draft_track_' + this.trackId);
+          if (savedPreviews) {
+            this.filePreviews = JSON.parse(savedPreviews);
+            // Put simulated file objects
+            if (this.filePreviews.foto) this.form.fileFoto = { name: 'foto_profil.jpg', size: 1024 * 350 };
+            if (this.filePreviews.rapor) this.form.fileRapor = { name: 'rapor_semester_1_5.pdf', size: 1024 * 1540 };
+            if (this.filePreviews.supporting) this.form.fileSupporting = { name: 'berkas_pendukung.pdf', size: 1024 * 890 };
+          }
+
+          // Auto-save interval (every 15 seconds)
+          setInterval(() => {
+            this.saveDraft();
+          }, 15000);
+        },
+
+        get trackInfo() {
+          switch(this.trackId) {
+            case 1: return { name: 'Jalur Prestasi', icon: '🎓', fee: 150000 };
+            case 2: return { name: 'Jalur Tes Tulis (CBT)', icon: '✍️', fee: 200000 };
+            case 3: return { name: 'Jalur Unggulan (Tahfidz & Boarding)', icon: '⭐', fee: 250000 };
+            case 4: return { name: 'Jalur Umum', icon: '📋', fee: 150000 };
+            default: return { name: 'Jalur Pendaftaran', icon: '🎓', fee: 150000 };
+          }
+        },
+
+        saveDraft() {
+          this.saveStatus = 'saving';
+          this.saveMessage = 'Menyimpan draf...';
+          
+          setTimeout(() => {
+            localStorage.setItem('spmb_form_draft_track_' + this.trackId, JSON.stringify(this.form));
+            localStorage.setItem('spmb_previews_draft_track_' + this.trackId, JSON.stringify(this.filePreviews));
+            this.saveStatus = 'saved';
+            const now = new Date();
+            this.saveMessage = 'Draf Tersimpan (' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ')';
+          }, 800);
+        },
+
+        handleFileUpload(event, type) {
+          const file = event.target.files[0];
+          if (!file) return;
+
+          // Validate file size (max 2MB)
+          if (file.size > 2 * 1024 * 1024) {
+            alert('File terlalu besar! Ukuran maksimum adalah 2MB.');
+            return;
+          }
+
+          if (type === 'foto') {
+            this.form.fileFoto = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              this.filePreviews.foto = e.target.result;
+              this.saveDraft();
+            };
+            reader.readAsDataURL(file);
+          } else if (type === 'rapor') {
+            this.form.fileRapor = file;
+            this.filePreviews.rapor = file.name;
+            this.saveDraft();
+          } else if (type === 'supporting') {
+            this.form.fileSupporting = file;
+            this.filePreviews.supporting = file.name;
+            this.saveDraft();
+          }
+        },
+
+        removeFile(type) {
+          if (type === 'foto') {
+            this.form.fileFoto = null;
+            this.filePreviews.foto = null;
+          } else if (type === 'rapor') {
+            this.form.fileRapor = null;
+            this.filePreviews.rapor = null;
+          } else if (type === 'supporting') {
+            this.form.fileSupporting = null;
+            this.filePreviews.supporting = null;
+          }
+          this.saveDraft();
+        },
+
+        // Progress calculations
+        get totalRequiredFields() {
+          let count = 3; // Rapor + Pasfoto + Rapor File
+          if (this.trackId === 1) count += 3; // type, level, name
+          if (this.trackId === 2) count += 2; // location, major1
+          if (this.trackId === 3) count += 3; // juz, institution, program
+          if (this.trackId === 4) count += 2; // distance, nik
+          return count;
+        },
+
+        get filledRequiredFields() {
+          let filled = 0;
+          if (this.form.raporAvg !== '') filled++;
+          
+          if (this.trackId === 1) {
+            if (this.form.prestasiType !== '') filled++;
+            if (this.form.prestasiLevel !== '') filled++;
+            if (this.form.prestasiName.trim() !== '') filled++;
+          } else if (this.trackId === 2) {
+            if (this.form.cbtLocation !== '') filled++;
+            if (this.form.major1 !== '') filled++;
+          } else if (this.trackId === 3) {
+            if (this.form.tahfidzJuz !== '') filled++;
+            if (this.form.tahfidzInstitution.trim() !== '') filled++;
+            if (this.form.boardingProgram !== '') filled++;
+          } else if (this.trackId === 4) {
+            if (this.form.distanceKm !== '') filled++;
+            if (this.form.nik.trim().length === 16) filled++;
+          }
+
+          if (this.form.fileFoto) filled++;
+          if (this.form.fileRapor) filled++;
+
+          return filled;
+        },
+
+        get filledPercentage() {
+          return Math.round((this.filledRequiredFields / this.totalRequiredFields) * 100);
+        },
+
+        // Navigation and validation
+        isStepValid(stepNum) {
+          if (stepNum === 1) {
+            return this.form.raporAvg !== '' && parseFloat(this.form.raporAvg) >= 0 && parseFloat(this.form.raporAvg) <= 100;
+          }
+          if (stepNum === 2) {
+            if (this.trackId === 1) {
+              return this.form.prestasiType !== '' && this.form.prestasiLevel !== '' && this.form.prestasiName.trim() !== '';
+            }
+            if (this.trackId === 2) {
+              return this.form.cbtLocation !== '' && this.form.major1 !== '';
+            }
+            if (this.trackId === 3) {
+              return this.form.tahfidzJuz !== '' && this.form.tahfidzInstitution.trim() !== '' && this.form.boardingProgram !== '';
+            }
+            if (this.trackId === 4) {
+              return this.form.distanceKm !== '' && this.form.nik.trim().length === 16;
+            }
+          }
+          if (stepNum === 3) {
+            return this.form.fileFoto !== null && this.form.fileRapor !== null;
+          }
+          return false;
+        },
+
+        nextStep() {
+          if (this.step < 3 && this.isStepValid(this.step)) {
+            this.step++;
+            this.saveDraft();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        },
+
+        prevStep() {
+          if (this.step > 1) {
+            this.step--;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        },
+
+        submitForm() {
+          if (!this.isStepValid(3)) {
+            alert('Mohon lengkapi pengunggahan berkas wajib terlebih dahulu.');
+            return;
+          }
+
+          this.saveStatus = 'saving';
+          this.saveMessage = 'Mengirim pendaftaran...';
+
+          setTimeout(() => {
+            // Save submitted form data for the Ringkasan page
+            localStorage.setItem('spmb_submitted_form_track_' + this.trackId, JSON.stringify(this.form));
+            localStorage.setItem('spmb_submitted_previews_track_' + this.trackId, JSON.stringify(this.filePreviews));
+
+            // Change dashboard state to verification
+            localStorage.setItem('spmb_simulated_status', 'verification');
+            localStorage.setItem('spmb_chosen_track_name', this.trackInfo.name);
+            
+            // Clear current track draft
+            localStorage.removeItem('spmb_form_draft_track_' + this.trackId);
+            localStorage.removeItem('spmb_previews_draft_track_' + this.trackId);
+            
+            alert('Pendaftaran Jalur ' + this.trackInfo.name + ' berhasil terkirim! Mengalihkan ke halaman ringkasan...');
+            window.location.href = 'ringkasan.html?track=' + this.trackId;
+          }, 1500);
+        },
+
+        autoFillDemo() {
+          this.form.raporAvg = '88.4';
+
+          if (this.trackId === 1) {
+            this.form.prestasiType = 'akademik';
+            this.form.prestasiLevel = 'provinsi';
+            this.form.prestasiName = 'Olimpiade Fisika Siswa Nasional';
+            this.form.prestasiRank = 'Juara 2';
+          } else if (this.trackId === 2) {
+            this.form.cbtLocation = 'kampus_utama';
+            this.form.major1 = 'mipa';
+            this.form.major2 = 'ips';
+          } else if (this.trackId === 3) {
+            this.form.tahfidzJuz = '5';
+            this.form.tahfidzInstitution = 'PPTQ Darul Huffadz';
+            this.form.boardingProgram = 'tahfidz_intensif';
+          } else if (this.trackId === 4) {
+            this.form.distanceKm = '3.2';
+            this.form.nik = '3515091204080002';
+            this.form.transportation = 'sepeda';
+          }
+
+          // Pre-fill files
+          this.form.fileFoto = { name: 'ahmad_syarif_pasfoto.jpg', size: 1024 * 324 };
+          this.filePreviews.foto = 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=256&auto=format&fit=crop';
+          
+          this.form.fileRapor = { name: 'rapor_smp_ahmad_syarif.pdf', size: 1024 * 1845 };
+          this.filePreviews.rapor = 'rapor_smp_ahmad_syarif.pdf';
+          
+          this.form.fileSupporting = { name: 'sertifikat_olimpiade_fisika.pdf', size: 1024 * 920 };
+          this.filePreviews.supporting = 'sertifikat_olimpiade_fisika.pdf';
+
+          this.saveDraft();
+        },
+
+        switchSimulatorTrack(newId) {
+          this.trackId = newId;
+          this.init();
+          this.step = 1;
+          const url = new URL(window.location);
+          url.searchParams.set('track', newId);
+          window.history.pushState({}, '', url);
+        },
+
+        formatCurrency(amount) {
+          return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pilih Jalur Pendaftaran - Portal SPMB Tunas Luhur</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../../assets/img/logo/logo-sma.png">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/typography.css">
+  <link rel="stylesheet" href="../../assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/css/index.css">
+  <link rel="stylesheet" href="../../assets/css/portal.css">
+
+  <!-- AOS (Animate on Scroll) CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    /* Inner CSS tweaks to ensure extreme premium details on track selection */
+    .track-selection-card {
+      transition: all var(--transition-base);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      height: 100%;
+      border: 1px solid var(--color-divider);
+    }
+    .track-selection-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-primary-400);
+    }
+    .track-selection-card.disabled {
+      opacity: 0.65;
+      transform: none !important;
+      box-shadow: none !important;
+      border-color: var(--color-divider) !important;
+    }
+    .track-icon-wrapper {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .tag-pill {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .category-filter-btn {
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+      transition: all var(--transition-base);
+      border: 1px solid var(--color-divider);
+      background-color: white;
+      color: var(--color-text-muted);
+    }
+    .category-filter-btn:hover {
+      border-color: var(--color-primary-600);
+      color: var(--color-primary-800);
+    }
+    .category-filter-btn.active {
+      background-color: var(--color-primary-600);
+      border-color: var(--color-primary-600);
+      color: white;
+    }
+    .glass-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 74, 111, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 1050;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .glass-modal-content {
+      background: white;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .requirements-check-list li {
+      position: relative;
+      padding-left: 24px;
+      list-style-type: none;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .requirements-check-list li::before {
+      content: "\f00c";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--color-success);
+    }
+    .alert-banner-toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1100;
+      max-width: 380px;
+      animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+
+<body class="portal-bg" x-data="pilihJalurApp()">
+
+  <!-- TOP NAVBAR -->
+  <header class="portal-navbar">
+    <div class="container-xxl d-flex align-items-center justify-content-between h-100">
+
+      <!-- Brand Logo -->
+      <a href="../../index.html" class="portal-navbar-brand">
+        <img src="../../assets/img/logo/logo-sma.png" alt="SPMB Tunas Luhur Logo">
+        <div>
+          <div class="portal-brand-title">SPMB Tunas Luhur</div>
+          <div class="portal-brand-tagline">Portal Calon Siswa</div>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="portal-nav-links d-none d-md-flex align-items-center" aria-label="Navigasi portal">
+        <a href="../dashboard.html"><i class="fa-solid fa-chart-line me-1"></i> Dashboard</a>
+        <a href="../riwayat.html"><i class="fa-solid fa-clock-rotate-left me-1"></i> Riwayat</a>
+        <a href="https://wa.me/6281234567890" target="_blank"><i class="fa-solid fa-headset me-1"></i> Bantuan</a>
+      </nav>
+
+      <!-- Profile Dropdown (Right) -->
+      <div class="portal-navbar-profile position-relative" x-data="{ openProfile: false }"
+        @click.outside="openProfile = false">
+        <button class="portal-profile-trigger d-flex align-items-center" @click="openProfile = !openProfile"
+          aria-haspopup="true" :aria-expanded="openProfile">
+          <div class="portal-avatar">AS</div>
+          <span class="portal-username d-none d-sm-inline">Ahmad Syarif</span>
+          <i class="fa-solid fa-chevron-down ms-2 fs-xs"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div class="portal-dropdown-menu" x-show="openProfile" x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 transform scale-95"
+          x-transition:enter-end="opacity-100 transform scale-100" style="display: none;">
+          <div class="dropdown-header border-bottom pb-2 mb-1">
+            <h6 class="mb-0 fw-bold text-primary-900">Ahmad Syarif</h6>
+            <small class="text-muted">No. Reg: Reg-202604001</small>
+          </div>
+          <a href="#" class="portal-dropdown-item"><i class="fa-regular fa-user me-2"></i> Profil Saya</a>
+          <a href="#" class="portal-dropdown-item"><i class="fa-solid fa-gear me-2"></i> Pengaturan</a>
+          <div class="dropdown-divider"></div>
+          <a href="../masuk.html" class="portal-dropdown-item text-error"><i
+              class="fa-solid fa-right-from-bracket me-2"></i> Keluar</a>
+        </div>
+      </div>
+
+      <!-- Hamburger Menu Toggle (Mobile) -->
+      <button class="portal-nav-toggle d-md-none" id="portalNavToggle" @click="mobileMenuOpen = !mobileMenuOpen"
+        aria-label="Buka navigasi mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Navigation -->
+  <div class="portal-mobile-drawer d-md-none" :class="{ 'open': mobileMenuOpen }" style="display: none;"
+    x-show="mobileMenuOpen" @click.outside="mobileMenuOpen = false" x-transition>
+    <nav class="d-flex flex-column p-4" aria-label="Navigasi mobile portal">
+      <a href="../dashboard.html" class="py-3 border-bottom"><i class="fa-solid fa-chart-line me-2 text-primary-600"></i> Dashboard</a>
+      <a href="../riwayat.html" class="py-3 border-bottom"><i class="fa-solid fa-clock-rotate-left me-2 text-primary-600"></i> Riwayat Pendaftaran</a>
+      <a href="https://wa.me/6281234567890" target="_blank" class="py-3 border-bottom"><i class="fa-solid fa-headset me-2 text-primary-600"></i> Hubungi Bantuan</a>
+      <a href="../masuk.html" class="py-3 text-error"><i class="fa-solid fa-right-from-bracket me-2"></i> Keluar Akun</a>
+    </nav>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container-xxl py-4 py-lg-5 portal-content">
+
+    <!-- Page Header & Breadcrumb -->
+    <div class="mb-4" data-aos="fade-up" data-aos-duration="600">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-2 small">
+          <li class="breadcrumb-item"><a href="../dashboard.html" class="text-primary-600 text-decoration-none">Dashboard</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Pilih Jalur</li>
+        </ol>
+      </nav>
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+        <div>
+          <h4 class="fw-bold text-primary-900 mb-1">Pilih Jalur Pendaftaran</h4>
+          <p class="text-muted mb-0">Silakan pilih jalur pendaftaran yang aktif dan sesuai dengan kriteria akademik Anda.</p>
+        </div>
+        <div class="mt-3 mt-md-0">
+          <a href="../dashboard.html" class="btn btn-sm btn-outline-secondary px-3 py-2 border-primary text-primary-600">
+            <i class="fa-solid fa-arrow-left me-1"></i> Kembali ke Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Registration Notice Banner (Interactive) -->
+    <div class="alert alert-warning border border-warning border-opacity-50 p-3 mb-4 d-flex align-items-center"
+      x-show="simulationState === 'active_enrolled'" x-transition data-aos="fade-up">
+      <i class="fa-solid fa-triangle-exclamation text-warning fs-3 me-3"></i>
+      <div>
+        <strong class="text-primary-900 block d-block mb-1">Pendaftaran Aktif Terdeteksi!</strong>
+        <span class="text-muted small">Anda saat ini terdaftar pada <strong class="text-primary-800">Jalur Prestasi (Sedang Diproses)</strong>. Anda tidak diperkenankan mendaftar jalur lain kecuali Anda membatalkan pendaftaran aktif atau pendaftaran Anda dinyatakan ditolak.</span>
+      </div>
+    </div>
+
+    <div class="alert alert-info border border-info border-opacity-50 p-3 mb-4 d-flex align-items-center"
+      x-show="simulationState === 're_apply'" x-transition data-aos="fade-up">
+      <i class="fa-solid fa-circle-info text-primary-600 fs-3 me-3"></i>
+      <div>
+        <strong class="text-primary-900 block d-block mb-1">Kesempatan Mendaftar Kembali (Re-Apply) Aktif</strong>
+        <span class="text-muted small">Pendaftaran Anda sebelumnya di Jalur Prestasi dinyatakan belum memenuhi kriteria (Ditolak). Anda dipersilakan memilih salah satu jalur alternatif di bawah ini untuk melanjutkan pendaftaran.</span>
+      </div>
+    </div>
+
+    <!-- Filter & Search Controls -->
+    <div class="card p-3 mb-4 shadow-sm border-0" data-aos="fade-up" data-aos-duration="600" data-aos-delay="50">
+      <div class="row g-3 align-items-center">
+        <!-- Search bar -->
+        <div class="col-md-5">
+          <div class="position-relative">
+            <i class="fa-solid fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+            <input type="text" class="form-control ps-5" placeholder="Cari nama jalur atau persyaratan..." x-model="searchQuery">
+          </div>
+        </div>
+        <!-- Category Filters -->
+        <div class="col-md-7 text-md-end">
+          <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+            <button class="category-filter-btn" :class="selectedCategory === 'all' && 'active'" @click="selectedCategory = 'all'">Semua Jalur</button>
+            <button class="category-filter-btn" :class="selectedCategory === 'no_test' && 'active'" @click="selectedCategory = 'no_test'">Tanpa Tes</button>
+            <button class="category-filter-btn" :class="selectedCategory === 'test' && 'active'" @click="selectedCategory = 'test'">Dengan Tes Ujian</button>
+            <button class="category-filter-btn" :class="selectedCategory === 'boarding' && 'active'" @click="selectedCategory = 'boarding'">Asrama & Boarding</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracks Grid -->
+    <div class="row g-4 mb-4">
+      <template x-for="track in filteredTracks" :key="track.id">
+        <div class="col-md-6" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+          <div class="card track-selection-card shadow-sm border-0 d-flex flex-column h-100"
+            :class="isTrackDisabled(track) && 'disabled'">
+            
+            <div class="card-body p-4 d-flex flex-column justify-content-between h-100">
+              <div>
+                <!-- Top Badge & Header -->
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="track-icon-wrapper" :style="'background: ' + track.bgGradient + '; color: ' + track.iconColor">
+                    <span x-text="track.icon"></span>
+                  </div>
+                  
+                  <div class="d-flex flex-column align-items-end">
+                    <!-- Re-Apply Recommendation Badge -->
+                    <template x-if="getReApplyRecommendation(track)">
+                      <span class="badge bg-success text-white mb-1"><i class="fa-solid fa-star me-1 text-warning"></i> Rekomendasi Re-Apply</span>
+                    </template>
+
+                    <!-- Quota Badges -->
+                    <template x-if="isQuotaFull(track)">
+                      <span class="badge bg-danger text-white">Kuota Penuh</span>
+                    </template>
+                    <template x-if="!isQuotaFull(track)">
+                      <span class="badge bg-light text-primary-800 border border-primary border-opacity-25" 
+                        x-text="'Sisa ' + getQuotaLeft(track) + ' Kuota'"></span>
+                    </template>
+                  </div>
+                </div>
+
+                <!-- Title & Tags -->
+                <h5 class="fw-bold text-primary-900 mb-1" x-text="track.name"></h5>
+                <div class="d-flex flex-wrap gap-1 mb-3">
+                  <template x-for="tag in track.tags">
+                    <span class="tag-pill bg-light text-muted" x-text="tag"></span>
+                  </template>
+                </div>
+
+                <!-- Description -->
+                <p class="text-muted small leading-relaxed mb-4" x-text="track.description"></p>
+
+                <!-- Requirements Checklist -->
+                <div class="p-3 bg-light rounded-md mb-4 border">
+                  <h6 class="fw-bold text-primary-800 fs-xs text-uppercase tracking-wider mb-2"><i class="fa-solid fa-clipboard-list me-1"></i> Syarat Utama:</h6>
+                  <ul class="requirements-check-list p-0 m-0">
+                    <template x-for="req in track.requirements">
+                      <li class="text-muted" x-text="req"></li>
+                    </template>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Price & Selection Actions -->
+              <div class="border-top pt-3 mt-auto d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="text-muted d-block small">Biaya Pendaftaran:</span>
+                  <strong class="text-primary-950 text-lg" x-text="formatCurrency(track.fee)"></strong>
+                </div>
+                <div>
+                  <!-- Active Button -->
+                  <button class="btn btn-primary px-4 py-2" 
+                    x-show="!isTrackDisabled(track)"
+                    @click="selectTrack(track)">
+                    Pilih Jalur <i class="fa-solid fa-chevron-right ms-2 fs-xs"></i>
+                  </button>
+
+                  <!-- Disabled Warning Button -->
+                  <button class="btn btn-secondary bg-light text-muted border-0 cursor-pointer px-3 py-2 text-start" 
+                    style="max-width: 180px; font-size:0.75rem;"
+                    x-show="isTrackDisabled(track)"
+                    @click="alert(getDisabledReason(track))"
+                    title="Jalur Tidak Tersedia">
+                    <i class="fa-solid fa-lock me-1"></i> <span x-text="isQuotaFull(track) ? 'Kuota Habis' : 'Dinonaktifkan'"></span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Empty State if no tracks match filters -->
+      <div class="col-12 text-center py-5" x-show="filteredTracks.length === 0" x-transition>
+        <div class="text-muted mb-2"><i class="fa-regular fa-compass fs-1"></i></div>
+        <h6 class="fw-bold text-primary-900">Jalur tidak ditemukan</h6>
+        <p class="text-muted small mb-0">Silakan ubah filter pencarian Anda atau periksa kembali ejaan.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- CONFIRMATION TERMS MODAL (Alpine.js glassmorphism modal) -->
+  <div class="glass-modal-backdrop" x-show="showModal" style="display: none;" x-transition>
+    <div class="glass-modal-content p-4" @click.outside="showModal = false">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-primary-900 mb-0"><i class="fa-solid fa-file-signature text-primary-600 me-2"></i> Konfirmasi Pemilihan</h5>
+        <button class="btn btn-close btn-sm" @click="showModal = false"></button>
+      </div>
+      
+      <template x-if="selectedTrack">
+        <div class="modal-body p-0 mb-4">
+          <p class="text-muted small">Anda telah memilih untuk mendaftar pada jalur berikut:</p>
+          
+          <div class="p-3 bg-light rounded-md border mb-3">
+            <div class="d-flex align-items-center mb-2">
+              <span class="fs-4 me-2" x-text="selectedTrack.icon"></span>
+              <strong class="text-primary-900" x-text="selectedTrack.name"></strong>
+            </div>
+            <span class="text-muted small d-block mb-1">Rincian Biaya Formulir:</span>
+            <strong class="text-primary-950 fs-5" x-text="formatCurrency(selectedTrack.fee)"></strong>
+          </div>
+
+          <div class="alert alert-warning p-2 small border border-warning border-opacity-25 mb-3">
+            <i class="fa-solid fa-triangle-exclamation me-1"></i> <strong>Penting:</strong> Setelah Anda menekan tombol "Lanjutkan", pilihan jalur Anda akan dikunci sementara untuk mengisi formulir pendaftaran. Anda tidak dapat memilih jalur lain hingga pendaftaran ini dibatalkan atau diselesaikan.
+          </div>
+
+          <!-- Terms and Conditions checkbox -->
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="termsCheck" x-model="agreedToTerms">
+            <label class="form-check-label text-muted small cursor-pointer" for="termsCheck">
+              Saya menyetujui persyaratan pendaftaran pada <span class="fw-bold" x-text="selectedTrack.name"></span> serta bersedia mengunggah dokumen yang valid dan sah.
+            </label>
+          </div>
+        </div>
+      </template>
+
+      <div class="d-flex gap-2 justify-content-end">
+        <button class="btn btn-sm btn-outline-secondary px-3 py-2 border-primary text-primary-600" @click="showModal = false">Batal</button>
+        <button class="btn btn-sm btn-primary px-4 py-2" 
+          :disabled="!agreedToTerms" 
+          @click="confirmSelection()">Lanjutkan Pendaftaran <i class="fa-solid fa-chevron-right ms-1 fs-xs"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING PROTOTYPE STATE SIMULATOR (PROTOTYPE ONLY) -->
+  <div class="portal-simulator-widget shadow-lg" x-data="{ collapsed: false }" :class="{ 'collapsed': collapsed }">
+    <div
+      class="widget-header d-flex align-items-center justify-content-between border-bottom pb-2 mb-2 bg-primary-600 text-white rounded-top p-2"
+      style="margin: -10px -10px 10px -10px;">
+      <span class="fw-bold small"><i class="fa-solid fa-vial me-1"></i> SIMULATOR KEADAAN</span>
+      <button class="btn btn-sm text-white p-0" @click="collapsed = !collapsed">
+        <i class="fa-solid" :class="collapsed ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+      </button>
+    </div>
+
+    <div class="widget-content" x-show="!collapsed">
+      <p class="small text-muted mb-2">Simulasikan berbagai kondisi akun pendaftar ketika memilih jalur pendaftaran:</p>
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-sm btn-outline-primary text-start"
+          :class="{ 'active bg-primary text-white': simulationState === 'none' }" 
+          @click="simulationState = 'none'">
+          1. Akun Baru (Belum Memilih)
+        </button>
+        <button class="btn btn-sm btn-outline-warning text-start"
+          :class="{ 'active bg-warning text-dark': simulationState === 'active_enrolled' }" 
+          @click="simulationState = 'active_enrolled'">
+          2. Akun Memiliki Jalur Aktif
+        </button>
+        <button class="btn btn-sm btn-outline-info text-start"
+          :class="{ 'active bg-info text-white': simulationState === 're_apply' }" 
+          @click="simulationState = 're_apply'">
+          3. Akun Gagal Seleksi (Re-Apply)
+        </button>
+        <button class="btn btn-sm btn-outline-danger text-start"
+          :class="{ 'active bg-danger text-white': simulationState === 'quota_full' }" 
+          @click="simulationState = 'quota_full'">
+          4. Semua Kuota Pendaftaran Penuh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Bootstrap Bundle JS -->
+  <script src="../../assets/js/vendor/bootstrap.bundle.min.js"></script>
+  <!-- AOS Animation JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true });
+
+    function pilihJalurApp() {
+      return {
+        mobileMenuOpen: false,
+        searchQuery: '',
+        selectedCategory: 'all',
+        simulationState: 'none', // 'none', 'active_enrolled', 're_apply', 'quota_full'
+        activeTrackName: 'Jalur Prestasi', // for active_enrolled
+        showModal: false,
+        selectedTrack: null,
+        agreedToTerms: false,
+
+        tracks: [
+          {
+            id: 1,
+            name: 'Jalur Prestasi (Akademik & Non-Akademik)',
+            category: 'no_test',
+            icon: '🎓',
+            iconColor: '#0b4a6f',
+            bgGradient: 'linear-gradient(135deg, rgba(11,74,111,0.1), rgba(242,201,76,0.1))',
+            quotaMax: 50,
+            quotaUsed: 15,
+            fee: 150000,
+            description: 'Penerimaan berdasarkan nilai rapor sekolah dan sertifikat prestasi akademik/non-akademik tingkat kabupaten/provinsi/nasional.',
+            requirements: [
+              'Rata-rata nilai rapor semester 1-5 minimal 80.0',
+              'Scan piagam/sertifikat kejuaraan resmi (jika ada)',
+              'Surat rekomendasi kelayakan kepala sekolah asal'
+            ],
+            tags: ['Akademik', 'Prestasi', 'Tanpa Ujian']
+          },
+          {
+            id: 2,
+            name: 'Jalur Tes Tulis (Ujian CBT)',
+            category: 'test',
+            icon: '✍️',
+            iconColor: '#0077cc',
+            bgGradient: 'linear-gradient(135deg, rgba(0,119,204,0.1), rgba(242,201,76,0.1))',
+            quotaMax: 120,
+            quotaUsed: 48,
+            fee: 200000,
+            description: 'Jalur penerimaan reguler melalui ujian tes tertulis berbasis komputer (CBT) yang menguji Matematika, Bahasa Inggris, dan Potensi Akademik.',
+            requirements: [
+              'Lulusan SMP/MTs sederajat tahun berjalan / 2 tahun lalu',
+              'Melaksanakan ujian sesuai dengan kartu jadwal ujian CBT',
+              'Membayar biaya administrasi pelaksanaan ujian'
+            ],
+            tags: ['CBT', 'Akademik', 'Ujian Tertulis']
+          },
+          {
+            id: 3,
+            name: 'Jalur Unggulan (Tahfidz & Boarding)',
+            category: 'boarding',
+            icon: '⭐',
+            iconColor: '#28a745',
+            bgGradient: 'linear-gradient(135deg, rgba(40,167,69,0.1), rgba(242,201,76,0.1))',
+            quotaMax: 20,
+            quotaUsed: 3,
+            fee: 250000,
+            description: 'Jalur eksklusif bagi penghafal Al-Qur\'an (min. 3 juz) atau juara keagamaan. Dilengkapi dengan asrama penuh (boarding school).',
+            requirements: [
+              'Sertifikat/syahadah tahfidz dari lembaga kredibel',
+              'Mengikuti tes lisan kemampuan hafalan (tasmi\') secara langsung',
+              'Surat rekomendasi pengurus ponpes atau tokoh agama'
+            ],
+            tags: ['Tahfidz', 'Asrama', 'Boarding']
+          },
+          {
+            id: 4,
+            name: 'Jalur Umum (Reguler)',
+            category: 'no_test',
+            icon: '📋',
+            iconColor: '#f2994a',
+            bgGradient: 'linear-gradient(135deg, rgba(242,153,74,0.1), rgba(11,74,111,0.1))',
+            quotaMax: 100,
+            quotaUsed: 100, // starts full for mock
+            fee: 150000,
+            description: 'Penerimaan reguler standar berdasarkan administrasi berkas umum dan pertimbangan kedekatan zonasi tempat tinggal.',
+            requirements: [
+              'Dokumen kependudukan standar (KK, KTP Orang Tua)',
+              'Ijazah SMP/MTs sederajat atau SKL tahun kelulusan',
+              'Batas umur calon siswa maksimal 21 tahun'
+            ],
+            tags: ['Umum', 'Zonasi', 'Berkas']
+          }
+        ],
+
+        get filteredTracks() {
+          return this.tracks.filter(track => {
+            const matchesSearch = track.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                                  track.description.toLowerCase().includes(this.searchQuery.toLowerCase());
+            const matchesCategory = this.selectedCategory === 'all' || track.category === this.selectedCategory;
+            return matchesSearch && matchesCategory;
+          });
+        },
+
+        getQuotaLeft(track) {
+          if (this.simulationState === 'quota_full') return 0;
+          return track.quotaMax - track.quotaUsed;
+        },
+
+        isQuotaFull(track) {
+          return this.getQuotaLeft(track) <= 0;
+        },
+
+        isTrackDisabled(track) {
+          if (this.simulationState === 'active_enrolled') return true;
+          if (this.simulationState === 're_apply' && track.id === 1) return true; // Prestasi failed
+          return this.isQuotaFull(track);
+        },
+
+        getDisabledReason(track) {
+          if (this.simulationState === 'active_enrolled') {
+            return 'Anda sudah memiliki pendaftaran aktif di ' + this.activeTrackName;
+          }
+          if (this.simulationState === 're_apply' && track.id === 1) {
+            return 'Status pendaftaran Anda di jalur ini sebelumnya ditolak (Gagal)';
+          }
+          if (this.isQuotaFull(track)) {
+            return 'Kuota pendaftaran jalur ini sudah penuh (Habis)';
+          }
+          return '';
+        },
+
+        getReApplyRecommendation(track) {
+          return this.simulationState === 're_apply' && track.id === 2; // Recommend CBT if Prestasi fails
+        },
+
+        selectTrack(track) {
+          if (this.isTrackDisabled(track)) return;
+          this.selectedTrack = track;
+          this.agreedToTerms = false;
+          this.showModal = true;
+        },
+
+        confirmSelection() {
+          if (!this.agreedToTerms) return;
+          this.showModal = false;
+          window.location.href = 'form-pendaftaran.html?track=' + this.selectedTrack.id;
+        },
+
+        formatCurrency(amount) {
+          return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

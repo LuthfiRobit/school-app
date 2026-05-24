@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - Portal SPMB Tunas Luhur</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/img/logo/logo-sma.png">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/typography.css">
+  <link rel="stylesheet" href="../assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/index.css">
+  <link rel="stylesheet" href="../assets/css/portal.css">
+
+  <!-- AOS (Animate on Scroll) CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+
+<body class="portal-bg" x-data="dashboardApp()">
+
+  <!-- TOP NAVBAR -->
+  <header class="portal-navbar">
+    <div class="container-xxl d-flex align-items-center justify-content-between h-100">
+
+      <!-- Brand Logo -->
+      <a href="../index.html" class="portal-navbar-brand">
+        <img src="../assets/img/logo/logo-sma.png" alt="SPMB Tunas Luhur Logo">
+        <div>
+          <div class="portal-brand-title">SPMB Tunas Luhur</div>
+          <div class="portal-brand-tagline">Portal Calon Siswa</div>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="portal-nav-links d-none d-md-flex align-items-center" aria-label="Navigasi portal">
+        <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-line me-1"></i> Dashboard</a>
+        <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left me-1"></i> Riwayat</a>
+        <a href="https://wa.me/6281234567890" target="_blank"><i class="fa-solid fa-headset me-1"></i> Bantuan</a>
+      </nav>
+
+      <!-- Profile Dropdown (Right) -->
+      <div class="portal-navbar-profile position-relative" x-data="{ openProfile: false }"
+        @click.outside="openProfile = false">
+        <button class="portal-profile-trigger d-flex align-items-center" @click="openProfile = !openProfile"
+          aria-haspopup="true" :aria-expanded="openProfile">
+          <div class="portal-avatar">AS</div>
+          <span class="portal-username d-none d-sm-inline">Ahmad Syarif</span>
+          <i class="fa-solid fa-chevron-down ms-2 fs-xs"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div class="portal-dropdown-menu" x-show="openProfile" x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 transform scale-95"
+          x-transition:enter-end="opacity-100 transform scale-100" style="display: none;">
+          <div class="dropdown-header border-bottom pb-2 mb-1">
+            <h6 class="mb-0 fw-bold text-primary-900">Ahmad Syarif</h6>
+            <small class="text-muted">No. Reg: Reg-202604001</small>
+          </div>
+          <a href="#" class="portal-dropdown-item"><i class="fa-regular fa-user me-2"></i> Profil Saya</a>
+          <a href="#" class="portal-dropdown-item"><i class="fa-solid fa-gear me-2"></i> Pengaturan</a>
+          <div class="dropdown-divider"></div>
+          <a href="masuk.html" class="portal-dropdown-item text-error"><i
+              class="fa-solid fa-right-from-bracket me-2"></i> Keluar</a>
+        </div>
+      </div>
+
+      <!-- Hamburger Menu Toggle (Mobile) -->
+      <button class="portal-nav-toggle d-md-none" id="portalNavToggle" @click="mobileMenuOpen = !mobileMenuOpen"
+        aria-label="Buka navigasi mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Navigation -->
+  <div class="portal-mobile-drawer d-md-none" :class="{ 'open': mobileMenuOpen }" style="display: none;"
+    x-show="mobileMenuOpen" @click.outside="mobileMenuOpen = false" x-transition>
+    <nav class="d-flex flex-column p-4" aria-label="Navigasi mobile portal">
+      <a href="dashboard.html" class="active py-3 border-bottom"><i
+          class="fa-solid fa-chart-line me-2 text-primary-600"></i> Dashboard</a>
+      <a href="riwayat.html" class="py-3 border-bottom"><i class="fa-solid fa-clock-rotate-left me-2 text-primary-600"></i> Riwayat
+        Pendaftaran</a>
+      <a href="https://wa.me/6281234567890" target="_blank" class="py-3 border-bottom"><i
+          class="fa-solid fa-headset me-2 text-primary-600"></i> Hubungi Bantuan</a>
+      <a href="masuk.html" class="py-3 text-error"><i class="fa-solid fa-right-from-bracket me-2"></i> Keluar Akun</a>
+    </nav>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container-xxl py-4 py-lg-5 portal-content">
+
+    <!-- STEPPER TIMELINE STATUS -->
+    <div class="card mb-4 p-4 shadow-sm" data-aos="fade-down" data-aos-duration="600">
+      <h6 class="fw-bold mb-4 text-primary text-uppercase tracking-wider">
+        <i class="fa-solid fa-route me-2"></i> Alur Pendaftaran Anda
+      </h6>
+
+      <!-- Container Scroll untuk Mobile agar tetap rapi -->
+      <div class="portal-stepper-scroll-container px-2 pb-3">
+        <div class="position-relative mx-auto mt-2 mb-4" style="max-width: 640px; min-width: 520px;">
+
+          <!-- 1. GARIS PENGHUBUNG (BACKGROUND & ACTIVE) -->
+          <!-- Menggunakan total 5 celah antar 6 step (100% / 5 = 20% per step) -->
+          <div class="position-absolute translate-middle-y" style="height: 3px; left: 32px; right: 32px; top: 16px; z-index: 0;">
+            <div class="position-absolute top-0 start-0 w-100 bg-secondary-subtle" style="height: 3px;"></div>
+            <div class="position-absolute top-0 start-0 bg-primary transition-all"
+              style="height: 3px; transition: width 0.4s ease;"
+              :style="'width: ' + ((activeStep - 1) * 20) + '%'">
+            </div>
+          </div>
+
+          <!-- 2. WIDGET STEP INDICATOR -->
+          <div class="d-flex justify-content-between position-relative" style="z-index: 1;">
+
+            <!-- Step 1: Daftar -->
+            <div class="text-center" style="width: 64px;">
+              <div
+                class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold border border-2 transition-all"
+                :class="activeStep > 1 ? 'bg-success text-white border-success' : (activeStep === 1 ? 'bg-primary text-white border-primary shadow' : 'bg-light text-muted border-secondary-subtle')"
+                style="width: 32px; height: 32px;">
+                <i class="fa-solid fa-check" x-show="activeStep > 1"></i>
+                <span x-show="activeStep === 1">1</span>
+              </div>
+              <span class="small fw-semibold d-block text-truncate"
+                :class="activeStep === 1 ? 'text-primary' : 'text-secondary'">Daftar</span>
+            </div>
+
+            <!-- Step 2: Bayar -->
+            <div class="text-center" style="width: 64px;">
+              <div
+                class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold border border-2 transition-all"
+                :class="activeStep > 2 ? 'bg-success text-white border-success' : (activeStep === 2 ? 'bg-primary text-white border-primary shadow' : 'bg-light text-muted border-secondary-subtle')"
+                style="width: 32px; height: 32px;">
+                <i class="fa-solid fa-check" x-show="activeStep > 2"></i>
+                <span x-show="activeStep <= 2">2</span>
+              </div>
+              <span class="small fw-semibold d-block text-truncate"
+                :class="activeStep === 2 ? 'text-primary' : 'text-secondary'">Bayar</span>
+            </div>
+
+            <!-- Step 3: Seleksi -->
+            <div class="text-center" style="width: 64px;">
+              <div
+                class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold border border-2 transition-all"
+                :class="activeStep > 3 ? 'bg-success text-white border-success' : (activeStep === 3 ? 'bg-primary text-white border-primary shadow' : 'bg-light text-muted border-secondary-subtle')"
+                style="width: 32px; height: 32px;">
+                <i class="fa-solid fa-check" x-show="activeStep > 3"></i>
+                <span x-show="activeStep <= 3">3</span>
+              </div>
+              <span class="small fw-semibold d-block text-truncate"
+                :class="activeStep === 3 ? 'text-primary' : 'text-secondary'">Seleksi</span>
+            </div>
+
+            <!-- Step 4: Kelulusan / Gagal -->
+            <div class="text-center" style="width: 64px;">
+              <div
+                class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold border border-2 transition-all"
+                :class="status === 'rejected' ? 'bg-danger text-white border-danger shadow' : (activeStep > 4 || status === 'permanent' ? 'bg-success text-white border-success' : (activeStep === 4 ? 'bg-primary text-white border-primary shadow' : 'bg-light text-muted border-secondary-subtle'))"
+                style="width: 32px; height: 32px;">
+                <i class="fa-solid fa-xmark" x-show="status === 'rejected'"></i>
+                <i class="fa-solid fa-check" x-show="activeStep > 4 && status !== 'rejected'"></i>
+                <span x-show="activeStep <= 4 && status !== 'rejected'">4</span>
+              </div>
+              <span class="small fw-semibold d-block text-truncate"
+                :class="status === 'rejected' ? 'text-danger' : (activeStep === 4 ? 'text-primary' : 'text-secondary')"
+                x-text="status === 'rejected' ? 'Gagal' : 'Kelulusan'">Kelulusan</span>
+            </div>
+
+            <!-- Step 5: Daftar Ulang -->
+            <div class="text-center" style="width: 64px;">
+              <div
+                class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold border border-2 transition-all"
+                :class="status === 'permanent' || activeStep > 5 ? 'bg-success text-white border-success' : (activeStep === 5 ? 'bg-primary text-white border-primary shadow' : 'bg-light text-muted border-secondary-subtle')"
+                style="width: 32px; height: 32px;">
+                <i class="fa-solid fa-check" x-show="activeStep > 5 || status === 'permanent'"></i>
+                <span x-show="activeStep <= 5 && status !== 'permanent'">5</span>
+              </div>
+              <span class="small fw-semibold d-block text-truncate"
+                :class="activeStep === 5 ? 'text-primary' : 'text-secondary'">Daftar Ulang</span>
+            </div>
+
+            <!-- Step 6: Siswa Baru -->
+            <div class="text-center" style="width: 64px;">
+              <div
+                class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 fw-bold border border-2 transition-all"
+                :class="status === 'permanent' ? 'bg-success text-white border-success shadow' : 'bg-light text-muted border-secondary-subtle'"
+                style="width: 32px; height: 32px;">
+                <i class="fa-solid fa-graduation-cap" x-show="status === 'permanent'"></i>
+                <span x-show="status !== 'permanent'">6</span>
+              </div>
+              <span class="small fw-semibold d-block text-truncate"
+                :class="status === 'permanent' ? 'text-success' : 'text-secondary'">Siswa Baru</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID: WELCOME CARD & SIDEBAR INFO -->
+    <div class="row g-4">
+
+      <!-- LEFT COLUMN: WELCOME CARD / DYNAMIC CONTENT -->
+      <div class="col-lg-8" data-aos="fade-right" data-aos-duration="600">
+
+        <!-- DRAFT CARD -->
+        <div class="card portal-status-card card-draft border-start-primary h-100" x-show="status === 'draft'"
+          x-transition>
+          <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="badge badge-secondary mb-3"><i class="fa-solid fa-pen-clip me-1"></i> DRAF FORMULIR</div>
+              <h3 class="fw-bold text-primary-900 mb-3">Lengkapi Formulir Pendaftaran Anda</h3>
+              <p class="text-muted leading-relaxed mb-4">
+                Halo, <strong>Ahmad Syarif</strong>! Akun Anda telah aktif. Langkah pertama Anda adalah mengisi formulir
+                profil pendaftaran agar panitia dapat mengevaluasi berkas Anda di tahap berikutnya.
+              </p>
+
+              <div class="alert alert-primary d-flex align-items-center mb-4">
+                <i class="fa-solid fa-triangle-exclamation me-3 fs-4 text-primary-600"></i>
+                <div>
+                  Informasi pendaftaran belum tersimpan. Lengkapi berkas sekarang untuk mengunci kuota pendaftaran.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <a href="pendaftaran/pilih-jalur.html" class="btn btn-primary px-4 py-2"><i class="fa-solid fa-file-signature me-2"></i> Lanjutkan
+                Pengisian Formulir</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- WAITING PAYMENT CARD -->
+        <div class="card portal-status-card card-payment border-start-warning h-100"
+          x-show="status === 'waiting_payment'" x-transition>
+          <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="badge badge-warning text-white mb-3"><i class="fa-solid fa-wallet me-1"></i> MENUNGGU
+                PEMBAYARAN</div>
+              <h3 class="fw-bold text-primary-900 mb-3">Segera Selesaikan Pembayaran Biaya Pendaftaran</h3>
+              <p class="text-muted leading-relaxed mb-4">
+                Pilihan jalur Anda (**Jalur Prestasi**) telah tersimpan. Silakan transfer biaya registrasi pendaftaran
+                sebelum batas waktu untuk masuk ke tahap verifikasi dokumen.
+              </p>
+
+              <div class="invoice-box p-3 bg-light rounded-md mb-4 border">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Total Tagihan:</span>
+                  <strong class="text-primary-900 text-lg">Rp 250.000</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Rekening Transfer:</span>
+                  <span class="fw-bold text-primary-900">Bank Jatim (Cab. Probolinggo)</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted">Nomor Rekening:</span>
+                  <span class="fw-bold text-primary-900 text-monospace">0123-456-789 <i
+                      class="fa-regular fa-copy ms-1 cursor-pointer"
+                      @click="alert('Nomor rekening disalin!')"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <a href="pembayaran.html" class="btn btn-primary px-4 py-2"><i class="fa-solid fa-upload me-2"></i> Upload Bukti
+                Pembayaran</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- VERIFICATION (IN_REVIEW) CARD -->
+        <div class="card portal-status-card card-review border-start-info h-100" x-show="status === 'verification'"
+          x-transition>
+          <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="badge badge-primary mb-3"><i class="fa-solid fa-arrows-spin me-1"></i> SEDANG DIVERIFIKASI
+              </div>
+              <h3 class="fw-bold text-primary-900 mb-3">Berkas Sedang Diperiksa oleh Admin</h3>
+              <p class="text-muted leading-relaxed mb-4">
+                Terima kasih telah melakukan pembayaran dan melengkapi berkas pendaftaran Anda. Saat ini panitia SPMB
+                sedang melakukan verifikasi keaslian dokumen dan status pembayaran.
+              </p>
+
+              <div class="p-4 bg-primary-light rounded-xl text-center border border-primary-200 mb-4">
+                <div class="spinner-border text-primary-600 mb-3" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <h6 class="fw-bold mb-1 text-primary-900">Proses Validasi Dokumen</h6>
+                <p class="text-muted small mb-0">Estimasi verifikasi selesai dalam 1-2 hari kerja.</p>
+              </div>
+            </div>
+
+            <div>
+              <a href="https://wa.me/6281234567890" target="_blank"
+                class="btn btn-outline-secondary px-4 py-2 border-primary text-primary-600"><i
+                  class="fa-brands fa-whatsapp me-2"></i> Hubungi Customer Service</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- SELECTION (JADWAL SELEKSI) CARD -->
+        <div class="card portal-status-card card-selection border-start-accent h-100" x-show="status === 'selection'"
+          x-transition>
+          <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="badge badge-primary bg-accent mb-3"><i class="fa-solid fa-calendar-check me-1"></i> JADWAL
+                SELEKSI TERSEDIA</div>
+              <h3 class="fw-bold text-primary-900 mb-3">Persiapkan Diri Anda Untuk Ujian Seleksi</h3>
+              <p class="text-muted leading-relaxed mb-4">
+                Berkas Anda dinyatakan lolos verifikasi. Anda diwajibkan mengikuti Ujian Seleksi Tertulis Berbasis
+                Komputer (CBT) sesuai dengan rincian jadwal berikut:
+              </p>
+
+              <div class="schedule-box p-3 bg-light rounded-md mb-4 border">
+                <div class="row g-2">
+                  <div class="col-sm-6">
+                    <span class="text-muted d-block small">Mata Ujian:</span>
+                    <strong class="text-primary-900">Tes Potensi Akademik & Minat Bakat</strong>
+                  </div>
+                  <div class="col-sm-6">
+                    <span class="text-muted d-block small">Tanggal Ujian:</span>
+                    <strong class="text-primary-900">Sabtu, 30 Mei 2026</strong>
+                  </div>
+                  <div class="col-sm-6 mt-3">
+                    <span class="text-muted d-block small">Jam Ujian:</span>
+                    <strong class="text-primary-900">08:00 - 10:30 WIB</strong>
+                  </div>
+                  <div class="col-sm-6 mt-3">
+                    <span class="text-muted d-block small">Lokasi/Ruang:</span>
+                    <strong class="text-primary-900">Lab Komputer Utama (Lantai 2)</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <button class="btn btn-primary px-4 py-2" @click="alert('Kartu Ujian sedang digenerate...')"><i
+                  class="fa-solid fa-file-pdf me-2"></i> Unduh Kartu Peserta Ujian</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASSED CARD -->
+        <div class="card portal-status-card card-passed border-start-success h-100" x-show="status === 'passed'"
+          x-transition>
+          <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="badge badge-success mb-3"><i class="fa-solid fa-circle-check me-1"></i> SELEKSI LULUS</div>
+              <h3 class="fw-bold text-success mb-3">Selamat, Anda Dinyatakan LULUS Seleksi!</h3>
+              <p class="text-muted leading-relaxed mb-4">
+                Berdasarkan keputusan rapat panitia SPMB SMA Tunas Luhur, Anda dinyatakan **LULUS** pada **Jalur
+                Prestasi**. Langkah selanjutnya adalah melakukan konfirmasi daftar ulang dan penyelesaian administrasi.
+              </p>
+
+              <div class="alert alert-success d-flex align-items-center mb-4">
+                <i class="fa-solid fa-gift me-3 fs-3 text-success"></i>
+                <div>
+                  <strong>Batas Akhir Daftar Ulang:</strong> 15 Juni 2026. Lakukan pengunggahan cicilan biaya awal untuk
+                  memfinalisasi status siswa Anda.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <a href="daftar-ulang.html" class="btn btn-success px-4 py-2" @click="localStorage.setItem('spmb_simulated_status', 're_registration')"><i
+                  class="fa-solid fa-file-invoice-dollar me-2"></i> Lakukan Daftar Ulang Sekarang</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- RE-REGISTRATION (DAFTAR ULANG) CARD -->
+        <div class="card portal-status-card card-re-registration border-start-warning h-100"
+          x-show="status === 're_registration'" x-transition>
+          <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="badge badge-warning text-white mb-3"><i class="fa-solid fa-file-invoice-dollar me-1"></i>
+                PROSES DAFTAR ULANG</div>
+              <h3 class="fw-bold text-primary-900 mb-3">Selesaikan Pembayaran Biaya Daftar Ulang</h3>
+              <p class="text-muted leading-relaxed mb-4">
+                Selamat! Berkas daftar ulang Anda sedang diproses. Anda dapat mencicil biaya daftar ulang di bawah ini
+                dan mengunggah bukti transaksinya secara bertahap.
+              </p>
+
+              <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-muted small">Progress Pelunasan:</span>
+                  <span class="fw-bold text-primary-900 small">Rp 1.500.000 / Rp 4.500.000 (33% Lunas)</span>
+                </div>
+                <div class="progress" style="height: 10px; border-radius: 5px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 33%" aria-valuenow="33"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+
+              <div class="invoice-box p-3 bg-light rounded-md mb-4 border">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Sisa Tagihan:</span>
+                  <strong class="text-error text-lg">Rp 3.000.000</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted">Batas Akhir Pelunasan:</span>
+                  <span class="fw-bold text-primary-900">30 Juni 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <a href="daftar-ulang.html" class="btn btn-primary px-4 py-2"><i
+                  class="fa-solid fa-upload me-2"></i> Upload Bukti Cicilan</a>
+              <button class="btn btn-success px-4 py-2" @click="setStatus('permanent')"><i
+                  class="fa-solid fa-circle-check me-2"></i> Simulasikan Lunas (Finalisasi)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- REJECTED CARD -->
+        <div class="card portal-status-card card-rejected border-start-error h-100" x-show="status === 'rejected'"
+          x-transition>
+          <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="badge badge-error mb-3"><i class="fa-solid fa-circle-xmark me-1"></i> SELEKSI SELESAI</div>
+              <h3 class="fw-bold text-error mb-3">Mohon Maaf, Anda Belum Lulus Seleksi</h3>
+              <p class="text-muted leading-relaxed mb-4">
+                Terima kasih atas minat Anda mendaftar di SMA Tunas Luhur. Berdasarkan hasil evaluasi berkas Jalur
+                Prestasi, Anda dinyatakan **BELUM MEMENUHI KRITERIA KELULUSAN** untuk jalur ini.
+              </p>
+
+              <div class="alert alert-error d-flex align-items-center mb-4">
+                <i class="fa-solid fa-circle-info me-3 fs-4 text-error"></i>
+                <div>
+                  <strong>Alasan Penolakan:</strong> Skor sertifikat kejuaraan tidak mencapai nilai batas minimum
+                  kelulusan.
+                </div>
+              </div>
+
+              <p class="text-muted small">
+                Jangan berkecil hati! Anda masih memiliki kesempatan untuk mendaftar kembali melalui **Jalur Ujian Tes
+                Tulis** yang saat ini masih dibuka. Data profil dasar Anda akan disalin otomatis untuk pendaftaran
+                ulang.
+              </p>
+            </div>
+
+            <div>
+              <a href="pendaftaran/jalur-lain.html?rejected_track=1" class="btn btn-outline-danger px-4 py-2"><i class="fa-solid fa-rotate-right me-2"></i> Daftar
+                Jalur Lain (Re-Apply)</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- PERMANENT STUDENT CARD -->
+        <div class="card portal-status-card card-permanent border-start-success h-100" x-show="status === 'permanent'"
+          x-transition @show-confetti="triggerConfetti()">
+          <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="badge badge-success mb-3"><i class="fa-solid fa-award me-1"></i> STATUS: SISWA TETAP</div>
+              <h3 class="fw-bold text-primary-900 mb-3">Selamat Bergabung di SMA Tunas Luhur!</h3>
+              <p class="text-muted leading-relaxed mb-4">
+                Administrasi daftar ulang Anda telah **Lunas & Terverifikasi**. Anda telah terdaftar sebagai **Siswa
+                Baru Tetap** untuk Tahun Ajaran 2026/2027.
+              </p>
+
+              <div class="p-3 bg-light rounded-xl mb-4 border border-success-subtle d-flex align-items-center">
+                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3"
+                  style="width: 48px; height: 48px;">
+                  <i class="fa-solid fa-id-card fs-4"></i>
+                </div>
+                <div>
+                  <span class="text-muted d-block small">Nomor Induk Siswa Sementara (NISS) Anda:</span>
+                  <strong class="text-primary-900 text-lg">2627-010-092</strong>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <a href="surat.html" class="btn btn-success px-4 py-2"><i
+                  class="fa-solid fa-download me-2"></i> Unduh Surat Pernyataan & SK</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: SIDEBAR (PROFILE & RECENT ACTIVITIES) -->
+      <div class="col-lg-4" data-aos="fade-left" data-aos-duration="600">
+
+        <!-- APPLICANT PROFILE SUMMARY -->
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body p-4">
+            <h6 class="fw-bold mb-3 text-primary-800 text-uppercase tracking-wider"><i
+                class="fa-regular fa-id-badge me-2"></i> Profil Calon Siswa</h6>
+
+            <div class="d-flex align-items-center mb-3">
+              <div class="portal-avatar me-3" style="width: 52px; height: 52px; font-size: 1.4rem;">AS</div>
+              <div>
+                <h6 class="fw-bold text-primary-900 mb-0">Ahmad Syarif</h6>
+                <small class="text-muted">Jalur Pendaftaran: Prestasi</small>
+              </div>
+            </div>
+
+            <div class="border-top pt-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small">NISN:</span>
+                <span class="fw-bold text-primary-900 small">0087654321</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small">No. HP WA:</span>
+                <span class="fw-bold text-primary-900 small">0812-3456-7890</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted small">Asal Sekolah:</span>
+                <span class="fw-bold text-primary-900 small">SMP Negeri 1 Probolinggo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT TIMELINE LOGS -->
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <h6 class="fw-bold mb-3 text-primary-800 text-uppercase tracking-wider"><i
+                class="fa-solid fa-clock-rotate-left me-2"></i> Log Aktivitas Terbaru</h6>
+
+            <div class="activity-log-scrolled">
+              <div class="portal-timeline">
+
+                <!-- Timeline Item 1 -->
+                <div class="portal-timeline-item" :class="{ 'active': status === 'draft' }">
+                  <div class="timeline-dot bg-primary"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">Hari ini, 08:30 WIB</div>
+                    <h6 class="fw-bold text-primary-900 mb-1">Registrasi Akun Calon Siswa Berhasil</h6>
+                    <p class="text-muted small mb-0">Akun pendaftaran mandiri berhasil diverifikasi oleh sistem.</p>
+                  </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="portal-timeline-item" x-show="status !== 'draft'"
+                  :class="{ 'active': status === 'waiting_payment' }">
+                  <div class="timeline-dot" :class="status === 'waiting_payment' ? 'bg-warning' : 'bg-success'"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">Hari ini, 08:45 WIB</div>
+                    <h6 class="fw-bold text-primary-900 mb-1">Jalur Pendaftaran Dikunci (Prestasi)</h6>
+                    <p class="text-muted small mb-0">Formulir dasar selesai diisi dan pilihan jalur berhasil dikunci.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Timeline Item 3 -->
+                <div class="portal-timeline-item" x-show="status !== 'draft' && status !== 'waiting_payment'"
+                  :class="{ 'active': status === 'verification' }">
+                  <div class="timeline-dot" :class="status === 'verification' ? 'bg-primary' : 'bg-success'"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">Kemarin, 14:20 WIB</div>
+                    <h6 class="fw-bold text-primary-900 mb-1">Bukti Pembayaran Diunggah</h6>
+                    <p class="text-muted small mb-0">Pembayaran Rp 250.000 telah masuk antrean pemeriksaan administrasi.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Timeline Item 4 -->
+                <div class="portal-timeline-item"
+                  x-show="status === 'selection' || status === 'passed' || status === 'rejected' || status === 'permanent'"
+                  :class="{ 'active': status === 'selection' }">
+                  <div class="timeline-dot bg-success"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">24 Mei 2026, 10:00 WIB</div>
+                    <h6 class="fw-bold text-primary-900 mb-1">Pembayaran Dinyatakan Sah (Verified)</h6>
+                    <p class="text-muted small mb-0">Verifikator menyatakan transfer valid. Akses jadwal tes seleksi
+                      dibuka.</p>
+                  </div>
+                </div>
+
+                <!-- Timeline Item 5 -->
+                <div class="portal-timeline-item"
+                  x-show="status === 'passed' || status === 're_registration' || status === 'rejected' || status === 'permanent'"
+                  :class="{ 'active': status === 'passed' || status === 'rejected' }">
+                  <div class="timeline-dot" :class="status === 'rejected' ? 'bg-danger' : 'bg-success'"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">24 Mei 2026, 17:00 WIB</div>
+                    <h6 class="fw-bold text-primary-900 mb-1"
+                      x-text="status === 'rejected' ? 'Seleksi Jalur Prestasi: Tidak Lulus' : 'Seleksi Jalur Prestasi: LULUS'">
+                      Hasil Ujian Seleksi Keluar</h6>
+                    <p class="text-muted small mb-0"
+                      x-text="status === 'rejected' ? 'Rapat pleno memutuskan berkas tidak lolos kompetitif.' : 'Status pendaftaran diubah menjadi Passed. Batas daftar ulang diaktifkan.'">
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Timeline Item 6 -->
+                <div class="portal-timeline-item" x-show="status === 're_registration' || status === 'permanent'"
+                  :class="{ 'active': status === 're_registration' }">
+                  <div class="timeline-dot" :class="status === 're_registration' ? 'bg-warning' : 'bg-success'"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">Hari ini, 09:00 WIB</div>
+                    <h6 class="fw-bold text-primary-900 mb-1">Bukti Cicilan Ke-1 Berhasil Divalidasi</h6>
+                    <p class="text-muted small mb-0">Pembayaran Rp 1.500.000 terverifikasi. Sisa tagihan cicilan: Rp
+                      3.000.000.</p>
+                  </div>
+                </div>
+
+                <!-- Timeline Item 7 -->
+                <div class="portal-timeline-item" x-show="status === 'permanent'"
+                  :class="{ 'active': status === 'permanent' }">
+                  <div class="timeline-dot bg-success"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">24 Mei 2026, 17:30 WIB</div>
+                    <h6 class="fw-bold text-primary-900 mb-1">Administrasi Daftar Ulang Lunas (Settled)</h6>
+                    <p class="text-muted small mb-0">Selamat! Seluruh tahapan pendaftaran selesai. Anda berhak mengunduh
+                      Surat Siswa Tetap.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- CONFETTI EFFECT CONTAINER (CSS ONLY) -->
+  <div class="confetti-container" x-show="status === 'permanent' && showConfetti" style="display: none;">
+    <template x-for="i in 50">
+      <div class="confetti-piece"
+        :style="'left: ' + (Math.random() * 100) + '%; transform: rotate(' + (Math.random() * 360) + 'deg); background-color: ' + getRandomColor() + '; animation-delay: ' + (Math.random() * 3) + 's; animation-duration: ' + (2 + Math.random() * 2) + 's;'">
+      </div>
+    </template>
+  </div>
+
+  <!-- FLOATING PROTOTYPE STATUS SIMULATOR (PROTOTYPE ONLY) -->
+  <div class="portal-simulator-widget shadow-lg" x-data="{ collapsed: false }" :class="{ 'collapsed': collapsed }">
+    <div
+      class="widget-header d-flex align-items-center justify-content-between border-bottom pb-2 mb-2 bg-primary-600 text-white rounded-top p-2"
+      style="margin: -10px -10px 10px -10px;">
+      <span class="fw-bold small"><i class="fa-solid fa-vial me-1"></i> SIMULATOR STATUS</span>
+      <button class="btn btn-sm text-white p-0" @click="collapsed = !collapsed">
+        <i class="fa-solid" :class="collapsed ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+      </button>
+    </div>
+
+    <div class="widget-content" x-show="!collapsed">
+      <p class="small text-muted mb-2">Simulasikan keadaan portal calon siswa saat pendaftaran bergerak:</p>
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-sm btn-outline-primary text-start"
+          :class="{ 'active bg-primary text-white': status === 'draft' }" @click="setStatus('draft')">1. Draf
+          Formulir</button>
+        <button class="btn btn-sm btn-outline-warning text-start"
+          :class="{ 'active bg-warning text-dark': status === 'waiting_payment' }"
+          @click="setStatus('waiting_payment')">2. Menunggu Bayar</button>
+        <button class="btn btn-sm btn-outline-info text-start"
+          :class="{ 'active bg-info text-white': status === 'verification' }" @click="setStatus('verification')">3.
+          Verifikasi Berkas</button>
+        <button class="btn btn-sm btn-outline-secondary text-start"
+          :class="{ 'active bg-secondary text-white': status === 'selection' }" @click="setStatus('selection')">4.
+          Jadwal Tes Seleksi</button>
+        <button class="btn btn-sm btn-outline-success text-start"
+          :class="{ 'active bg-success text-white': status === 'passed' }" @click="setStatus('passed')">5. Seleksi
+          Lulus</button>
+        <button class="btn btn-sm btn-outline-warning text-start"
+          :class="{ 'active bg-warning text-dark': status === 're_registration' }"
+          @click="setStatus('re_registration')">6. Proses Daftar Ulang</button>
+        <button class="btn btn-sm btn-outline-danger text-start"
+          :class="{ 'active bg-danger text-white': status === 'rejected' }" @click="setStatus('rejected')">7. Seleksi
+          Gagal</button>
+        <button class="btn btn-sm btn-outline-success text-start"
+          :class="{ 'active bg-success text-white fw-bold': status === 'permanent' }" @click="setStatus('permanent')">8.
+          Siswa Baru Tetap 🎉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="../assets/js/vendor/bootstrap.bundle.min.js"></script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- AOS Animation Script -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true });
+
+    function dashboardApp() {
+      return {
+        mobileMenuOpen: false,
+        status: localStorage.getItem('spmb_simulated_status') || 'draft',
+        showConfetti: false,
+
+        get activeStep() {
+          switch (this.status) {
+            case 'draft': return 1;
+            case 'waiting_payment': return 2;
+            case 'verification': return 2;
+            case 'selection': return 3;
+            case 'passed': return 4;
+            case 're_registration': return 5;
+            case 'rejected': return 4;
+            case 'permanent': return 6;
+            default: return 1;
+          }
+        },
+
+        setStatus(newStatus) {
+          this.status = newStatus;
+          localStorage.setItem('spmb_simulated_status', newStatus);
+          if (newStatus === 'permanent') {
+            this.triggerConfetti();
+          } else {
+            this.showConfetti = false;
+          }
+          this.mobileMenuOpen = false;
+        },
+
+        triggerConfetti() {
+          this.showConfetti = true;
+          setTimeout(() => {
+            this.showConfetti = false;
+          }, 6000);
+        },
+
+        getRandomColor() {
+          const colors = ['#f2c94c', '#0b4a6f', '#28a745', '#e53935', '#0077cc', '#a855f7', '#ec4899'];
+          return colors[Math.floor(Math.random() * colors.length)];
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

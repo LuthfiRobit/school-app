@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tagihan & Pembayaran - Portal SPMB Tunas Luhur</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/img/logo/logo-sma.png">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/typography.css">
+  <link rel="stylesheet" href="../assets/css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/index.css">
+  <link rel="stylesheet" href="../assets/css/portal.css">
+
+  <!-- AOS (Animate on Scroll) CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    /* Premium visual enhancements specific to payment page */
+    .upload-dropzone {
+      border: 2px dashed var(--color-divider);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      background-color: #f8fafc;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: var(--color-primary-400);
+      background-color: var(--color-primary-50);
+    }
+    .upload-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: var(--shadow-sm);
+      color: var(--color-primary-600);
+      font-size: 1.4rem;
+      transition: all 0.3s ease;
+    }
+    .upload-dropzone:hover .upload-icon-wrapper {
+      transform: scale(1.1);
+      color: var(--color-primary-700);
+    }
+    .copy-toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--color-primary-900);
+      color: white;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .instruction-step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+    .instruction-number {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: var(--color-primary-50);
+      color: var(--color-primary-700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .glass-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 74, 111, 0.55);
+      backdrop-filter: blur(6px);
+      z-index: 1500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .glass-modal-content {
+      background: white;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: var(--shadow-xl);
+      max-width: 550px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .file-preview-card {
+      border: 1px solid var(--color-divider);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .receipt-mock {
+      background-color: #fcfcfc;
+      border: 1px solid #e2e8f0;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+      color: #333;
+    }
+  </style>
+</head>
+
+<body class="portal-bg" x-data="paymentApp()">
+
+  <!-- TOP NAVBAR -->
+  <header class="portal-navbar">
+    <div class="container-xxl d-flex align-items-center justify-content-between h-100">
+
+      <!-- Brand Logo -->
+      <a href="dashboard.html" class="portal-navbar-brand">
+        <img src="../assets/img/logo/logo-sma.png" alt="SPMB Tunas Luhur Logo">
+        <div>
+          <div class="portal-brand-title">SPMB Tunas Luhur</div>
+          <div class="portal-brand-tagline">Portal Calon Siswa</div>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="portal-nav-links d-none d-md-flex align-items-center" aria-label="Navigasi portal">
+        <a href="dashboard.html"><i class="fa-solid fa-chart-line me-1"></i> Dashboard</a>
+        <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left me-1"></i> Riwayat</a>
+        <a href="https://wa.me/6281234567890" target="_blank"><i class="fa-solid fa-headset me-1"></i> Bantuan</a>
+      </nav>
+
+      <!-- Profile Dropdown (Right) -->
+      <div class="portal-navbar-profile position-relative" x-data="{ openProfile: false }"
+        @click.outside="openProfile = false">
+        <button class="portal-profile-trigger d-flex align-items-center" @click="openProfile = !openProfile"
+          aria-haspopup="true" :aria-expanded="openProfile">
+          <div class="portal-avatar">AS</div>
+          <span class="portal-username d-none d-sm-inline">Ahmad Syarif</span>
+          <i class="fa-solid fa-chevron-down ms-2 fs-xs"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div class="portal-dropdown-menu" x-show="openProfile" x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="opacity-0 transform scale-95"
+          x-transition:enter-end="opacity-100 transform scale-100" style="display: none;">
+          <div class="dropdown-header border-bottom pb-2 mb-1">
+            <h6 class="mb-0 fw-bold text-primary-900">Ahmad Syarif</h6>
+            <small class="text-muted">No. Reg: Reg-202604001</small>
+          </div>
+          <a href="#" class="portal-dropdown-item"><i class="fa-regular fa-user me-2"></i> Profil Saya</a>
+          <a href="#" class="portal-dropdown-item"><i class="fa-solid fa-gear me-2"></i> Pengaturan</a>
+          <div class="dropdown-divider"></div>
+          <a href="masuk.html" class="portal-dropdown-item text-error"><i
+              class="fa-solid fa-right-from-bracket me-2"></i> Keluar</a>
+        </div>
+      </div>
+
+      <!-- Hamburger Menu Toggle (Mobile) -->
+      <button class="portal-nav-toggle d-md-none" id="portalNavToggle" @click="mobileMenuOpen = !mobileMenuOpen"
+        aria-label="Buka navigasi mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Navigation -->
+  <div class="portal-mobile-drawer d-md-none" :class="{ 'open': mobileMenuOpen }" style="display: none;"
+    x-show="mobileMenuOpen" @click.outside="mobileMenuOpen = false" x-transition>
+    <nav class="d-flex flex-column p-4" aria-label="Navigasi mobile portal">
+      <a href="dashboard.html" class="py-3 border-bottom"><i
+          class="fa-solid fa-chart-line me-2 text-primary-600"></i> Dashboard</a>
+      <a href="riwayat.html" class="py-3 border-bottom"><i class="fa-solid fa-clock-rotate-left me-2 text-primary-600"></i> Riwayat
+        Pendaftaran</a>
+      <a href="https://wa.me/6281234567890" target="_blank" class="py-3 border-bottom"><i
+          class="fa-solid fa-headset me-2 text-primary-600"></i> Hubungi Bantuan</a>
+      <a href="masuk.html" class="py-3 text-error"><i class="fa-solid fa-right-from-bracket me-2"></i> Keluar Akun</a>
+    </nav>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container-xxl py-4 py-lg-5 portal-content">
+
+    <!-- Page Header & Breadcrumb -->
+    <div class="mb-4" data-aos="fade-down" data-aos-duration="600">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-2 small">
+          <li class="breadcrumb-item"><a href="dashboard.html" class="text-primary-600 text-decoration-none">Dashboard</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Tagihan & Pembayaran</li>
+        </ol>
+      </nav>
+      <div class="d-flex align-items-center gap-3">
+        <div class="rounded-circle bg-primary-100 text-primary-700 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+          <i class="fa-solid fa-file-invoice-dollar fs-5"></i>
+        </div>
+        <div>
+          <h4 class="fw-bold text-primary-900 mb-0">Tagihan & Pembayaran</h4>
+          <p class="text-muted small mb-0">Kelola pelunasan biaya registrasi awal pendaftaran calon siswa</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. DRAFT BANNER (IF IN DRAFT STATUS) -->
+    <div class="card p-4 border-start-primary shadow-sm mb-4" x-show="status === 'draft'" x-transition data-aos="fade-up">
+      <div class="d-flex flex-column align-items-center text-center py-4">
+        <div class="rounded-circle bg-primary-50 text-primary d-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px;">
+          <i class="fa-solid fa-triangle-exclamation fs-1"></i>
+        </div>
+        <h5 class="fw-bold text-primary-900 mb-2">Formulir Belum Lengkap</h5>
+        <p class="text-muted small max-width-md mb-4" style="max-width: 500px;">
+          Anda belum mengunci jalur pendaftaran Anda. Silakan isi dan selesaikan pengisian profil formulir pendaftaran Anda terlebih dahulu agar nominal tagihan dapat diterbitkan secara resmi.
+        </p>
+        <a href="pendaftaran/pilih-jalur.html" class="btn btn-primary px-4"><i class="fa-solid fa-arrow-right me-2"></i> Lanjutkan Pengisian Formulir</a>
+      </div>
+    </div>
+
+    <!-- 2. REJECTED BANNER (IF ACADEMICALLY REJECTED) -->
+    <div class="card p-4 border-start-error shadow-sm mb-4" x-show="status === 'rejected'" x-transition data-aos="fade-up">
+      <div class="d-flex flex-column align-items-center text-center py-4">
+        <div class="rounded-circle bg-error-light text-error d-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px;">
+          <i class="fa-solid fa-circle-xmark fs-1"></i>
+        </div>
+        <h5 class="fw-bold text-error mb-2">Seleksi Jalur Sebelumnya Dinyatakan Belum Lulus</h5>
+        <p class="text-muted small mb-4" style="max-width: 500px;">
+          Biaya administrasi untuk jalur yang Anda pilih sebelumnya telah kami terima dan sah. Namun, berdasarkan evaluasi akademis berkas, Anda dinyatakan belum lolos. Anda dapat melakukan pendaftaran ulang (*re-apply*) ke jalur lain tanpa biaya formulir tambahan (Gratis).
+        </p>
+        <a href="pendaftaran/jalur-lain.html?rejected_track=1" class="btn btn-outline-danger px-4"><i class="fa-solid fa-rotate-right me-2"></i> Daftar Jalur Lain (Re-Apply)</a>
+      </div>
+    </div>
+
+    <!-- MAIN GRID (ACTIVE IF NOT IN DRAFT/REJECTED STATUS) -->
+    <div class="row g-4" x-show="status !== 'draft' && status !== 'rejected'">
+
+      <!-- LEFT COLUMN: INVOICE & UPLOAD FORM -->
+      <div class="col-lg-8" data-aos="fade-right" data-aos-duration="600">
+
+        <!-- STATUS CALLOUT BANNERS -->
+        <!-- Waiting Payment Banner -->
+        <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center gap-3 p-3 mb-4 rounded-xl" 
+          x-show="localPaymentStatus === 'waiting' || localPaymentStatus === 'rejected'">
+          <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+            <i class="fa-solid fa-clock fs-5"></i>
+          </div>
+          <div>
+            <strong class="text-warning d-block">Batas Waktu Pembayaran Aktif</strong>
+            <span class="text-muted small">Segera selesaikan transfer tagihan Anda sebelum <strong>25 Mei 2026, 18:30 WIB</strong> (24 Jam) untuk menghindari pembatalan otomatis.</span>
+          </div>
+        </div>
+
+        <!-- Verification Pending Banner -->
+        <div class="alert alert-primary border-0 shadow-sm d-flex align-items-center gap-3 p-3 mb-4 rounded-xl" 
+          x-show="localPaymentStatus === 'pending'">
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+            <i class="fa-solid fa-arrows-spin fa-spin-pulse fs-5"></i>
+          </div>
+          <div>
+            <strong class="text-primary-900 d-block">Bukti Pembayaran Sedang Diperiksa</strong>
+            <span class="text-muted small">Verifikator keuangan kami sedang meninjau mutasi rekening BSI. Proses verifikasi biasanya memakan waktu <strong>1-2 jam kerja</strong>.</span>
+          </div>
+        </div>
+
+        <!-- Confirmed / Success Banner -->
+        <div class="alert alert-success border-0 shadow-sm d-flex align-items-center gap-3 p-3 mb-4 rounded-xl" 
+          x-show="localPaymentStatus === 'confirmed'">
+          <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+            <i class="fa-solid fa-circle-check fs-5"></i>
+          </div>
+          <div>
+            <strong class="text-success d-block">Pembayaran Berhasil Divalidasi!</strong>
+            <span class="text-muted small">Pembayaran Anda dinyatakan SAH & LUNAS. Akses kartu peserta ujian seleksi Anda telah dibuka di dashboard utama.</span>
+          </div>
+        </div>
+
+        <!-- INVOICE CARD -->
+        <div class="card mb-4 shadow-sm overflow-hidden">
+          <div class="bg-primary-900 text-white p-3 d-flex align-items-center justify-content-between">
+            <span class="fw-bold text-uppercase tracking-wider small"><i class="fa-solid fa-file-invoice me-2 text-warning"></i> Rincian Tagihan Biaya Formulir</span>
+            <span class="badge text-white px-2 py-1 small rounded-sm"
+              :class="{
+                'bg-warning text-dark': localPaymentStatus === 'waiting',
+                'bg-primary': localPaymentStatus === 'pending',
+                'bg-danger': localPaymentStatus === 'rejected',
+                'bg-success': localPaymentStatus === 'confirmed'
+              }">
+              <i class="fa-solid fa-circle-dot me-1"></i>
+              <span x-text="paymentBadgeText"></span>
+            </span>
+          </div>
+          <div class="card-body p-4">
+            <div class="row g-3 mb-4 border-bottom pb-4">
+              <div class="col-sm-6">
+                <span class="text-muted d-block small">Nama Calon Siswa:</span>
+                <strong class="text-primary-900">Ahmad Syarif</strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block small">No. Registrasi:</span>
+                <strong class="text-primary-900">Reg-202604001</strong>
+              </div>
+              <div class="col-sm-6 mt-3">
+                <span class="text-muted d-block small">Jalur Pendaftaran:</span>
+                <strong class="text-primary-900" x-text="chosenTrackName">Jalur Prestasi</strong>
+              </div>
+              <div class="col-sm-6 mt-3">
+                <span class="text-muted d-block small">Nomor Invoice:</span>
+                <strong class="text-primary-900 text-monospace" x-text="invoiceNumber">TL-2026-P092</strong>
+              </div>
+            </div>
+
+            <!-- Pricing Table -->
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered table-striped align-middle small mb-0">
+                <thead class="table-light text-primary-900 fw-bold">
+                  <tr>
+                    <th>Deskripsi Layanan</th>
+                    <th class="text-end" style="width: 160px;">Nominal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="fw-bold text-primary-900">Biaya Formulir Registrasi Awal</div>
+                      <span class="text-muted fs-xs">Pembelian formulir masuk resmi SMA Tunas Luhur untuk <span x-text="chosenTrackName"></span></span>
+                    </td>
+                    <td class="text-end fw-semibold text-primary-900" x-text="formatCurrency(trackFee)">Rp 150.000</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="fw-bold text-primary-900">Biaya Layanan Pembayaran Online</div>
+                      <span class="text-muted fs-xs">Administrasi transfer virtual account / mutasi transfer bank</span>
+                    </td>
+                    <td class="text-end text-success">Rp 0 (Gratis)</td>
+                  </tr>
+                  <tr class="table-primary-light">
+                    <td class="fw-bold text-primary-900 text-end">Total Tagihan:</td>
+                    <td class="text-end fw-bold text-error text-lg" x-text="formatCurrency(trackFee)">Rp 150.000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Virtual Account / Bank Details inside Invoice -->
+            <div class="p-3 bg-light rounded-xl border border-secondary-subtle">
+              <div class="row align-items-center g-3">
+                <div class="col-md-7">
+                  <span class="text-muted small d-block mb-1">Transfer Pembayaran Ke Rekening Resmi BSI:</span>
+                  <div class="d-flex align-items-center gap-2">
+                    <h5 class="mb-0 fw-bold text-primary-900 tracking-wider">7700-1122-33</h5>
+                    <button class="btn btn-sm btn-outline-primary py-0 px-2 rounded-md" @click="copyToClipboard('7700-1122-33')" aria-label="Salin nomor rekening">
+                      <i class="fa-regular fa-copy"></i> <span class="fs-xs fw-bold">Salin</span>
+                    </button>
+                  </div>
+                  <span class="text-muted small d-block mt-1">Atas Nama: <strong>SPMB SMA Tunas Luhur</strong></span>
+                </div>
+                <div class="col-md-5 border-start-md ps-md-4">
+                  <div class="d-flex align-items-center gap-3">
+                    <img src="../assets/img/logo/logo-sma.png" alt="BSI Logo" style="height: 32px; filter: grayscale(1); opacity: 0.7;">
+                    <div>
+                      <span class="fw-bold d-block text-primary-900 small">Bank Syariah Indonesia</span>
+                      <small class="text-muted">Kode Transfer Bank ATM: <strong>451</strong></small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- UPLOAD SECTION (IF NOT CONFIRMED / NOT PENDING) -->
+        <div class="card mb-4 shadow-sm" x-show="localPaymentStatus === 'waiting' || localPaymentStatus === 'rejected'" x-transition>
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-900 mb-3"><i class="fa-solid fa-cloud-arrow-up me-2 text-primary-600"></i> Unggah Bukti Transfer Pembayaran</h6>
+            
+            <!-- REJECTION CALLOUT ALERT -->
+            <div class="alert alert-danger border-start-error d-flex align-items-start gap-3 mb-4 rounded-md" x-show="localPaymentStatus === 'rejected'">
+              <i class="fa-solid fa-circle-exclamation fs-4 text-error flex-shrink-0 mt-1"></i>
+              <div>
+                <strong class="text-error d-block mb-1">Pemeriksaan Pembayaran Sebelumnya Ditolak</strong>
+                <span class="text-muted small"><strong>Alasan Penolakan:</strong> Bukti transfer buram/tidak mencantumkan nominal pembayaran dengan jelas. Silakan unggah ulang foto bukti transfer yang asli dan beresolusi tajam.</span>
+              </div>
+            </div>
+
+            <p class="text-muted small leading-relaxed mb-4">
+              Harap unggah bukti transfer berformat <strong>JPG, JPEG, PNG, atau PDF</strong> dengan kapasitas maksimal berkas sebesar <strong>2MB</strong>. Pastikan nominal transfer pas dengan tagihan di atas.
+            </p>
+
+            <!-- Drag & Drop Zone -->
+            <div class="upload-dropzone mb-3" 
+                 :class="{ 'dragover': dragOver }"
+                 @dragover.prevent="dragOver = true"
+                 @dragleave.prevent="dragOver = false"
+                 @drop.prevent="handleDrop($event)"
+                 @click="fileInputTrigger()">
+              <input type="file" x-ref="fileInput" class="d-none" accept=".jpg,.jpeg,.png,.pdf" @change="handleFileSelect($event)">
+              
+              <div class="upload-icon-wrapper">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <h6 class="fw-bold text-primary-900 mb-1">Tarik dan letakkan berkas bukti transfer di sini</h6>
+              <p class="text-muted small mb-0">atau klik untuk menelusuri folder komputer Anda</p>
+            </div>
+
+            <!-- File Selected Info -->
+            <div class="file-preview-card mb-4" x-show="selectedFile" x-transition style="display: none;">
+              <div class="d-flex align-items-center gap-3">
+                <div class="rounded bg-light text-primary-600 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                  <i class="fa-solid" :class="selectedFile ? (selectedFile.type === 'application/pdf' ? 'fa-file-pdf text-danger' : 'fa-file-image text-primary') : 'fa-file'"></i>
+                </div>
+                <div style="max-width: 250px;">
+                  <span class="fw-bold text-primary-900 small d-block text-truncate" x-text="selectedFile ? selectedFile.name : ''"></span>
+                  <span class="text-muted fs-xs" x-text="selectedFile ? formatBytes(selectedFile.size) : ''"></span>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-danger p-1 rounded-circle" @click.stop="removeSelectedFile()" aria-label="Hapus file">
+                  <i class="fa-solid fa-xmark px-1"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Image preview block -->
+            <div class="mb-4 text-center p-3 border rounded bg-light" x-show="imagePreviewUrl" x-transition style="display: none;">
+              <span class="text-muted small d-block mb-2">Pratinjau Berkas Unggahan:</span>
+              <img :src="imagePreviewUrl" alt="Pratinjau Bukti Transfer" class="img-fluid rounded shadow-xs" style="max-height: 220px;">
+            </div>
+
+            <!-- File Error Message -->
+            <div class="alert alert-danger py-2 px-3 small rounded mb-4" x-show="fileError" x-transition style="display: none;">
+              <i class="fa-solid fa-circle-exclamation me-2"></i> <span x-text="fileError"></span>
+            </div>
+
+            <!-- Simulated Upload Progress Bar -->
+            <div class="mb-4" x-show="isUploading" x-transition style="display: none;">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted small">Mengunggah Bukti Pembayaran...</span>
+                <span class="fw-bold text-primary-900 small" x-text="uploadProgress + '%'"></span>
+              </div>
+              <div class="progress" style="height: 8px; border-radius: 4px;">
+                <div class="progress-bar bg-primary transition-all" role="progressbar" :style="'width: ' + uploadProgress + '%'"></div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button class="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2"
+              :disabled="!selectedFile || isUploading"
+              @click="submitPaymentProof()">
+              <i class="fa-solid fa-paper-plane" x-show="!isUploading"></i>
+              <span class="spinner-border spinner-border-sm" role="status" x-show="isUploading" style="display: none;"></span>
+              <span x-text="isUploading ? 'Sedang Memproses Unggahan...' : 'Kirim Bukti Pembayaran'"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- UPLOAD DISABLED BANNERS / PROGRESS INDICATORS FOR REVIEW STATE -->
+        <div class="card mb-4 shadow-sm" x-show="localPaymentStatus === 'pending'" x-transition style="display: none;">
+          <div class="card-body p-4 text-center py-5">
+            <div class="rounded-circle bg-primary-50 text-primary-600 d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 72px; height: 72px;">
+              <i class="fa-solid fa-hourglass-half fa-spin fs-1"></i>
+            </div>
+            <h5 class="fw-bold text-primary-900 mb-2">Peninjauan Bukti Pembayaran Aktif</h5>
+            <p class="text-muted small mx-auto mb-4" style="max-width: 480px;">
+              Anda telah mengunggah bukti pembayaran Anda pada hari ini. Tim verifikator keuangan sekolah sedang memeriksa mutasi transfer. Pendaftaran Anda akan otomatis masuk ke tahap seleksi setelah disetujui.
+            </p>
+            <div class="p-3 bg-light rounded-xl border border-secondary-subtle d-inline-flex align-items-center gap-3">
+              <i class="fa-solid fa-receipt text-muted fs-4"></i>
+              <div class="text-start">
+                <span class="fw-bold text-primary-900 small d-block">bukti_transfer_syarif.png</span>
+                <span class="text-muted fs-xs">Dikirim hari ini, pukul 18:42 WIB • Ukuran: 742 KB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUCCESS CARD FOR CONFIRMED STATUS -->
+        <div class="card mb-4 shadow-sm" x-show="localPaymentStatus === 'confirmed'" x-transition style="display: none;" @show-confetti="triggerConfetti()">
+          <div class="card-body p-4 text-center py-5">
+            <div class="rounded-circle bg-success-light text-success d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 72px; height: 72px;">
+              <i class="fa-solid fa-circle-check fs-1"></i>
+            </div>
+            <h4 class="fw-bold text-success mb-2">Pembayaran Terverifikasi!</h4>
+            <p class="text-muted small mx-auto mb-4" style="max-width: 500px;">
+              Terima kasih, administrasi pendaftaran awal Anda telah selesai dan dinyatakan <strong>LUNAS</strong>. Langkah Anda berikutnya adalah bersiap menghadapi Ujian Seleksi.
+            </p>
+            
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+              <button class="btn btn-success px-4 py-2" @click="downloadReceipt()">
+                <i class="fa-solid fa-file-arrow-down me-2"></i> Unduh Kuitansi Sah (PDF)
+              </button>
+              <a href="dashboard.html" class="btn btn-primary px-4 py-2">
+                <i class="fa-solid fa-arrow-right me-2"></i> Masuk Ke Dashboard Seleksi
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- UPLOAD HISTORY TABLE -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-900 mb-3"><i class="fa-solid fa-clock-rotate-left me-2 text-primary-600"></i> Riwayat Unggahan Bukti Pembayaran</h6>
+            
+            <!-- Empty state -->
+            <div class="text-center py-4 text-muted small" x-show="uploadHistory.length === 0">
+              <i class="fa-solid fa-receipt fs-3 d-block mb-2 text-light"></i>
+              Belum ada riwayat pengiriman bukti pembayaran untuk pendaftaran ini.
+            </div>
+
+            <!-- History list table -->
+            <div class="table-responsive" x-show="uploadHistory.length > 0" style="display: none;">
+              <table class="table table-hover table-borderless align-middle small mb-0">
+                <thead>
+                  <tr class="border-bottom text-muted">
+                    <th>Tanggal Unggah</th>
+                    <th>Nominal</th>
+                    <th>Nama Berkas</th>
+                    <th>Status</th>
+                    <th>Tindakan / Catatan Pemeriksa</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="(item, index) in uploadHistory" :key="index">
+                    <tr class="border-bottom">
+                      <td class="fw-semibold text-primary-900" x-text="item.date"></td>
+                      <td class="fw-bold text-primary-900" x-text="formatCurrency(item.amount)"></td>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <i class="fa-solid" :class="item.file.endsWith('.pdf') ? 'fa-file-pdf text-danger' : 'fa-file-image text-primary'"></i>
+                          <span class="text-truncate" style="max-width: 140px;" x-text="item.file"></span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge px-2 py-1"
+                          :class="{
+                            'bg-warning text-dark': item.status === 'Pending',
+                            'bg-success': item.status === 'Confirmed',
+                            'bg-danger': item.status === 'Rejected'
+                          }" x-text="item.status">
+                        </span>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="text-muted fs-xs" x-text="item.notes"></span>
+                          <button class="btn btn-xs btn-outline-secondary py-0 px-2 rounded border fs-xs ms-auto" @click="viewMockReceipt(item)" aria-label="Lihat pratinjau bukti berkas">
+                            <i class="fa-regular fa-eye me-1"></i> Lihat
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: SIDEBAR DETAILS -->
+      <div class="col-lg-4" data-aos="fade-left" data-aos-duration="600" data-aos-delay="150">
+
+        <!-- ACCOUNT DETAILS CARD -->
+        <div class="card mb-4 shadow-sm border-0 border-start-accent">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-800 text-uppercase tracking-wider mb-3"><i class="fa-solid fa-university me-2 text-primary-600"></i> Rekening Resmi Penerima</h6>
+            <p class="text-muted small">Pastikan Anda mentransfer pembayaran registrasi pendaftaran ke rekening resmi beriku untuk pencocokan otomatis:</p>
+            
+            <div class="p-3 bg-light rounded-md border mb-3">
+              <span class="text-muted small d-block">Bank Tujuan:</span>
+              <strong class="text-primary-900 d-block mb-2">Bank Syariah Indonesia (BSI)</strong>
+              
+              <span class="text-muted small d-block">Nomor Rekening:</span>
+              <strong class="text-primary-900 d-block mb-2 text-monospace text-lg">7700-1122-33</strong>
+              
+              <span class="text-muted small d-block">Atas Nama Penerima:</span>
+              <strong class="text-primary-900 d-block">SPMB SMA Tunas Luhur</strong>
+            </div>
+
+            <div class="alert alert-primary py-2 px-3 small border-0 mb-0 d-flex gap-2 align-items-center">
+              <i class="fa-solid fa-circle-info text-primary-600 fs-5 flex-shrink-0"></i>
+              <span class="text-muted fs-xs">Simpan struk transaksi ATM atau screenshot resi M-Banking Anda sebagai cadangan verifikasi offline.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAYMENT GUIDELINES (STEPS) -->
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary-800 text-uppercase tracking-wider mb-3"><i class="fa-solid fa-circle-info me-2 text-primary-600"></i> Panduan Cara Transfer</h6>
+            
+            <div class="accordion accordion-flush small" id="paymentAccordion">
+              
+              <!-- ATM Transfer -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed fw-bold text-primary-900 py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseATM" aria-expanded="false">
+                    <i class="fa-solid fa-credit-card me-2 text-muted"></i> Transfer via ATM (Semua Bank)
+                  </button>
+                </h2>
+                <div id="collapseATM" class="accordion-collapse collapse" data-bs-parent="#paymentAccordion">
+                  <div class="accordion-body px-0 py-2 text-muted leading-relaxed">
+                    <div class="instruction-step">
+                      <div class="instruction-number">1</div>
+                      <span>Masukkan kartu ATM dan PIN Anda di mesin ATM terdekat.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">2</div>
+                      <span>Pilih menu <strong>Transfer</strong> &gt; <strong>Ke Bank Lain</strong>.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">3</div>
+                      <span>Masukkan kode bank BSI <strong>451</strong> dilanjutkan dengan nomor rekening <strong>7700112233</strong>.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">4</div>
+                      <span>Masukkan nominal biaya pendaftaran yang sesuai dengan tagihan Anda.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">5</div>
+                      <span>Konfirmasi nama penerima <strong>SPMB SMA Tunas Luhur</strong> dan simpan struk transfer Anda.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- M-Banking Transfer -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed fw-bold text-primary-900 py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMBank" aria-expanded="false">
+                    <i class="fa-solid fa-mobile-screen-button me-2 text-muted"></i> Mobile Banking (M-Banking)
+                  </button>
+                </h2>
+                <div id="collapseMBank" class="accordion-collapse collapse" data-bs-parent="#paymentAccordion">
+                  <div class="accordion-body px-0 py-2 text-muted leading-relaxed">
+                    <div class="instruction-step">
+                      <div class="instruction-number">1</div>
+                      <span>Buka aplikasi m-Banking Anda, pilih menu <strong>Transfer Antar Bank</strong>.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">2</div>
+                      <span>Pilih bank tujuan <strong>Bank Syariah Indonesia (BSI)</strong>.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">3</div>
+                      <span>Masukkan nomor rekening tujuan <strong>7700-1122-33</strong>.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">4</div>
+                      <span>Masukkan nominal tagihan transfer yang sesuai.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">5</div>
+                      <span>Konfirmasi data transaksi, masukkan PIN, dan simpan atau screenshot bukti transfer digital Anda.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Teller Bank -->
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed fw-bold text-primary-900 py-2 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTeller" aria-expanded="false">
+                    <i class="fa-solid fa-building-columns me-2 text-muted"></i> Setor Tunai via Teller Bank
+                  </button>
+                </h2>
+                <div id="collapseTeller" class="accordion-collapse collapse" data-bs-parent="#paymentAccordion">
+                  <div class="accordion-body px-0 py-2 text-muted leading-relaxed">
+                    <div class="instruction-step">
+                      <div class="instruction-number">1</div>
+                      <span>Kunjungi kantor cabang bank terdekat dan ambil slip setoran tunai.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">2</div>
+                      <span>Tulis nama penerima <strong>SPMB SMA Tunas Luhur</strong> dan no rekening <strong>7700-1122-33</strong> BSI.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">3</div>
+                      <span>Masukkan jumlah nominal uang sesuai tagihan formulir pendaftaran.</span>
+                    </div>
+                    <div class="instruction-step">
+                      <div class="instruction-number">4</div>
+                      <span>Serahkan slip dan uang kepada Teller, serta simpan slip validasi setoran yang dicetak Teller.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MOCK RECEIPT VIEW MODAL (GLASSMORPHISM PREVIEW) -->
+  <div class="glass-modal-backdrop" x-show="showMockModal" style="display: none;" @click.self="showMockModal = false" x-transition>
+    <div class="glass-modal-content p-4" data-aos="scale-up" data-aos-duration="300">
+      <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+        <h6 class="fw-bold text-primary-900 mb-0"><i class="fa-regular fa-image me-2 text-primary-600"></i> Pratinjau Berkas Bukti Transfer</h6>
+        <button class="btn btn-sm btn-close" @click="showMockModal = false" aria-label="Tutup modal"></button>
+      </div>
+
+      <div class="receipt-mock mb-3 small" x-show="modalItem">
+        <div class="text-center mb-3">
+          <strong class="text-uppercase d-block" x-text="modalItem ? modalItem.bankName || 'BANK SYARIAH INDONESIA' : ''"></strong>
+          <span class="fs-xs text-muted">BUKTI TRANSFER DANA ELECTRONIC (VALID)</span>
+        </div>
+        <hr class="my-2" style="border-top: 1px dashed #cbd5e1;">
+        <div class="d-flex justify-content-between my-1">
+          <span>NO TRANSAKSI:</span>
+          <span x-text="modalItem ? modalItem.trxId || 'TRX-988276182' : ''"></span>
+        </div>
+        <div class="d-flex justify-content-between my-1">
+          <span>TANGGAL:</span>
+          <span x-text="modalItem ? modalItem.date || '24 MEI 2026' : ''"></span>
+        </div>
+        <div class="d-flex justify-content-between my-1">
+          <span>PENGIRIM:</span>
+          <span>AHMAD SYARIF</span>
+        </div>
+        <div class="d-flex justify-content-between my-1">
+          <span>PENERIMA:</span>
+          <span>SPMB SMA TUNAS LUHUR</span>
+        </div>
+        <div class="d-flex justify-content-between my-1">
+          <span>REK TUJUAN:</span>
+          <span>7700112233</span>
+        </div>
+        <hr class="my-2" style="border-top: 1px dashed #cbd5e1;">
+        <div class="d-flex justify-content-between my-1 fw-bold text-lg">
+          <span>NOMINAL TRANSFER:</span>
+          <span x-text="modalItem ? formatCurrency(modalItem.amount) : ''"></span>
+        </div>
+        <div class="d-flex justify-content-between my-1">
+          <span>STATUS:</span>
+          <span class="fw-bold text-success">BERHASIL / SUCCESS</span>
+        </div>
+        <hr class="my-2" style="border-top: 1px dashed #cbd5e1;">
+        <div class="text-center fs-xs text-muted mt-2">
+          Terima kasih atas pembayaran biaya formulir Anda.<br>Simpan bukti ini sebagai tanda terima sah dari sistem.
+        </div>
+      </div>
+
+      <div class="alert alert-secondary py-2 px-3 small border-0 mb-0 d-flex gap-2">
+        <i class="fa-solid fa-circle-info text-primary-600 mt-1 fs-5 flex-shrink-0"></i>
+        <span class="text-muted fs-xs">Pratinjau di atas disimulasikan dari berkas asli yang diunggah pendaftar (<strong><span x-text="modalItem ? modalItem.file : ''"></span></strong>) untuk memvalidasi nomor rekening dan kecocokan nominal.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST FEEDBACK FOR CLIPBOARD COPY -->
+  <div class="copy-toast" x-show="showToast" style="display: none;"
+    x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
+    x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2">
+    <i class="fa-solid fa-circle-check text-success"></i>
+    <span x-text="toastMessage">Teks disalin ke clipboard!</span>
+  </div>
+
+  <!-- CONFETTI EFFECT CONTAINER (PROTOTYPE ONLY) -->
+  <div class="confetti-container" x-show="localPaymentStatus === 'confirmed' && showConfetti" style="display: none;">
+    <template x-for="i in 40">
+      <div class="confetti-piece"
+        :style="'left: ' + (Math.random() * 100) + '%; transform: rotate(' + (Math.random() * 360) + 'deg); background-color: ' + getRandomColor() + '; animation-delay: ' + (Math.random() * 2.5) + 's; animation-duration: ' + (2 + Math.random() * 2.5) + 's;'">
+      </div>
+    </template>
+  </div>
+
+  <!-- FLOATING PROTOTYPE STATUS SIMULATOR (PROTOTYPE ONLY) -->
+  <div class="portal-simulator-widget shadow-lg" x-data="{ collapsed: false }" :class="{ 'collapsed': collapsed }">
+    <div
+      class="widget-header d-flex align-items-center justify-content-between border-bottom pb-2 mb-2 bg-primary-600 text-white rounded-top p-2"
+      style="margin: -10px -10px 10px -10px;">
+      <span class="fw-bold small"><i class="fa-solid fa-vial me-1"></i> SIMULATOR PEMBAYARAN</span>
+      <button class="btn btn-sm text-white p-0" @click="collapsed = !collapsed" aria-label="Toggle simulator">
+        <i class="fa-solid" :class="collapsed ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+      </button>
+    </div>
+
+    <div class="widget-content" x-show="!collapsed">
+      <p class="small text-muted mb-2">Simulasikan siklus status administrasi biaya formulir:</p>
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-sm btn-outline-primary text-start"
+          :class="{ 'active bg-primary text-white': status === 'waiting_payment' && localPaymentStatus === 'waiting' }" 
+          @click="setSimulatedState('waiting_payment', 'waiting')">1. Belum Bayar</button>
+        <button class="btn btn-sm btn-outline-info text-start"
+          :class="{ 'active bg-info text-white': status === 'verification' && localPaymentStatus === 'pending' }" 
+          @click="setSimulatedState('verification', 'pending')">2. Bukti Terkirim (Pending)</button>
+        <button class="btn btn-sm btn-outline-danger text-start"
+          :class="{ 'active bg-danger text-white': status === 'waiting_payment' && localPaymentStatus === 'rejected' }" 
+          @click="setSimulatedState('waiting_payment', 'rejected')">3. Bukti Ditolak (Re-upload)</button>
+        <button class="btn btn-sm btn-outline-success text-start"
+          :class="{ 'active bg-success text-white fw-bold': status === 'selection' && localPaymentStatus === 'confirmed' }" 
+          @click="setSimulatedState('selection', 'confirmed')">4. Lunas (Terverifikasi)</button>
+      </div>
+
+      <hr class="my-2">
+      <p class="small text-muted mb-1">State Portal Global:</p>
+      <div class="d-flex gap-1 flex-wrap">
+        <button class="btn btn-xs btn-outline-secondary py-1" style="font-size: 10px;" :class="{ 'active bg-secondary text-white': status === 'draft' }" @click="setStatus('draft')">Draf</button>
+        <button class="btn btn-xs btn-outline-secondary py-1" style="font-size: 10px;" :class="{ 'active bg-secondary text-white': status === 'rejected' }" @click="setStatus('rejected')">Gagal Sel.</button>
+      </div>
+
+      <hr class="my-2">
+      <p class="small text-muted mb-1">Jalur Pendaftaran:</p>
+      <select class="form-select form-select-sm" @change="switchTrack($event.target.value)" style="font-size: 11px; padding: 4px 8px;">
+        <option value="1" :selected="chosenTrackName === 'Jalur Prestasi'">Jalur Prestasi (Rp 150k)</option>
+        <option value="2" :selected="chosenTrackName === 'Jalur Tes Tulis (CBT)'">Jalur CBT (Rp 200k)</option>
+        <option value="3" :selected="chosenTrackName === 'Jalur Unggulan (Tahfidz & Boarding)'">Jalur Unggulan (Rp 250k)</option>
+        <option value="4" :selected="chosenTrackName === 'Jalur Umum'">Jalur Umum (Rp 150k)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="../assets/js/vendor/bootstrap.bundle.min.js"></script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- AOS Animation Script -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true });
+
+    function paymentApp() {
+      return {
+        mobileMenuOpen: false,
+        status: localStorage.getItem('spmb_simulated_status') || 'waiting_payment',
+        chosenTrackName: localStorage.getItem('spmb_chosen_track_name') || 'Jalur Prestasi',
+        
+        // local statuses
+        localPaymentStatus: 'waiting', // waiting, pending, rejected, confirmed
+        
+        // upload form states
+        dragOver: false,
+        selectedFile: null,
+        fileError: null,
+        isUploading: false,
+        uploadProgress: 0,
+        imagePreviewUrl: null,
+        
+        // clipboard message
+        showToast: false,
+        toastMessage: '',
+        
+        // confetti
+        showConfetti: false,
+        
+        // list upload history
+        uploadHistory: [],
+        
+        // modal preview proof
+        showMockModal: false,
+        modalItem: null,
+
+        init() {
+          // Initialize local payment state based on global status
+          if (this.status === 'verification') {
+            this.localPaymentStatus = 'pending';
+          } else if (['selection', 'passed', 're_registration', 'permanent'].includes(this.status)) {
+            this.localPaymentStatus = 'confirmed';
+          } else {
+            // Check if there was a rejected payment in this session
+            const hadRejected = localStorage.getItem('spmb_simulated_payment_rejected');
+            this.localPaymentStatus = hadRejected ? 'rejected' : 'waiting';
+          }
+          this.loadHistory();
+        },
+
+        get trackFee() {
+          switch (this.chosenTrackName) {
+            case 'Jalur Prestasi': return 150000;
+            case 'Jalur Tes Tulis (CBT)': return 200000;
+            case 'Jalur Unggulan (Tahfidz & Boarding)': return 250000;
+            case 'Jalur Umum': return 150000;
+            default: return 150000;
+          }
+        },
+
+        get invoiceNumber() {
+          switch (this.chosenTrackName) {
+            case 'Jalur Prestasi': return 'TL-2026-P092';
+            case 'Jalur Tes Tulis (CBT)': return 'TL-2026-C092';
+            case 'Jalur Unggulan (Tahfidz & Boarding)': return 'TL-2026-U092';
+            case 'Jalur Umum': return 'TL-2026-R092';
+            default: return 'TL-2026-G092';
+          }
+        },
+
+        get paymentBadgeText() {
+          switch (this.localPaymentStatus) {
+            case 'waiting': return 'Menunggu Pembayaran';
+            case 'pending': return 'Sedang Diverifikasi';
+            case 'rejected': return 'Pembayaran Ditolak';
+            case 'confirmed': return 'Lunas / Terverifikasi';
+            default: return 'Menunggu Pembayaran';
+          }
+        },
+
+        loadHistory() {
+          const mockData = [];
+          
+          if (this.localPaymentStatus === 'pending') {
+            mockData.push({
+              date: 'Hari ini, 18:42 WIB',
+              amount: this.trackFee,
+              file: 'bukti_transfer_syarif.png',
+              status: 'Pending',
+              notes: 'Sedang dicocokkan dengan mutasi rekening BSI.',
+              bankName: 'BANK SYARIAH INDONESIA',
+              trxId: 'TRX-308276189'
+            });
+          } else if (this.localPaymentStatus === 'rejected') {
+            mockData.push({
+              date: 'Kemarin, 14:15 WIB',
+              amount: this.trackFee - 50000, // wrong amount simulation
+              file: 'bukti_bayar_terpotong.jpg',
+              status: 'Rejected',
+              notes: 'Nominal salah / bukti gambar buram tidak terbaca.',
+              bankName: 'BANK SETOR MANDIRI',
+              trxId: 'TRX-103987112'
+            });
+          } else if (this.localPaymentStatus === 'confirmed') {
+            mockData.push({
+              date: 'Hari ini, 08:45 WIB',
+              amount: this.trackFee,
+              file: 'bukti_transfer_syarif.png',
+              status: 'Confirmed',
+              notes: 'Pembayaran valid. Mutasi terverifikasi.',
+              bankName: 'BANK SYARIAH INDONESIA',
+              trxId: 'TRX-883716253'
+            });
+          }
+          this.uploadHistory = mockData;
+        },
+
+        handleFileSelect(event) {
+          const files = event.target.files;
+          if (files.length > 0) {
+            this.processFile(files[0]);
+          }
+        },
+
+        handleDrop(event) {
+          this.dragOver = false;
+          const files = event.dataTransfer.files;
+          if (files.length > 0) {
+            this.processFile(files[0]);
+          }
+        },
+
+        processFile(file) {
+          this.fileError = null;
+          this.selectedFile = null;
+          this.imagePreviewUrl = null;
+
+          // Check format
+          const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+          if (!allowedTypes.includes(file.type)) {
+            this.fileError = 'Format file tidak didukung! Pastikan berkas berupa JPG, JPEG, PNG, atau PDF.';
+            return;
+          }
+
+          // Check size (2MB)
+          if (file.size > 2 * 1024 * 1024) {
+            this.fileError = 'Ukuran berkas melebihi batas maksimum 2MB!';
+            return;
+          }
+
+          this.selectedFile = file;
+
+          // If image, create preview URL
+          if (file.type !== 'application/pdf') {
+            this.imagePreviewUrl = URL.createObjectURL(file);
+          }
+        },
+
+        removeSelectedFile() {
+          this.selectedFile = null;
+          this.imagePreviewUrl = null;
+          this.fileError = null;
+          if (this.$refs.fileInput) {
+            this.$refs.fileInput.value = '';
+          }
+        },
+
+        submitPaymentProof() {
+          if (!this.selectedFile) return;
+
+          this.isUploading = true;
+          this.uploadProgress = 0;
+
+          // Simulate upload progress
+          const interval = setInterval(() => {
+            this.uploadProgress += 10;
+            if (this.uploadProgress >= 100) {
+              clearInterval(interval);
+              setTimeout(() => {
+                this.isUploading = false;
+                this.localPaymentStatus = 'pending';
+                this.status = 'verification';
+                localStorage.setItem('spmb_simulated_status', 'verification');
+                localStorage.removeItem('spmb_simulated_payment_rejected');
+                
+                // Add entry to history
+                this.loadHistory();
+                this.removeSelectedFile();
+                
+                // Trigger toast notification
+                this.showFeedbackToast('Bukti pembayaran Anda berhasil dikirim!');
+              }, 400);
+            }
+          }, 150);
+        },
+
+        setSimulatedState(globalStatus, localStatus) {
+          this.status = globalStatus;
+          this.localPaymentStatus = localStatus;
+          localStorage.setItem('spmb_simulated_status', globalStatus);
+          
+          if (localStatus === 'rejected') {
+            localStorage.setItem('spmb_simulated_payment_rejected', 'true');
+          } else {
+            localStorage.removeItem('spmb_simulated_payment_rejected');
+          }
+
+          if (localStatus === 'confirmed') {
+            this.triggerConfetti();
+          } else {
+            this.showConfetti = false;
+          }
+
+          this.loadHistory();
+          this.removeSelectedFile();
+        },
+
+        setStatus(newStatus) {
+          this.status = newStatus;
+          localStorage.setItem('spmb_simulated_status', newStatus);
+          
+          // Sync payment status when changing global state
+          if (newStatus === 'draft') {
+            this.localPaymentStatus = 'waiting';
+          } else if (newStatus === 'rejected') {
+            this.localPaymentStatus = 'waiting';
+          } else {
+            this.init();
+          }
+        },
+
+        switchTrack(trackValue) {
+          let name = 'Jalur Prestasi';
+          if (trackValue === '2') name = 'Jalur Tes Tulis (CBT)';
+          if (trackValue === '3') name = 'Jalur Unggulan (Tahfidz & Boarding)';
+          if (trackValue === '4') name = 'Jalur Umum';
+
+          this.chosenTrackName = name;
+          localStorage.setItem('spmb_chosen_track_name', name);
+          this.loadHistory();
+        },
+
+        copyToClipboard(text) {
+          navigator.clipboard.writeText(text).then(() => {
+            this.showFeedbackToast('Nomor rekening berhasil disalin!');
+          });
+        },
+
+        showFeedbackToast(message) {
+          this.toastMessage = message;
+          this.showToast = true;
+          setTimeout(() => {
+            this.showToast = false;
+          }, 3000);
+        },
+
+        triggerConfetti() {
+          this.showConfetti = true;
+          setTimeout(() => {
+            this.showConfetti = false;
+          }, 6000);
+        },
+
+        getRandomColor() {
+          const colors = ['#f2c94c', '#0b4a6f', '#28a745', '#e53935', '#0077cc', '#a855f7', '#ec4899'];
+          return colors[Math.floor(Math.random() * colors.length)];
+        },
+
+        formatBytes(bytes, decimals = 2) {
+          if (!+bytes) return '0 Bytes';
+          const k = 1024;
+          const dm = decimals < 0 ? 0 : decimals;
+          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        },
+
+        formatCurrency(amount) {
+          return 'Rp ' + amount.toLocaleString('id-ID');
+        },
+
+        viewMockReceipt(item) {
+          this.modalItem = item;
+          this.showMockModal = true;
+        },
+
+        downloadReceipt() {
+          alert('Mengunduh kuitansi resmi dalam format PDF...');
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

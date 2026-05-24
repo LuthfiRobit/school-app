@@ -1,0 +1,488 @@
+/* 
+  ====================================================================
+  SPMB TUNAS LUHUR — Global Design System & Theme Variables
+  ====================================================================
+  Palet warna berdasarkan analisis SMA Tunas Luhur (smatunasluhur.sch.id)
+  Kategori: Brand, Secondary, Background, Text, Status, Utilities
+  
+  Penggunaan: Impor file ini di semua halaman untuk memastikan konsistensi warna
+  Import: <link rel="stylesheet" href="assets/css/variables.css">
+  ====================================================================
+*/
+
+:root {
+  /* ================================================================
+     PRIMARY COLOR - Navy Tunas Luhur (#0B4A6F)
+     Skala: 50 (lightest) hingga 900 (darkest)
+     Gunakan: Primary-600 untuk brand utama, 50-300 untuk background tints
+     ================================================================ */
+  --color-primary-50:   #F3F7FA;
+  --color-primary-100:  #E6F0F6;
+  --color-primary-200:  #CFE1EE;
+  --color-primary-300:  #9FBFD9;
+  --color-primary-400:  #5F8FBF;
+  --color-primary-500:  #2E6FA6;
+  --color-primary-600:  #0B4A6F;   /* Brand base color */
+  --color-primary-700:  #083A58;
+  --color-primary-800:  #062E44;
+  --color-primary-900:  #041F2E;
+
+  /* ================================================================
+     SECONDARY & ACCENT COLORS
+     Secondary: Gold/Kuning (#F2C94C) - untuk CTA & highlight
+     Accent: Blue (#0077CC) - untuk links & tombol sekunder
+     ================================================================ */
+  --color-secondary:     #F2C94C;
+  --color-secondary-light: #F2D663;
+  --color-accent:        #0077CC;
+
+  /* ================================================================
+     BACKGROUND & SURFACE
+     ================================================================ */
+  --color-bg:            #FFFFFF;      /* Latar utama halaman */
+  --color-surface:       #F7F9FB;      /* Latar panel/kartu sekunder */
+  --color-divider:       #E6E9EE;      /* Garis pemisah/border halus */
+
+  /* ================================================================
+     TEXT COLORS
+     ================================================================ */
+  --color-text:          #222222;      /* Teks utama/heading (gelap) */
+  --color-text-muted:    #6B7280;      /* Teks sekunder/meta */
+  --color-text-light:    #FFFFFF;      /* Teks terang (pada bg gelap) */
+
+  /* ================================================================
+     STATUS & SEMANTIC COLORS
+     Mengikuti standar: success (hijau), error (merah), warning (orange)
+     ================================================================ */
+  --color-success:       #28A745;      /* Status sukses/badge */
+  --color-error:         #E53935;      /* Status error/alert */
+  --color-warning:       #F2994A;      /* Status peringatan/info */
+
+  /* ================================================================
+     UTILITY & NEUTRAL COLORS
+     ================================================================ */
+  --color-white:         #FFFFFF;
+  --color-black:         #041F2E;      /* Hitam custom (primary-900) */
+
+  /* ================================================================
+     BORDER RADIUS (Utility)
+     ================================================================ */
+  --radius-xs:           4px;
+  --radius-sm:           8px;
+  --radius-md:           10px;
+  --radius-lg:           12px;
+  --radius-xl:           16px;
+  --radius-full:         9999px;
+
+  /* ================================================================
+     BOX SHADOW (Utility)
+     ================================================================ */
+  --shadow-xs:           0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm:           0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-md:           0 8px 12px rgba(11, 74, 111, 0.08);
+  --shadow-lg:           0 12px 24px rgba(11, 74, 111, 0.15);
+  --shadow-xl:           0 20px 40px rgba(11, 74, 111, 0.2);
+
+  /* ================================================================
+     TYPOGRAPHY (Optional - untuk consistency)
+     ================================================================ */
+  --font-family-base:    'Inter', 'Open Sans', 'Segoe UI', Arial, Helvetica, sans-serif;
+  --font-size-xs:        12px;
+  --font-size-sm:        13px;
+  --font-size-base:      14px;
+  --font-size-lg:        16px;
+  --font-size-xl:        18px;
+  --font-size-2xl:       20px;
+  --font-size-3xl:       24px;
+  --font-size-4xl:       32px;
+
+  /* ================================================================
+     TRANSITIONS & ANIMATIONS
+     ================================================================ */
+  --transition-fast:     150ms ease-in-out;
+  --transition-base:     300ms ease-in-out;
+  --transition-slow:     500ms ease-in-out;
+}
+
+/* ====================================================================
+   DARK MODE (Optional - dapat diaktifkan untuk tema gelap)
+   Uncomment dan sesuaikan jika diperlukan
+   ==================================================================== */
+/*
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:          #0F1419;
+    --color-surface:     #1a1e27;
+    --color-text:        #FFFFFF;
+    --color-text-muted:  #9CA3AF;
+    --color-divider:     #2D3748;
+  }
+}
+*/
+
+/* ====================================================================
+   UTILITY CLASSES - Color Helpers (Optional)
+   Gunakan class ini untuk quick styling tanpa perlu CSS tambahan
+   ==================================================================== */
+
+.text-primary {
+  color: var(--color-primary-600);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-success {
+  color: var(--color-success);
+}
+
+.text-error {
+  color: var(--color-error);
+}
+
+.text-warning {
+  color: var(--color-warning);
+}
+
+.bg-primary {
+  background-color: var(--color-primary-600);
+  color: var(--color-white);
+}
+
+.bg-primary-light {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-600);
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-black);
+}
+
+.bg-accent {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.bg-surface {
+  background-color: var(--color-surface);
+}
+
+.bg-success {
+  background-color: var(--color-success);
+  color: var(--color-white);
+}
+
+.bg-error {
+  background-color: var(--color-error);
+  color: var(--color-white);
+}
+
+.bg-warning {
+  background-color: var(--color-warning);
+  color: var(--color-white);
+}
+
+/* Border utilities */
+.border-primary {
+  border-color: var(--color-primary-600);
+}
+
+.border-divider {
+  border-color: var(--color-divider);
+}
+
+/* Shadow utilities */
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-md {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.shadow-xl {
+  box-shadow: var(--shadow-xl);
+}
+
+/* Radius utilities */
+.rounded-sm {
+  border-radius: var(--radius-sm);
+}
+
+.rounded-md {
+  border-radius: var(--radius-md);
+}
+
+.rounded-lg {
+  border-radius: var(--radius-lg);
+}
+
+.rounded-xl {
+  border-radius: var(--radius-xl);
+}
+
+/* ====================================================================
+   BADGE STYLES (Common Components)
+   ==================================================================== */
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.badge-primary {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-600);
+}
+
+.badge-secondary {
+  background-color: rgba(242, 201, 76, 0.15);
+  color: var(--color-black);
+}
+
+.badge-success {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: var(--color-success);
+}
+
+.badge-error {
+  background-color: rgba(229, 57, 53, 0.15);
+  color: var(--color-error);
+}
+
+.badge-warning {
+  background-color: rgba(242, 153, 74, 0.15);
+  color: var(--color-warning);
+}
+
+/* ====================================================================
+   BUTTON STYLES (Common Components)
+   ==================================================================== */
+
+.btn-base {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-base);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-base:hover,
+.btn-base:focus,
+.btn-base:active {
+  text-decoration: none !important;
+}
+
+.btn-primary {
+  background-color: var(--color-primary-600);
+  color: var(--color-white);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--color-primary-700);
+  color: var(--color-white) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background-color: var(--color-secondary-light);
+  color: var(--color-white) !important;
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.btn-accent {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.btn-accent:hover,
+.btn-accent:focus {
+  background-color: #005fa3;
+  color: var(--color-white) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--color-primary-600);
+  color: var(--color-primary-600);
+}
+
+.btn-outline:hover,
+.btn-outline:focus {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-600) !important;
+  text-decoration: none;
+}
+
+/* ====================================================================
+   CARD STYLES (Common Components)
+   ==================================================================== */
+
+.card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-surface {
+  background-color: var(--color-surface);
+  border-color: var(--color-divider);
+}
+
+/* ====================================================================
+   INPUT & FORM STYLES (Common Components)
+   ==================================================================== */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-fast);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-600);
+  box-shadow: 0 0 0 3px rgba(11, 74, 111, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+}
+
+/* ====================================================================
+   ALERT & NOTIFICATION STYLES (Common Components)
+   ==================================================================== */
+
+.alert {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  border-left: 4px solid;
+}
+
+.alert-primary {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+  border-left-color: var(--color-primary-600);
+}
+
+.alert-success {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: var(--color-success);
+  border-left-color: var(--color-success);
+}
+
+.alert-error {
+  background-color: rgba(229, 57, 53, 0.1);
+  color: var(--color-error);
+  border-left-color: var(--color-error);
+}
+
+.alert-warning {
+  background-color: rgba(242, 153, 74, 0.1);
+  color: var(--color-warning);
+  border-left-color: var(--color-warning);
+}
+
+/* ====================================================================
+   PAGINATION & NAVIGATION (Common Components)
+   ==================================================================== */
+
+.pagination {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination a,
+.pagination span {
+  display: inline-block;
+  padding: 8px 12px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all var(--transition-fast);
+}
+
+.pagination a:hover,
+.pagination .active span {
+  background-color: var(--color-primary-600);
+  color: var(--color-white);
+  border-color: var(--color-primary-600);
+}
+
+/* ====================================================================
+   RESPONSIVE BREAKPOINTS (CSS Variables - Optional)
+   Gunakan di media queries untuk consistency
+   ==================================================================== */
+
+/*
+  --breakpoint-sm:   640px   (mobile)
+  --breakpoint-md:   768px   (tablet)
+  --breakpoint-lg:   1024px  (desktop)
+  --breakpoint-xl:   1280px  (large desktop)
+*/
