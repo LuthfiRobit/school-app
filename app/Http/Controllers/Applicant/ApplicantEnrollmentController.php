@@ -292,6 +292,9 @@ class ApplicantEnrollmentController extends Controller
             }
         });
 
+        // Generate enrollment_number via EnrollmentNumberService
+        $this->enrollmentNumberService->generate($enrollment);
+
         // Transisi status: Draft -> Registered
         $this->stateMachineService->transition($enrollment, \App\Enums\EnrollmentStatus::REGISTERED, 'Formulir pendaftaran berhasil dikirim.');
 

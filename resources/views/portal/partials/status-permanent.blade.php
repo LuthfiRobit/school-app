@@ -13,7 +13,7 @@
         </div>
         <div>
           <span class="text-muted d-block small">Nomor Induk Siswa Sementara / No Registrasi Anda:</span>
-          <strong class="text-primary-900 text-lg">{{ $enrollment->enrollment_number ?? '' }}</strong>
+          <strong class="text-primary-900 text-lg">{{ $enrollment?->enrollment_number ?? '' }}</strong>
         </div>
       </div>
     </div>

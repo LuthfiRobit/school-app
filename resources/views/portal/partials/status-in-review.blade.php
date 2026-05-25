@@ -13,7 +13,7 @@
           <h6 class="fw-bold mb-1 text-primary-900">Hasil seleksi belum diumumkan</h6>
           <p class="text-muted small mb-0">Pantau terus halaman ini untuk melihat hasil keputusan kelulusan Anda secara resmi.</p>
           
-          @if($enrollment->announcement_visible_at)
+          @if($enrollment?->announcement_visible_at)
             <div class="mt-3 pt-3 border-top">
               <span class="text-muted small d-block mb-1">Jadwal Pengumuman Resmi:</span>
               <strong class="text-primary-950 fs-5">
@@ -38,7 +38,7 @@
             </div>
             <div class="col-sm-6">
               <span class="text-muted d-block small">Nomor Pendaftaran:</span>
-              <strong class="text-primary-900 text-monospace">{{ $enrollment->enrollment_number ?? '' }}</strong>
+              <strong class="text-primary-900 text-monospace">{{ $enrollment?->enrollment_number ?? '' }}</strong>
             </div>
             <div class="col-12 mt-2 pt-2 border-top">
               <span class="text-muted d-block mb-1 small fw-semibold">Komponen Penilaian Seleksi:</span>

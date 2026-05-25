@@ -11,14 +11,14 @@
         <div class="col-sm-6">
           <div class="p-3 bg-light rounded-md border text-center">
             <span class="text-muted d-block small mb-1">Nomor Urut Cadangan Anda:</span>
-            <strong class="text-warning fs-3 text-monospace">#{{ $enrollment->waitlist_order ?? '1' }}</strong>
+            <strong class="text-warning fs-3 text-monospace">#{{ $enrollment?->waitlist_order ?? '1' }}</strong>
           </div>
         </div>
         <div class="col-sm-6">
           <div class="p-3 bg-light rounded-md border text-center h-100 d-flex flex-column justify-content-center">
             <span class="text-muted d-block small mb-1">Pengumuman Kelulusan Akhir:</span>
             <strong class="text-primary-900 small">
-              {{ $enrollment->announcement_visible_at ? $enrollment->announcement_visible_at->translatedFormat('d F Y') : 'Menyusul' }}
+              {{ $enrollment?->announcement_visible_at ? $enrollment->announcement_visible_at->translatedFormat('d F Y') : 'Menyusul' }}
             </strong>
           </div>
         </div>
