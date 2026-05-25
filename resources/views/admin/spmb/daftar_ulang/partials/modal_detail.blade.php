@@ -1,11 +1,11 @@
-<div class="modal fade" id="modalDetail" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content" x-show="detailData">
-            <div class="modal-header bg-primary text-white py-3">
-                <h5 class="modal-title text-white">
+<div class="modal fade" id="modalDetail" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow" x-show="detailData">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title">
                     <i class="ti ti-receipt me-2"></i>Detail Pembayaran Daftar Ulang: <span x-text="detailData.applicant ? detailData.applicant.full_name : '-'"></span>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <div class="row g-3 mb-4">
@@ -107,8 +107,8 @@
                     <p class="text-muted mt-2 mb-0">Belum ada tagihan daftar ulang.</p>
                 </div>
             </div>
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>

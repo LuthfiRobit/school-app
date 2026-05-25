@@ -1,12 +1,10 @@
 <!-- Setup Modal -->
-<div class="modal fade" id="setupModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="setupModalLabel" x-ref="setupModal">
-    <div class="modal-dialog modal-dialog-centered shadow-lg">
-        <div class="modal-content border-0">
-            <div class="modal-header bg-primary text-white py-3">
-                <h5 class="modal-title d-flex align-items-center" id="setupModalLabel">
-                    <i class="ti ti-settings me-2 fs-4"></i> Setup Konfigurasi SPMB
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="setupModal" data-bs-backdrop="static" tabindex="-1" x-ref="setupModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title"><i class="ti ti-settings me-2"></i>Setup Konfigurasi SPMB</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <form @submit.prevent="submitForm">
@@ -60,23 +58,19 @@
                         </div>
                     </div>
 
-                    <hr class="my-4 opacity-10">
-
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-light-secondary px-4" data-bs-dismiss="modal">
-                            <i class="ti ti-x me-1"></i> Batal
-                        </button>
-                        <button type="submit" class="btn btn-primary px-4 shadow-sm" :disabled="loading">
-                            <template x-if="loading">
-                                <span><span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...</span>
-                            </template>
-                            <template x-if="!loading">
-                                <span><i class="ti ti-device-floppy me-1"></i> Simpan Konfigurasi</span>
-                            </template>
-                        </button>
-                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary" :disabled="loading">
+                        <template x-if="loading">
+                            <span><span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memproses...</span>
+                        </template>
+                        <template x-if="!loading">
+                            <span><i class="ti ti-device-floppy me-1"></i> Simpan Konfigurasi</span>
+                        </template>
+                    </button>
+                </div>
                 </form>
-            </div>
         </div>
     </div>
 </div>

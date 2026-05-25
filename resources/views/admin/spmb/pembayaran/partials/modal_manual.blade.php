@@ -1,10 +1,10 @@
 <div class="modal fade" id="manualModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" x-ref="manualModal">
-    <div class="modal-dialog">
-        <form @submit.prevent="submitManualPayment">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white py-3">
-                    <h5 class="modal-title text-white"><i class="ti ti-cash me-2"></i>Input Pembayaran Tunai (Cash)</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <form @submit.prevent="submitManualPayment">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title"><i class="ti ti-cash me-2"></i>Input Pembayaran Tunai (Cash)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info">
@@ -47,14 +47,14 @@
                         <textarea class="form-control" x-model="manualForm.notes" rows="2" placeholder="Contoh: Nomor kuitansi manual K-1234, atau memo tambahan"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success" :disabled="loading">
                         <span x-show="!loading"><i class="ti ti-check me-1"></i>Simpan Pembayaran</span>
                         <span x-show="loading">Memproses...</span>
                     </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>

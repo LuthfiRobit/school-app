@@ -1,10 +1,10 @@
 <div class="modal fade" id="confirmModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" x-ref="confirmModal">
-    <div class="modal-dialog">
-        <form @submit.prevent="submitConfirmation">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white py-3">
-                    <h5 class="modal-title text-white"><i class="ti ti-check me-2"></i>Konfirmasi Verifikasi Pembayaran</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <form @submit.prevent="submitConfirmation">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title"><i class="ti ti-check me-2"></i>Konfirmasi Verifikasi Pembayaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" x-show="confirmForm">
                     <div class="alert alert-success">
@@ -23,14 +23,14 @@
                         <small class="text-muted d-block mt-1">Isi nominal aktual (default: nominal klaim siswa).</small>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success" :disabled="loading">
                         <span x-show="!loading"><i class="ti ti-check me-1"></i>Verifikasi & Setujui</span>
                         <span x-show="loading">Memproses...</span>
                     </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>

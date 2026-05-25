@@ -1,11 +1,10 @@
 <!-- Mapping Modal -->
-<div class="modal fade" id="mappingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="mappingModalLabel">
+<div class="modal fade" id="mappingModal" data-bs-backdrop="static" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg">
+        <div class="modal-content border-0 shadow">
             <div class="modal-header bg-light">
-                <h5 class="modal-title fw-bold" id="mappingModalLabel">Kelola Persyaratan Jalur</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title"><i class="ti ti-list-details me-2"></i>Kelola Persyaratan Jalur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0">
                 <ul class="nav nav-tabs nav-fill bg-light m-0 border-bottom-0" id="mappingTabs" role="tablist">
@@ -350,8 +349,8 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Tutup</button>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>

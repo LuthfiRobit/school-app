@@ -1,12 +1,12 @@
 <!-- Modal Validasi Formulir -->
-<div class="modal fade" id="validationModal" tabindex="-1" aria-hidden="true" x-ref="validationModal">
+<div class="modal fade" id="validationModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" x-ref="validationModal">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+        <div class="modal-content border-0 shadow">
             <div class="modal-header bg-light">
-                <h5 class="modal-title fw-bold text-primary">
+                <h5 class="modal-title">
                     <i class="ti ti-check me-2"></i>Validasi Formulir & Berkas Pendaftaran
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 
@@ -78,8 +78,8 @@
                 </template>
 
             </div>
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 <button type="button" class="btn btn-primary" @click="submitValidation" :disabled="loading || (!validationData?.enrollment?.form_data || validationData.enrollment.form_data.length === 0)">
                     <span x-show="!loading"><i class="ti ti-device-floppy me-2"></i>Simpan Validasi</span>
                     <span x-show="loading"><i class="ti ti-loader fa-spin me-2"></i>Menyimpan...</span>

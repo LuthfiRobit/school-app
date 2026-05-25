@@ -1,11 +1,11 @@
-<div class="modal fade" id="modalFinalisasi" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white py-3">
-                <h5 class="modal-title text-white">
+<div class="modal fade" id="modalFinalisasi" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title">
                     <i class="ti ti-circle-check me-2"></i>Konfirmasi Finalisasi Daftar Ulang
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center py-4">
                 <i class="ti ti-alert-triangle text-warning display-4 mb-3 d-block"></i>
@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer bg-light">
+            <div class="modal-footer border-0">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" :disabled="loading">Batal</button>
                 <button type="button" class="btn btn-success" @click="submitFinalisasi" :disabled="loading">
                     <span x-show="!loading"><i class="ti ti-checkbox me-1"></i> Ya, Finalisasi</span>

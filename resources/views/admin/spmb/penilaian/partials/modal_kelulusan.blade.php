@@ -1,13 +1,13 @@
 <!-- Modal Penetapan Status Kelulusan (Individual) -->
 <div class="modal fade" id="kelulusanModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" x-ref="kelulusanModal">
-    <div class="modal-dialog">
-        <form @submit.prevent="submitDecision">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-dark py-3">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+            <form @submit.prevent="submitDecision">
+                <div class="modal-header bg-light">
                     <h5 class="modal-title">
                         <i class="ti ti-award me-2"></i>Tetapkan Status Kelulusan
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Info Pendaftar -->
@@ -148,7 +148,7 @@
                             placeholder="Catatan tambahan (opsional)"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-warning text-dark"
                         :disabled="loading || !decisionForm.status">
@@ -156,21 +156,21 @@
                         <span x-show="loading"><i class="ti ti-loader me-1 spin"></i>Memproses...</span>
                     </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 
 <!-- Modal Penetapan Status Kelulusan MASSAL -->
 <div class="modal fade" id="bulkKelulusanModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" x-ref="bulkKelulusanModal">
-    <div class="modal-dialog">
-        <form @submit.prevent="submitBulkDecision">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-dark py-3">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+            <form @submit.prevent="submitBulkDecision">
+                <div class="modal-header bg-light">
                     <h5 class="modal-title">
                         <i class="ti ti-award me-2"></i>Tetapkan Kelulusan Massal
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Summary Massal -->
@@ -226,7 +226,7 @@
                         </small>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-warning text-dark"
                         :disabled="loading || !bulkDecisionForm.status">
@@ -234,7 +234,7 @@
                         <span x-show="loading"><i class="ti ti-loader me-1 spin"></i>Memproses...</span>
                     </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>

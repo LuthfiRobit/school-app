@@ -1,14 +1,14 @@
 <!-- Modal Input / Lihat Nilai per Komponen (Inline Edit) -->
 <div class="modal fade" id="nilaiModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" x-ref="nilaiModal">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white py-3">
-                <h5 class="modal-title text-white">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title">
                     <i class="ti ti-clipboard-text me-2"></i>Input Nilai:
                     <span x-text="nilaiModal.applicant_name" class="fw-bold"></span>
                     <small class="ms-2 opacity-75 font-monospace" x-text="nilaiModal.enrollment_number"></small>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body p-0">
@@ -175,7 +175,7 @@
                 </div>
             </div>
 
-            <div class="modal-footer bg-light d-flex justify-content-between">
+            <div class="modal-footer border-0 d-flex justify-content-between">
                 <div>
                     <small class="text-muted">
                         <i class="ti ti-info-circle me-1"></i>Klik tombol <strong>Simpan</strong> per baris untuk menyimpan nilai secara individual.

@@ -1,11 +1,11 @@
 <!-- Individual Status Modal -->
 <div class="modal fade" id="statusModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" x-ref="statusModal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <form @submit.prevent="submitStatusChange">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white py-3">
-                    <h5 class="modal-title text-white"><i class="ti ti-arrows-left-right me-2"></i>Ubah Status Pendaftaran</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title"><i class="ti ti-arrows-left-right me-2"></i>Ubah Status Pendaftaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -33,7 +33,7 @@
                         <textarea class="form-control" x-model="statusForm.reason" rows="3" placeholder="Contoh: Dokumen lengkap, lulus tes administrasi, dll." required></textarea>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary" :disabled="loading">
                         <span x-show="!loading"><i class="ti ti-check me-1"></i>Simpan Perubahan</span>
@@ -47,12 +47,12 @@
 
 <!-- Bulk Status Modal -->
 <div class="modal fade" id="bulkStatusModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true" x-ref="bulkStatusModal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <form @submit.prevent="submitBulkStatusChange">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white py-3">
-                    <h5 class="modal-title text-white"><i class="ti ti-arrows-left-right me-2"></i>Ubah Status Massal</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title"><i class="ti ti-arrows-left-right me-2"></i>Ubah Status Massal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info">
@@ -73,7 +73,7 @@
                         <textarea class="form-control" x-model="bulkStatusForm.reason" rows="3" placeholder="Contoh: Lolos verifikasi berkas tahap 1 massal" required></textarea>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary" :disabled="loading">
                         <span x-show="!loading"><i class="ti ti-check me-1"></i>Terapkan Massal</span>

@@ -1,10 +1,10 @@
 <!-- Clone Modal -->
-<div class="modal fade" id="cloneModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="cloneModalLabel">
+<div class="modal fade" id="cloneModal" data-bs-backdrop="static" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title fw-bold" id="cloneModalLabel"><i class="ti ti-copy me-2"></i>Clone Konfigurasi Jalur</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title"><i class="ti ti-copy me-2"></i>Clone Konfigurasi Jalur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form @submit.prevent="submitClone">
                 <div class="modal-body p-4">
@@ -33,9 +33,9 @@
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer bg-light p-3">
-                    <button type="button" class="btn btn-light-secondary rounded-pill" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-info rounded-pill px-4" :disabled="loading">
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary" :disabled="loading">
                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" x-show="loading"></span>
                         <i class="ti ti-copy me-1" x-show="!loading"></i>
                         Proses Clone
