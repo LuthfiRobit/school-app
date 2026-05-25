@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('enrollment_id')->constrained('applicant_enrollments')->cascadeOnDelete();
             $table->foreignId('field_id')->constrained('spmb_track_form_fields')->cascadeOnDelete();
             $table->text('value')->nullable();
+            $table->boolean('is_valid')->nullable();
+            $table->text('validation_note')->nullable();
             $table->timestamps();
 
             // Prevent duplicate answers for the same field in a single enrollment

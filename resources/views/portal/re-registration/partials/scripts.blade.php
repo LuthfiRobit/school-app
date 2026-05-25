@@ -7,29 +7,6 @@
     });
   }
 
-  function confirmFinalization(event, name, totalPaid) {
-    event.preventDefault();
-    const form = document.getElementById('finalize-form');
-    
-    Swal.fire({
-      title: 'Konfirmasi Finalisasi',
-      html: `Apakah Anda yakin ingin memfinalisasi daftar ulang Anda?<br><br>
-             <strong>Nama Siswa:</strong> ${name}<br>
-             <strong>Total Uang Pangkal Lunas:</strong> Rp ${totalPaid}<br><br>
-             <em>Setelah difinalisasi, Anda resmi terdaftar sebagai Siswa Tetap. Anda tidak dapat mengunggah bukti pembayaran cicilan baru lagi.</em>`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#28a745',
-      cancelButtonColor: '#6c757d',
-      confirmButtonText: '<i class="fa-solid fa-check me-1"></i> Ya, Finalisasi Sekarang!',
-      cancelButtonText: 'Batal'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        form.submit();
-      }
-    });
-  }
-
   function uploadPaymentForm() {
     return {
       dragOver: false,

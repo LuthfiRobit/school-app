@@ -50,17 +50,6 @@ class ApplicantReRegistrationController extends Controller
                 ->with('error', 'Pendaftaran tidak ditemukan atau Anda tidak memiliki akses.');
         }
 
-        // Jika status passed, lakukan transisi awal ke waiting_payment_final
-        if ($enrollment->status === EnrollmentStatus::PASSED) {
-            try {
-                $this->stateMachineService->transition($enrollment, EnrollmentStatus::WAITING_PAYMENT_FINAL, 'Calon siswa membuka halaman daftar ulang.');
-                $enrollment->refresh();
-            } catch (\Exception $e) {
-                return redirect()->route('portal.dashboard')
-                    ->with('error', 'Gagal memproses status daftar ulang: ' . $e->getMessage());
-            }
-        }
-
         // Status gate
         $allowedStatuses = [
             EnrollmentStatus::WAITING_PAYMENT_FINAL,
@@ -104,6 +93,39 @@ class ApplicantReRegistrationController extends Controller
     }
 
     /**
+     * Memulai proses daftar ulang (dari PASSED ke WAITING_PAYMENT_FINAL).
+     */
+    public function start(int $enrollmentId): RedirectResponse
+    {
+        $user = Auth::user();
+        $applicant = $user->applicant;
+
+        $enrollment = $this->enrollmentRepo->find($enrollmentId);
+
+        if (!$enrollment || $enrollment->applicant_id !== $applicant->id) {
+            return redirect()->route('portal.dashboard')
+                ->with('error', 'Pendaftaran tidak ditemukan atau Anda tidak memiliki akses.');
+        }
+
+        if ($enrollment->status === EnrollmentStatus::PASSED) {
+            try {
+                $this->stateMachineService->transition(
+                    $enrollment, 
+                    EnrollmentStatus::WAITING_PAYMENT_FINAL, 
+                    'Siswa bersedia melanjutkan proses daftar ulang'
+                );
+                return redirect()->route('portal.re-registration.show', $enrollment->id)
+                    ->with('success', 'Proses daftar ulang telah dimulai. Silakan selesaikan pembayaran tagihan.');
+            } catch (\Exception $e) {
+                return redirect()->route('portal.dashboard')
+                    ->with('error', 'Gagal memulai daftar ulang: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('portal.dashboard');
+    }
+
+    /**
      * Proses pengunggahan bukti cicilan / pembayaran daftar ulang oleh calon siswa.
      */
     public function upload(UploadPaymentProofRequest $request, int $enrollmentId): RedirectResponse
@@ -117,17 +139,6 @@ class ApplicantReRegistrationController extends Controller
         if (!$enrollment || $enrollment->applicant_id !== $applicant->id) {
             return redirect()->route('portal.dashboard')
                 ->with('error', 'Pendaftaran tidak ditemukan atau Anda tidak memiliki akses.');
-        }
-
-        // Jika status passed, transisi ke waiting_payment_final dulu
-        if ($enrollment->status === EnrollmentStatus::PASSED) {
-            try {
-                $this->stateMachineService->transition($enrollment, EnrollmentStatus::WAITING_PAYMENT_FINAL, 'Mulai mengunggah bukti cicilan daftar ulang.');
-                $enrollment->refresh();
-            } catch (\Exception $e) {
-                return redirect()->route('portal.dashboard')
-                    ->with('error', 'Gagal memproses transisi status daftar ulang.');
-            }
         }
 
         // Status gate: Hanya boleh upload ketika WAITING_PAYMENT_FINAL
@@ -156,76 +167,6 @@ class ApplicantReRegistrationController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('portal.re-registration.show', $enrollmentId)
                 ->with('error', 'Gagal mengunggah bukti pembayaran: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Proses finalisasi daftar ulang oleh calon siswa untuk menjadi Siswa Tetap.
-     */
-    public function finalize(int $enrollmentId): RedirectResponse
-    {
-        $user = Auth::user();
-        $applicant = $user->applicant;
-
-        $enrollment = $this->enrollmentRepo->find($enrollmentId, ['*'], ['invoices']);
-
-        // Verifikasi kepemilikan
-        if (!$enrollment || $enrollment->applicant_id !== $applicant->id) {
-            return redirect()->route('portal.dashboard')
-                ->with('error', 'Pendaftaran tidak ditemukan atau Anda tidak memiliki akses.');
-        }
-
-        // Status gate: hanya boleh jika status WAITING_PAYMENT_FINAL atau SETTLED
-        $allowedStatuses = [
-            EnrollmentStatus::WAITING_PAYMENT_FINAL,
-            EnrollmentStatus::SETTLED
-        ];
-
-        if (!in_array($enrollment->status, $allowedStatuses)) {
-            return redirect()->route('portal.dashboard')
-                ->with('error', 'Status pendaftaran tidak valid untuk finalisasi.');
-        }
-
-        $invoice = $enrollment->invoices->where('category', 're_registration')->first();
-        if (!$invoice) {
-            return redirect()->route('portal.dashboard')
-                ->with('error', 'Invoice daftar ulang tidak ditemukan.');
-        }
-
-        // Validasi kelunasan
-        if ($invoice->paid_amount < $invoice->total_amount) {
-            return redirect()->route('portal.re-registration.show', $enrollmentId)
-                ->with('error', 'Pembayaran daftar ulang belum lunas. Sisa tagihan: Rp ' . number_format($invoice->total_amount - $invoice->paid_amount, 0, ',', '.'));
-        }
-
-        try {
-            DB::transaction(function () use ($enrollment) {
-                // Jika masih WAITING_PAYMENT_FINAL tetapi sudah lunas, transisi ke SETTLED dahulu
-                if ($enrollment->status === EnrollmentStatus::WAITING_PAYMENT_FINAL) {
-                    $this->stateMachineService->transition(
-                        $enrollment,
-                        EnrollmentStatus::SETTLED,
-                        'Uang pangkal/daftar ulang terkonfirmasi lunas.'
-                    );
-                    $enrollment->refresh();
-                }
-
-                // Transisi ke PERMANENT_STUDENT
-                if ($enrollment->status === EnrollmentStatus::SETTLED) {
-                    $this->stateMachineService->transition(
-                        $enrollment,
-                        EnrollmentStatus::PERMANENT_STUDENT,
-                        'Finalisasi daftar ulang mandiri oleh calon siswa.'
-                    );
-                }
-            });
-
-            return redirect()->route('portal.dashboard')
-                ->with('finalize_success', true)
-                ->with('success', 'Selamat! Anda telah resmi menjadi Siswa Tetap.');
-        } catch (\Exception $e) {
-            return redirect()->route('portal.re-registration.show', $enrollmentId)
-                ->with('error', 'Gagal memproses finalisasi: ' . $e->getMessage());
         }
     }
 

@@ -112,14 +112,48 @@
 
                     <!-- Tab Data Formulir -->
                     <div class="tab-pane" id="tab-formulir" role="tabpanel">
-                        <h6 class="fw-bold border-bottom pb-2 mb-3 text-secondary">Data Tambahan Formulir Pendaftaran</h6>
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                            <h6 class="fw-bold text-secondary mb-0">Data Tambahan Formulir Pendaftaran</h6>
+                        </div>
+                        
                         <template x-if="detailData?.enrollment?.form_data && detailData.enrollment.form_data.length > 0">
                             <div class="row g-3">
-                                <template x-for="item in detailData.enrollment.form_data" :key="item.id">
+                                <template x-for="(item, index) in detailData.enrollment.form_data" :key="item.id">
                                     <div class="col-md-6">
-                                        <div class="p-3 bg-light rounded shadow-xs border-start border-primary border-3 h-100">
-                                            <span class="d-block text-muted small fw-bold" x-text="item.field?.field_label"></span>
-                                            <span class="d-block fw-bold text-dark mt-1" x-text="item.value || '-'"></span>
+                                        <div class="p-3 bg-light rounded shadow-xs border-start border-3 h-100"
+                                            :class="{
+                                                'border-primary': item.is_valid === null || item.is_valid === 'null',
+                                                'border-success bg-success-subtle': String(item.is_valid) === 'true',
+                                                'border-danger bg-danger-subtle': String(item.is_valid) === 'false'
+                                            }">
+                                            
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <span class="d-block text-muted small fw-bold" x-text="item.field?.field_label"></span>
+                                                <span class="badge" 
+                                                      :class="{
+                                                          'bg-secondary': item.is_valid === null || item.is_valid === 'null',
+                                                          'bg-success': String(item.is_valid) === 'true',
+                                                          'bg-danger': String(item.is_valid) === 'false'
+                                                      }"
+                                                      x-text="item.is_valid === null || item.is_valid === 'null' ? 'Belum Diperiksa' : (String(item.is_valid) === 'true' ? 'Valid' : 'Tidak Valid')">
+                                                </span>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <template x-if="item.field?.field_type === 'file'">
+                                                    <a :href="'/' + item.value" target="_blank" class="btn btn-sm btn-outline-primary w-100" x-show="item.value">
+                                                        <i class="ti ti-external-link"></i> Lihat Berkas
+                                                    </a>
+                                                </template>
+                                                <template x-if="item.field?.field_type !== 'file'">
+                                                    <span class="d-block fw-bold text-dark" x-text="item.value || '-'"></span>
+                                                </template>
+                                            </div>
+
+                                            <div x-show="String(item.is_valid) === 'false'" class="mt-2 pt-2 border-top border-danger border-opacity-25">
+                                                <label class="small text-danger fw-bold mb-1"><i class="ti ti-alert-circle"></i> Catatan Revisi:</label>
+                                                <p class="small text-danger mb-0" x-text="item.validation_note || '-'"></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </template>

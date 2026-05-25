@@ -7,6 +7,25 @@
         Terima kasih atas minat dan partisipasi Anda dalam pendaftaran SPMB {{ $schoolIdentity->school_name ?? 'SMA Tunas Luhur' }}. Hasil keputusan pleno menyatakan bahwa berkas/nilai seleksi Anda <strong>BELUM MEMENUHI BATAS MINIMUM</strong> untuk jalur ini.
       </p>
 
+      <div class="mb-4 pt-3 border-top">
+        <span class="text-muted d-block mb-2 small fw-semibold">Rincian Nilai Seleksi Anda:</span>
+        @if($enrollment && $enrollment->assessments->isNotEmpty())
+          <ul class="list-unstyled mb-0 row">
+            @foreach($enrollment->assessments as $assessment)
+              <li class="col-sm-6 mb-2 small">
+                <i class="fa-solid fa-circle-chevron-right me-1 text-danger"></i> 
+                <strong>{{ $assessment->trackAssessment->assessmentType->name ?? '' }}</strong>: 
+                <span class="badge bg-danger-subtle text-danger">
+                  {{ $assessment->score ? 'Nilai: ' . $assessment->score : 'Gagal' }}
+                </span>
+              </li>
+            @endforeach
+          </ul>
+        @else
+          <span class="small text-muted d-block"><i class="fa-solid fa-circle-info me-1"></i> Rincian nilai tidak tersedia.</span>
+        @endif
+      </div>
+
       @php
         $rejectedLog = $enrollment ? $enrollment->statusLogs()->where('to_status', 'rejected')->latest('changed_at')->first() : null;
       @endphp

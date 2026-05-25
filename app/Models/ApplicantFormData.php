@@ -16,6 +16,12 @@ class ApplicantFormData extends Model
         'enrollment_id',
         'field_id',
         'value',
+        'is_valid',
+        'validation_note',
+    ];
+
+    protected $casts = [
+        'is_valid' => 'boolean',
     ];
 
     public function enrollment(): BelongsTo

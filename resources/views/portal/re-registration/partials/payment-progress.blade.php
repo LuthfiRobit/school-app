@@ -28,46 +28,23 @@
 
     <!-- Alert status -->
     @if($isEligible)
-      <div class="alert alert-success border-success border-opacity-25 p-3 mb-4 d-flex align-items-start gap-2.5">
+      <div class="alert alert-success border-success border-opacity-25 p-3 mb-0 d-flex align-items-start gap-2.5">
         <i class="fa-solid fa-circle-check fs-5 text-success mt-0.5 animate-bounce"></i>
         <div>
           <h6 class="fw-bold text-success mb-1">Tagihan Uang Pangkal Lunas!</h6>
-          <p class="text-muted small mb-0">Pembayaran Anda telah lunas 100%. Silakan klik tombol finalisasi di bawah untuk menetapkan status siswa tetap.</p>
+          <p class="text-muted small mb-0">Pembayaran Anda telah lunas 100%. Silakan menunggu verifikasi dari Admin untuk menetapkan status Anda sebagai Siswa Tetap.</p>
         </div>
       </div>
     @else
-      <div class="alert alert-warning border-warning border-opacity-25 p-3 mb-4 d-flex align-items-start gap-2.5">
+      <div class="alert alert-warning border-warning border-opacity-25 p-3 mb-0 d-flex align-items-start gap-2.5">
         <i class="fa-solid fa-circle-info fs-5 text-warning mt-0.5"></i>
         <div>
           <h6 class="fw-bold text-warning mb-1">Sisa Biaya Daftar Ulang</h6>
           <p class="text-muted small mb-0">
-            Harap lunasi kekurangan sebesar <strong>Rp {{ number_format($totalAmount - $paidAmount, 0, ',', '.') }}</strong> agar dapat memfinalisasi pendaftaran.
+            Harap lunasi kekurangan sebesar <strong>Rp {{ number_format($totalAmount - $paidAmount, 0, ',', '.') }}</strong> untuk menyelesaikan proses daftar ulang.
           </p>
         </div>
       </div>
     @endif
-
-    <!-- Tombol Finalisasi -->
-    <div>
-      <form id="finalize-form" action="{{ route('portal.re-registration.finalize', $enrollment->id) }}" method="POST">
-        @csrf
-        @if($isEligible)
-          <button type="button" 
-                  class="btn btn-success text-white w-100 py-3 fw-bold pulse-success hover-shadow-md d-flex align-items-center justify-content-center gap-2"
-                  @click="confirmFinalization($event, '{{ e($enrollment->applicant->full_name) }}', '{{ number_format($paidAmount, 0, ',', '.') }}')">
-            <i class="fa-solid fa-circle-check fs-5"></i> Finalisasi Daftar Ulang
-          </button>
-        @else
-          <button type="button" 
-                  class="btn btn-secondary w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2 cursor-not-allowed" 
-                  disabled
-                  data-bs-toggle="tooltip" 
-                  data-bs-placement="top" 
-                  title="Harap lunasi sisa tagihan Rp {{ number_format($totalAmount - $paidAmount, 0, ',', '.') }} untuk mengaktifkan tombol ini.">
-            <i class="fa-solid fa-ban fs-5"></i> Finalisasi Belum Aktif
-          </button>
-        @endif
-      </form>
-    </div>
   </div>
 </div>

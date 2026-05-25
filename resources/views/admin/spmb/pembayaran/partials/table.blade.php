@@ -27,6 +27,16 @@
                         <option value="manual">Manual Cash</option>
                     </select>
                 </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Kategori Pembayaran</label>
+                    <select class="form-select select2-alpine" 
+                        x-init="initSelect2($el, 'category')"
+                        data-placeholder="Semua Kategori">
+                        <option value=""></option>
+                        <option value="registration">Pembayaran Formulir</option>
+                        <option value="re_registration">Daftar Ulang</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -55,10 +65,11 @@
                             <th>No. Pendaftaran</th>
                             <th>Nama Pendaftar</th>
                             <th>No. Invoice</th>
+                            <th class="text-center">Kategori</th>
                             <th class="text-end">Nominal</th>
                             <th class="text-end">Terverifikasi</th>
-                            <th>Metode</th>
-                            <th>Status</th>
+                            <th class="text-center">Metode</th>
+                            <th class="text-center">Status</th>
                             <th>Tanggal Masuk</th>
                         </tr>
                     </thead>

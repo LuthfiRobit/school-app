@@ -50,6 +50,12 @@ class PaymentController extends Controller
             $query->where('input_method', $request->input_method);
         }
 
+        if ($request->filled('category')) {
+            $query->whereHas('invoice', function ($q) use ($request) {
+                $q->where('category', $request->category);
+            });
+        }
+
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
@@ -81,6 +87,12 @@ class PaymentController extends Controller
             ->addColumn('invoice_number', function ($row) {
                 return $row->invoice ? $row->invoice->invoice_number : '-';
             })
+            ->addColumn('invoice_category_label', function ($row) {
+                if (!$row->invoice) return '-';
+                return $row->invoice->category === 'registration' 
+                    ? '<span class="badge bg-light-primary text-primary">Pembayaran Formulir</span>' 
+                    : '<span class="badge bg-light-secondary text-secondary">Daftar Ulang</span>';
+            })
             ->addColumn('amount_formatted', function ($row) {
                 return 'Rp ' . number_format($row->amount, 0, ',', '.');
             })
@@ -101,7 +113,7 @@ class PaymentController extends Controller
             ->addColumn('created_at_formatted', function ($row) {
                 return $row->created_at ? $row->created_at->format('d-m-Y H:i') : '-';
             })
-            ->rawColumns(['action', 'enrollment_number', 'status_badge', 'input_method_label', 'confirmed_amount_formatted'])
+            ->rawColumns(['action', 'enrollment_number', 'status_badge', 'input_method_label', 'confirmed_amount_formatted', 'invoice_category_label'])
             ->make(true);
     }
 

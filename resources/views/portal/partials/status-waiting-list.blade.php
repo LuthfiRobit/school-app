@@ -7,6 +7,25 @@
         Hasil rapat pleno menyatakan bahwa nilai/berkas Anda memenuhi standar kelayakan, namun karena keterbatasan kuota daya tampung jalur <strong>{{ $enrollment && $enrollment->spmbTrack && $enrollment->spmbTrack->trackType ? $enrollment->spmbTrack->trackType->name : '' }}</strong>, Anda dimasukkan ke dalam daftar cadangan.
       </p>
 
+      <div class="mb-4 pt-3 border-top">
+        <span class="text-muted d-block mb-2 small fw-semibold">Rincian Nilai Seleksi Anda:</span>
+        @if($enrollment && $enrollment->assessments->isNotEmpty())
+          <ul class="list-unstyled mb-0 row">
+            @foreach($enrollment->assessments as $assessment)
+              <li class="col-sm-6 mb-2 small">
+                <i class="fa-solid fa-circle-chevron-right me-1 text-warning"></i> 
+                <strong>{{ $assessment->trackAssessment->assessmentType->name ?? '' }}</strong>: 
+                <span class="badge bg-warning-subtle text-warning-emphasis">
+                  {{ $assessment->score ? 'Nilai: ' . $assessment->score : 'Dinilai' }}
+                </span>
+              </li>
+            @endforeach
+          </ul>
+        @else
+          <span class="small text-muted d-block"><i class="fa-solid fa-circle-info me-1"></i> Rincian nilai tidak tersedia.</span>
+        @endif
+      </div>
+
       <div class="row g-3 mb-4">
         <div class="col-sm-6">
           <div class="p-3 bg-light rounded-md border text-center">

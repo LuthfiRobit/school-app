@@ -46,6 +46,17 @@
       </div>
 
     </div>
+
+    <!-- Validation Note for File -->
+    @if(isset($formValidations[$field->id]) && $formValidations[$field->id]->is_valid === false)
+      <div class="alert alert-danger mt-2 py-2 px-3 small d-flex align-items-start border-danger border-opacity-25 bg-danger-subtle text-danger">
+        <i class="fa-solid fa-triangle-exclamation mt-1 me-2"></i>
+        <div>
+          <strong>Revisi Dibutuhkan:</strong><br>
+          {{ $formValidations[$field->id]->validation_note ?: 'Berkas tidak valid, silakan unggah ulang.' }}
+        </div>
+      </div>
+    @endif
   </div>
 @else
   <div class="mb-3">
@@ -110,6 +121,17 @@
                 x-model="fieldsData['{{ $field->id }}']" 
                 @input="triggerAutoSave()"
                 {{ $field->is_required ? 'required' : '' }}></textarea>
+    @endif
+
+    <!-- Validation Note for Text/Number/etc -->
+    @if(isset($formValidations[$field->id]) && $formValidations[$field->id]->is_valid === false)
+      <div class="alert alert-danger mt-2 py-2 px-3 small d-flex align-items-start border-danger border-opacity-25 bg-danger-subtle text-danger">
+        <i class="fa-solid fa-triangle-exclamation mt-1 me-2"></i>
+        <div>
+          <strong>Revisi Dibutuhkan:</strong><br>
+          {{ $formValidations[$field->id]->validation_note ?: 'Isian tidak valid, silakan perbaiki.' }}
+        </div>
+      </div>
     @endif
   </div>
 @endif

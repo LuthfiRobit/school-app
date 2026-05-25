@@ -22,6 +22,7 @@
 
     {{-- Modal Ubah Status --}}
     @include('admin.spmb.pendaftar.partials.modal_status')
+    @include('admin.spmb.pendaftar.partials.modal_validation')
 </div>
 @endsection
 

@@ -64,7 +64,7 @@ class StateMachineService
                 }
             }
 
-            if ($to === EnrollmentStatus::PASSED) {
+            if ($to === EnrollmentStatus::WAITING_PAYMENT_FINAL) {
                 // Generate Re-Registration Invoice
                 if (!\App\Models\Invoice::where('enrollment_id', $enrollment->id)->where('category', 're_registration')->exists()) {
                     $this->invoiceGeneratorService->generateReRegistrationInvoice($enrollment);
@@ -85,13 +85,29 @@ class StateMachineService
             EnrollmentStatus::REGISTERED          => [EnrollmentStatus::WAITING_PAYMENT_REG, EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::DRAFT],
             EnrollmentStatus::WAITING_PAYMENT_REG => [EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
             EnrollmentStatus::VERIFIED_REG        => [EnrollmentStatus::IN_REVIEW, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
-            EnrollmentStatus::IN_REVIEW           => [EnrollmentStatus::PASSED, EnrollmentStatus::WAITING_LIST, EnrollmentStatus::REJECTED],
+            EnrollmentStatus::IN_REVIEW           => [EnrollmentStatus::PASSED, EnrollmentStatus::WAITING_LIST, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
             EnrollmentStatus::PASSED              => [EnrollmentStatus::WAITING_PAYMENT_FINAL],
             EnrollmentStatus::WAITING_LIST        => [EnrollmentStatus::PASSED, EnrollmentStatus::REJECTED],
             EnrollmentStatus::WAITING_PAYMENT_FINAL => [EnrollmentStatus::SETTLED, EnrollmentStatus::REJECTED],
             EnrollmentStatus::SETTLED             => [EnrollmentStatus::PERMANENT_STUDENT],
             default                               => [],
         };
+    }
+
+    /**
+     * Get allowed next transitions specifically for manual UI changes by Admin.
+     * Hides statuses that should only be triggered automatically (e.g. by payments).
+     */
+    public function getManualAllowedTransitions(ApplicantEnrollment $enrollment): array
+    {
+        $all = $this->getAllowedTransitions($enrollment);
+        
+        $excluded = [
+            EnrollmentStatus::VERIFIED_REG,
+            EnrollmentStatus::SETTLED
+        ];
+        
+        return array_values(array_filter($all, fn($status) => !in_array($status, $excluded, strict: true)));
     }
 
     /**
@@ -109,7 +125,7 @@ class StateMachineService
             EnrollmentStatus::REGISTERED          => [EnrollmentStatus::WAITING_PAYMENT_REG, EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::DRAFT],
             EnrollmentStatus::WAITING_PAYMENT_REG => [EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
             EnrollmentStatus::VERIFIED_REG        => [EnrollmentStatus::IN_REVIEW, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
-            EnrollmentStatus::IN_REVIEW           => [EnrollmentStatus::PASSED, EnrollmentStatus::WAITING_LIST, EnrollmentStatus::REJECTED],
+            EnrollmentStatus::IN_REVIEW           => [EnrollmentStatus::PASSED, EnrollmentStatus::WAITING_LIST, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
             EnrollmentStatus::PASSED              => [EnrollmentStatus::WAITING_PAYMENT_FINAL],
             EnrollmentStatus::WAITING_LIST        => [EnrollmentStatus::PASSED, EnrollmentStatus::REJECTED],
             EnrollmentStatus::WAITING_PAYMENT_FINAL => [EnrollmentStatus::SETTLED, EnrollmentStatus::REJECTED],

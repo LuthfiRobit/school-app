@@ -50,6 +50,7 @@ Route::prefix('portal')->name('portal.')->middleware(['auth', 'applicant'])->gro
         Route::post('/daftar/{trackId}/draft', 'saveDraft')->name('draft');
         Route::post('/daftar/{trackId}/submit', 'submit')->name('submit');
         Route::get('/{enrollmentId}', 'show')->name('show');
+        Route::get('/kartu-ujian/{enrollmentId}', 'downloadTestCard')->name('test-card');
     });
 
     Route::prefix('pembayaran')->name('payment.')->controller(ApplicantPaymentController::class)->group(function () {
@@ -59,8 +60,8 @@ Route::prefix('portal')->name('portal.')->middleware(['auth', 'applicant'])->gro
 
     Route::prefix('daftar-ulang')->name('re-registration.')->controller(ApplicantReRegistrationController::class)->group(function () {
         Route::get('/{enrollmentId}', 'show')->name('show');
+        Route::post('/{enrollmentId}/start', 'start')->name('start');
         Route::post('/{enrollmentId}/upload', 'upload')->name('upload');
-        Route::post('/{enrollmentId}/finalisasi', 'finalize')->name('finalize');
     });
 
     Route::get('/surat/{enrollmentId}', [ApplicantReRegistrationController::class, 'downloadLetter'])->name('letter.download');
@@ -208,6 +209,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
                 Route::get('/data', 'getData')->name('data')->middleware('permission:spmb.pendaftar.view');
                 Route::get('/{id}', 'show')->name('show')->middleware('permission:spmb.pendaftar.view');
                 Route::post('/{id}/status', 'updateStatus')->name('status')->middleware('permission:spmb.pendaftar.status');
+                Route::post('/{id}/validate-form', 'validateForm')->name('validate-form')->middleware('permission:spmb.pendaftar.status');
                 Route::post('/bulk-status', 'bulkStatus')->name('bulk-status')->middleware('permission:spmb.pendaftar.bulk-status');
             });
         });

@@ -66,12 +66,19 @@ class EnrollmentController extends Controller
                         </div>';
             })
             ->addColumn('action', function ($row) {
+                $status = $row->status->value ?? $row->status;
+                $validateBtn = '';
+                if ($status === 'verified_reg') {
+                    $validateBtn = '<li><a class="dropdown-item btn-validate" href="javascript:void(0)" data-id="' . $row->id . '"><i class="ti ti-check me-2"></i>Validasi Formulir</a></li>';
+                }
+
                 return '<div class="dropdown">
                             <button class="btn btn-sm btn-light-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 <i class="ti ti-settings"></i>
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item btn-detail" href="javascript:void(0)" data-id="' . $row->id . '"><i class="ti ti-eye me-2"></i>Detail</a></li>
+                                ' . $validateBtn . '
                                 <li><a class="dropdown-item btn-status" href="javascript:void(0)" data-id="' . $row->id . '"><i class="ti ti-arrows-left-right me-2"></i>Ubah Status</a></li>
                             </ul>
                         </div>';
@@ -124,15 +131,14 @@ class EnrollmentController extends Controller
             return response()->json(['message' => 'Pendaftar tidak ditemukan'], 404);
         }
 
-        // Get allowed state transitions for the status modal dropdown
+        // Get allowed state transitions for the status modal dropdown (manual UI only)
         $allowedTransitions = [];
-        foreach (EnrollmentStatus::cases() as $targetStatus) {
-            if ($this->stateMachine->canTransition($enrollment->status, $targetStatus)) {
-                $allowedTransitions[] = [
-                    'value' => $targetStatus->value,
-                    'label' => $targetStatus->label(),
-                ];
-            }
+        $manualStatuses = $this->stateMachine->getManualAllowedTransitions($enrollment);
+        foreach ($manualStatuses as $targetStatus) {
+            $allowedTransitions[] = [
+                'value' => $targetStatus->value,
+                'label' => $targetStatus->label(),
+            ];
         }
 
         return response()->json([
@@ -181,22 +187,86 @@ class EnrollmentController extends Controller
         $targetStatus = EnrollmentStatus::from($request->status);
         $reason = $request->reason ?: 'Diubah massal oleh Admin';
 
+        $successCount = 0;
+        $failedCount = 0;
+
+        foreach ($request->ids as $id) {
+            try {
+                $enrollment = $this->enrollmentRepository->find($id);
+                if ($enrollment) {
+                    $success = $this->stateMachine->transition($enrollment, $targetStatus, $reason);
+                    if ($success) {
+                        $successCount++;
+                    } else {
+                        $failedCount++;
+                    }
+                }
+            } catch (\Exception $e) {
+                // If a single transition fails, increment failedCount but continue the loop
+                $failedCount++;
+            }
+        }
+
+        $message = "Berhasil mengubah status {$successCount} pendaftar.";
+        if ($failedCount > 0) {
+            $message .= " Terdapat {$failedCount} pendaftar yang dilewati karena transisi tidak valid.";
+        }
+
+        return response()->json(['message' => $message]);
+    }
+
+    /**
+     * Memvalidasi form isian pendaftar.
+     */
+    public function validateForm(Request $request, $id)
+    {
+        $enrollment = $this->enrollmentRepository->find($id);
+
+        if (!$enrollment) {
+            return response()->json(['message' => 'Pendaftar tidak ditemukan'], 404);
+        }
+
+        $validations = $request->input('validations', []);
+        $hasInvalid = false;
+
         try {
-            DB::transaction(function () use ($request, $targetStatus, $reason) {
-                foreach ($request->ids as $id) {
-                    $enrollment = $this->enrollmentRepository->find($id);
-                    if ($enrollment) {
-                        $success = $this->stateMachine->transition($enrollment, $targetStatus, $reason);
-                        if (!$success) {
-                            throw new \Exception("Pendaftar #{$enrollment->enrollment_number} tidak dapat diubah ke status [{$targetStatus->label()}].");
+            DB::transaction(function () use ($enrollment, $validations, &$hasInvalid) {
+                foreach ($validations as $val) {
+                    $formData = \App\Models\ApplicantFormData::where('id', $val['id'])
+                        ->where('enrollment_id', $enrollment->id)
+                        ->first();
+                        
+                    if ($formData) {
+                        $isValid = isset($val['is_valid']) && $val['is_valid'] !== '' ? filter_var($val['is_valid'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null;
+                        
+                        if ($isValid === false) {
+                            $hasInvalid = true;
                         }
+
+                        $formData->update([
+                            'is_valid' => $isValid,
+                            'validation_note' => $isValid === false ? ($val['validation_note'] ?? null) : null,
+                        ]);
+                    }
+                }
+
+                if ($hasInvalid && $enrollment->status !== EnrollmentStatus::DRAFT) {
+                    if ($this->stateMachine->canTransition($enrollment->status, EnrollmentStatus::DRAFT)) {
+                        $this->stateMachine->transition(
+                            $enrollment, 
+                            EnrollmentStatus::DRAFT, 
+                            'Terdapat isian/berkas yang tidak valid, form dikembalikan ke siswa untuk direvisi.'
+                        );
                     }
                 }
             });
 
-            return response()->json(['message' => 'Status massal pendaftar berhasil diubah']);
+            return response()->json([
+                'message' => 'Validasi berhasil disimpan.', 
+                'auto_drafted' => $hasInvalid
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal memproses status massal: ' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Gagal memproses validasi: ' . $e->getMessage()], 500);
         }
     }
 }

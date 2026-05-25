@@ -6,7 +6,8 @@
             detailData: null,
             filter: {
                 status: '',
-                input_method: ''
+                input_method: '',
+                category: ''
             },
             confirmForm: {
                 id: null,
@@ -45,6 +46,7 @@
                         data: function (d) {
                             d.status = self.filter.status;
                             d.input_method = self.filter.input_method;
+                            d.category = self.filter.category;
                         }
                     },
                     columns: [
@@ -53,6 +55,7 @@
                         { data: 'enrollment_number', name: 'invoice.enrollment.enrollment_number' },
                         { data: 'applicant_name', name: 'invoice.enrollment.applicant.full_name' },
                         { data: 'invoice_number', name: 'invoice.invoice_number' },
+                        { data: 'invoice_category_label', name: 'invoice.category', className: 'text-center' },
                         { data: 'amount_formatted', name: 'amount', className: 'text-end font-monospace' },
                         { data: 'confirmed_amount_formatted', name: 'confirmed_amount', className: 'text-end font-monospace' },
                         { data: 'input_method_label', name: 'input_method', className: 'text-center' },

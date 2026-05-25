@@ -67,6 +67,7 @@
                             <th>Jalur Pendaftaran</th>
                             <th>Tahun Pelajaran</th>
                             <th>Progress Penilaian</th>
+                            <th class="text-center">Nilai</th>
                             <th>Status</th>
                             <th>Tanggal Daftar</th>
                         </tr>

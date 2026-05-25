@@ -89,16 +89,23 @@ class AssessmentController extends Controller
                 $detailBtn = '<a class="dropdown-item btn-detail" href="javascript:void(0)" data-id="' . $row->id . '">
                                   <i class="ti ti-clipboard-list me-2"></i>Input / Lihat Nilai
                               </a>';
-                $decisionBtn = '<a class="dropdown-item btn-decision" href="javascript:void(0)" data-id="' . $row->id . '">
-                                    <i class="ti ti-award me-2"></i>Tetapkan Kelulusan
-                                </a>';
+                              
+                $allAssessed = $this->scoreService->isAllComponentsAssessed($row);
+                
+                $decisionBtn = '';
+                if ($allAssessed) {
+                    $decisionBtn = '<li><a class="dropdown-item btn-decision" href="javascript:void(0)" data-id="' . $row->id . '">
+                                        <i class="ti ti-award me-2"></i>Tetapkan Kelulusan
+                                    </a></li>';
+                }
+
                 return '<div class="dropdown">
                             <button class="btn btn-sm btn-light-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 <i class="ti ti-settings"></i>
                             </button>
                             <ul class="dropdown-menu">
                                 <li>' . $detailBtn . '</li>
-                                <li>' . $decisionBtn . '</li>
+                                ' . $decisionBtn . '
                             </ul>
                         </div>';
             })
@@ -146,10 +153,14 @@ class AssessmentController extends Controller
                 $status = $row->status;
                 return '<span class="badge ' . $status->badgeClass() . '">' . $status->label() . '</span>';
             })
+            ->addColumn('score_formatted', function ($row) {
+                $score = $this->scoreService->calculateWeightedScore($row);
+                return '<strong>' . number_format($score, 2) . '</strong>';
+            })
             ->addColumn('created_at_formatted', function ($row) {
                 return $row->created_at ? $row->created_at->format('d-m-Y H:i') : '-';
             })
-            ->rawColumns(['checkbox', 'action', 'enrollment_number', 'assessment_progress', 'status_badge'])
+            ->rawColumns(['checkbox', 'action', 'enrollment_number', 'assessment_progress', 'status_badge', 'score_formatted'])
             ->make(true);
     }
 

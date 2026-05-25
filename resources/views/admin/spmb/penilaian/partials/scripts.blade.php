@@ -85,6 +85,7 @@
                         { data: 'track_name',            name: 'spmbTrack.trackType.name' },
                         { data: 'academic_year',         name: 'spmbTrack.spmbConfiguration.academicYear.name' },
                         { data: 'assessment_progress',   name: 'assessment_progress', orderable: false },
+                        { data: 'score_formatted',       name: 'score_formatted', orderable: false, className: 'text-center' },
                         { data: 'status_badge',          name: 'status',         orderable: false },
                         { data: 'created_at_formatted',  name: 'created_at' }
                     ],

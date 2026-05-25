@@ -5,6 +5,7 @@
             table: null,
             selectedIds: [],
             detailData: null,
+            validationData: null,
             filter: {
                 academic_year_id: '',
                 spmb_track_id: '',
@@ -111,6 +112,11 @@
                     self.openStatusModal(id);
                 });
 
+                $table.on('click', '.btn-validate', function() {
+                    const id = $(this).data('id');
+                    self.openValidationModal(id);
+                });
+
                 $table.on('change', '.check-item', function() {
                     const id = $(this).val();
                     if ($(this).is(':checked')) {
@@ -126,7 +132,7 @@
                 });
 
                 // Clean modal backdrops on close
-                $('#detailModal, #statusModal, #bulkStatusModal').on('hidden.bs.modal', function () {
+                $('#detailModal, #statusModal, #bulkStatusModal, #validationModal').on('hidden.bs.modal', function () {
                     $('.modal-backdrop').remove();
                     $('body').removeClass('modal-open').css('overflow', '');
                 });
@@ -204,6 +210,47 @@
                     this.refreshTable();
                 } catch (error) {
                     const msg = error.response?.data?.message || 'Terjadi kesalahan sistem';
+                    Swal.fire('Gagal', msg, 'error');
+                } finally {
+                    this.loading = false;
+                }
+            },
+
+            async openValidationModal(id) {
+                try {
+                    const response = await axios.get(`{{ route('admin.spmb.pendaftar.show', ':id') }}`.replace(':id', id));
+                    this.validationData = response.data;
+                    const modal = new bootstrap.Modal(this.$refs.validationModal);
+                    modal.show();
+                } catch (error) {
+                    Swal.fire('Gagal', 'Tidak dapat mengambil detail pendaftar', 'error');
+                }
+            },
+
+            async submitValidation() {
+                this.loading = true;
+                try {
+                    const validations = this.validationData.enrollment.form_data.map(item => ({
+                        id: item.id,
+                        is_valid: item.is_valid,
+                        validation_note: item.validation_note
+                    }));
+
+                    const response = await axios.post(
+                        `{{ route('admin.spmb.pendaftar.validate-form', ':id') }}`.replace(':id', this.validationData.enrollment.id),
+                        { validations: validations }
+                    );
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: response.data.message + (response.data.auto_drafted ? ' Status pendaftar telah dikembalikan ke Draf.' : ''),
+                    });
+
+                    bootstrap.Modal.getInstance(this.$refs.validationModal).hide();
+                    this.refreshTable();
+                } catch (error) {
+                    const msg = error.response?.data?.message || 'Terjadi kesalahan sistem saat menyimpan validasi';
                     Swal.fire('Gagal', msg, 'error');
                 } finally {
                     this.loading = false;

@@ -7,6 +7,19 @@
         Pilihan jalur Anda (<strong>{{ $enrollment && $enrollment->spmbTrack && $enrollment->spmbTrack->trackType ? $enrollment->spmbTrack->trackType->name : '' }}</strong>) telah dikunci. Silakan transfer biaya registrasi pendaftaran sebelum batas waktu untuk masuk ke tahap verifikasi dokumen.
       </p>
 
+      @php
+        $latestPayment = $regInvoice ? $regInvoice->payments->last() : null;
+      @endphp
+      
+      @if($latestPayment && $latestPayment->status === \App\Enums\PaymentStatus::REJECTED)
+        <div class="alert alert-danger d-flex align-items-center mb-4 bg-danger-subtle border-danger-subtle text-danger">
+          <i class="fa-solid fa-triangle-exclamation me-3 fs-4 text-danger"></i>
+          <div>
+            <strong>Pembayaran Ditolak:</strong> {{ $latestPayment->note ?? 'Bukti pembayaran tidak valid. Silakan unggah ulang bukti yang benar.' }}
+          </div>
+        </div>
+      @endif
+
       <div class="invoice-box p-3 bg-light rounded-md mb-4 border">
         <div class="d-flex justify-content-between mb-2 border-bottom pb-2">
           <span class="text-muted">Total Tagihan Formulir:</span>

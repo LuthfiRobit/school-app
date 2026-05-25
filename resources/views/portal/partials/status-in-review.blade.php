@@ -65,7 +65,9 @@
 
     @if($announcementVisible)
       <div>
-        <button class="btn btn-primary px-4 py-2" @click="toastr.info('Mengunduh kartu peserta...');"><i class="fa-solid fa-file-pdf me-2"></i> Unduh Kartu Ujian Peserta</button>
+        <a href="{{ $enrollment ? route('portal.enrollment.test-card', $enrollment->id) : '#' }}" class="btn btn-primary px-4 py-2" target="_blank">
+          <i class="fa-solid fa-file-pdf me-2"></i> Unduh Kartu Ujian Peserta
+        </a>
       </div>
     @endif
   </div>

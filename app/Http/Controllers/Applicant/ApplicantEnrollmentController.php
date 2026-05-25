@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\ApplicantEnrollmentRepositoryInterface;
 use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 use App\Services\StateMachineService;
 use App\Services\EnrollmentNumberService;
+use App\Services\PdfGeneratorService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +25,8 @@ class ApplicantEnrollmentController extends Controller
         protected ApplicantEnrollmentRepositoryInterface $enrollmentRepo,
         protected ApplicantRepositoryInterface $applicantRepo,
         protected StateMachineService $stateMachineService,
-        protected EnrollmentNumberService $enrollmentNumberService
+        protected EnrollmentNumberService $enrollmentNumberService,
+        protected PdfGeneratorService $pdfGeneratorService
     ) {}
 
     /**
@@ -131,9 +133,10 @@ class ApplicantEnrollmentController extends Controller
 
         // Pre-fill data form yang sudah disimpan di draft sebelumnya
         $formData = $enrollment->formData->pluck('value', 'field_id')->toArray();
+        $formValidations = $enrollment->formData->keyBy('field_id');
         $formFields = $track->formFields;
 
-        return view('portal.enrollment.form', compact('track', 'enrollment', 'formFields', 'formData', 'applicant'));
+        return view('portal.enrollment.form', compact('track', 'enrollment', 'formFields', 'formData', 'formValidations', 'applicant'));
     }
 
     /**
@@ -292,8 +295,10 @@ class ApplicantEnrollmentController extends Controller
             }
         });
 
-        // Generate enrollment_number via EnrollmentNumberService
-        $this->enrollmentNumberService->generate($enrollment);
+        // Generate enrollment_number via EnrollmentNumberService only if it doesn't exist yet
+        if (!$enrollment->enrollment_number) {
+            $this->enrollmentNumberService->generate($enrollment);
+        }
 
         // Transisi status: Draft -> Registered
         $this->stateMachineService->transition($enrollment, \App\Enums\EnrollmentStatus::REGISTERED, 'Formulir pendaftaran berhasil dikirim.');
@@ -301,10 +306,23 @@ class ApplicantEnrollmentController extends Controller
         // Transisi rute lanjutan berdasarkan nominal pendaftaran & mode pembayaran
         $enrollment->refresh();
         
-        if ($track->payment_mode === \App\Enums\PaymentMode::PRE_PAYMENT && $track->registration_fee > 0) {
-            $this->stateMachineService->transition($enrollment, \App\Enums\EnrollmentStatus::WAITING_PAYMENT_REG, 'Menunggu pembayaran biaya pendaftaran.');
+        // Cek apakah invoice registrasi sudah lunas (kasus formulir dikembalikan ke Draft)
+        $isAlreadyPaid = false;
+        $registrationInvoice = \App\Models\Invoice::where('enrollment_id', $enrollment->id)
+            ->where('category', 'registration')
+            ->first();
+        if ($registrationInvoice && $registrationInvoice->status === \App\Enums\InvoiceStatus::PAID) {
+            $isAlreadyPaid = true;
+        }
+
+        if ($isAlreadyPaid) {
+            $this->stateMachineService->transition($enrollment, \App\Enums\EnrollmentStatus::VERIFIED_REG, 'Pendaftaran dikirim ulang dan pembayaran sebelumnya sudah lunas.');
         } else {
-            $this->stateMachineService->transition($enrollment, \App\Enums\EnrollmentStatus::VERIFIED_REG, 'Pendaftaran langsung aktif tanpa biaya pendaftaran.');
+            if ($track->payment_mode === \App\Enums\PaymentMode::PRE_PAYMENT && $track->registration_fee > 0) {
+                $this->stateMachineService->transition($enrollment, \App\Enums\EnrollmentStatus::WAITING_PAYMENT_REG, 'Menunggu pembayaran biaya pendaftaran.');
+            } else {
+                $this->stateMachineService->transition($enrollment, \App\Enums\EnrollmentStatus::VERIFIED_REG, 'Pendaftaran langsung aktif tanpa biaya pendaftaran.');
+            }
         }
 
         return redirect()->route('portal.dashboard')
@@ -428,5 +446,53 @@ class ApplicantEnrollmentController extends Controller
 
         return redirect()->route('portal.enrollment.form', $trackId)
             ->with('success', 'Silakan isi berkas formulir untuk jalur pilihan baru Anda.');
+    }
+
+    /**
+     * Unduh Kartu Ujian Peserta.
+     */
+    public function downloadTestCard(int $enrollmentId)
+    {
+        $user = Auth::user();
+        $applicant = $user->applicant;
+
+        $enrollment = $this->enrollmentRepo->find($enrollmentId, ['*'], ['spmbTrack.trackType']);
+
+        if (!$enrollment || $enrollment->applicant_id !== $applicant->id) {
+            return redirect()->route('portal.dashboard')
+                ->with('error', 'Pendaftaran tidak ditemukan atau Anda tidak memiliki akses.');
+        }
+
+        $allowedStatuses = [
+            \App\Enums\EnrollmentStatus::VERIFIED_REG,
+            \App\Enums\EnrollmentStatus::IN_REVIEW,
+            \App\Enums\EnrollmentStatus::PASSED,
+            \App\Enums\EnrollmentStatus::WAITING_LIST,
+            \App\Enums\EnrollmentStatus::REJECTED,
+        ];
+
+        if (!in_array($enrollment->status, $allowedStatuses)) {
+            return redirect()->route('portal.dashboard')
+                ->with('error', 'Kartu ujian belum tersedia untuk status Anda saat ini.');
+        }
+
+        try {
+            $pdfPath = $this->pdfGeneratorService->generateTestCard($enrollment);
+
+            if (!file_exists($pdfPath)) {
+                throw new \RuntimeException('File kartu ujian tidak ditemukan setelah digenerate.');
+            }
+
+            $applicantSlug = \Illuminate\Support\Str::slug($enrollment->applicant->full_name);
+            $year = date('Y');
+            $downloadFileName = 'KartuUjian_' . $applicantSlug . '_' . $year . '-' . ($year + 1) . '.pdf';
+
+            return response()->download($pdfPath, $downloadFileName, [
+                'Content-Type' => 'application/pdf',
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('portal.dashboard')
+                ->with('error', 'Gagal mengunduh kartu ujian: ' . $e->getMessage());
+        }
     }
 }
