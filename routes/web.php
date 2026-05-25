@@ -8,6 +8,7 @@ use App\Http\Controllers\Applicant\PublicTrackController;
 use App\Http\Controllers\Applicant\ApplicantDashboardController;
 use App\Http\Controllers\Applicant\ApplicantEnrollmentController;
 use App\Http\Controllers\Applicant\ApplicantPaymentController;
+use App\Http\Controllers\Applicant\ApplicantReRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,13 +56,13 @@ Route::prefix('portal')->name('portal.')->middleware(['auth', 'applicant'])->gro
         Route::post('/{enrollmentId}/upload', 'upload')->name('upload');
     });
 
-    Route::prefix('daftar-ulang')->name('re-registration.')->group(function () {
-        Route::get('/{enrollmentId}', function () { return 'Show Re-registration'; })->name('show');
-        Route::post('/{enrollmentId}/upload', function () { return 'Upload Re-registration Proof'; })->name('upload');
-        Route::post('/{enrollmentId}/finalisasi', function () { return 'Finalize'; })->name('finalize');
+    Route::prefix('daftar-ulang')->name('re-registration.')->controller(ApplicantReRegistrationController::class)->group(function () {
+        Route::get('/{enrollmentId}', 'show')->name('show');
+        Route::post('/{enrollmentId}/upload', 'upload')->name('upload');
+        Route::post('/{enrollmentId}/finalisasi', 'finalize')->name('finalize');
     });
 
-    Route::get('/surat/{enrollmentId}', function () { return 'Download Letter'; })->name('letter.download');
+    Route::get('/surat/{enrollmentId}', [ApplicantReRegistrationController::class, 'downloadLetter'])->name('letter.download');
     Route::get('/riwayat', function () { return 'History'; })->name('history.index');
 });
 

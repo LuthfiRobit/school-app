@@ -140,4 +140,15 @@ class InvoiceGeneratorService
 
         return "INV-{$year}-{$sequence}";
     }
+
+    /**
+     * Check if enrollment is eligible for finalization.
+     */
+    public function isEligibleForFinalization(ApplicantEnrollment $enrollment): bool
+    {
+        $invoice = $enrollment->invoices()->where('category', 're_registration')->first();
+        if (!$invoice) return false;
+        return $invoice->paid_amount >= $invoice->total_amount;
+    }
 }
+
