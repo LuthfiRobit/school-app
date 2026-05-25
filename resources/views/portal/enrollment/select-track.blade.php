@@ -2,6 +2,106 @@
 
 @section('title', 'Pilih Jalur Pendaftaran')
 
+@push('css')
+<style>
+  /* Inner CSS tweaks to ensure extreme premium details on track selection */
+  .track-selection-card {
+    transition: all var(--transition-base);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 100%;
+    border: 1px solid var(--color-divider);
+  }
+  .track-selection-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary-400);
+  }
+  .track-selection-card.disabled {
+    opacity: 0.65;
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: var(--color-divider) !important;
+  }
+  .track-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .tag-pill {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .category-filter-btn {
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 0.35rem 1rem;
+    transition: all var(--transition-base);
+    border: 1px solid var(--color-divider);
+    background-color: white;
+    color: var(--color-text-muted);
+  }
+  .category-filter-btn:hover {
+    border-color: var(--color-primary-600);
+    color: var(--color-primary-800);
+  }
+  .category-filter-btn.active {
+    background-color: var(--color-primary-600);
+    border-color: var(--color-primary-600);
+    color: white;
+  }
+  .glass-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(11, 74, 111, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .glass-modal-content {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .requirements-check-list li {
+    position: relative;
+    padding-left: 24px;
+    list-style-type: none;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+  }
+  .requirements-check-list li::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--color-success);
+  }
+</style>
+@endpush
+
 @section('content')
 <div x-data="pilihJalurApp()" class="w-100">
 

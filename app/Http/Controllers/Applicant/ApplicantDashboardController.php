@@ -70,7 +70,8 @@ class ApplicantDashboardController extends Controller
 
             // Logika Pengumuman (TPD BL-VAL-03 & FR-26)
             if (in_array($realStatusKey, ['in_review', 'waiting_list', 'passed', 'rejected'])) {
-                if (!$enrollment->announcement_visible_at || $enrollment->announcement_visible_at->isFuture()) {
+                // Tampilkan hasil SEKARANG jika tanggal pengumuman NULL atau sudah lewat
+                if ($enrollment->announcement_visible_at && $enrollment->announcement_visible_at->isFuture()) {
                     $announcementVisible = false;
                     
                     // Mask status as 'in_review' if not yet announced
@@ -88,6 +89,15 @@ class ApplicantDashboardController extends Controller
                         return !in_array($track->id, $usedTrackIds);
                     })
                     ->values();
+            }
+
+            // Fix bug: Jika status waiting_payment_reg tapi ada pembayaran pending, 
+            // tampilkan card 'registered' (Berkas Sedang Diperiksa)
+            if ($realStatusKey === 'waiting_payment_reg') {
+                $regInvoice = $enrollment->invoices->where('category', 'registration')->first();
+                if ($regInvoice && $regInvoice->payments->where('status', \App\Enums\PaymentStatus::PENDING)->count() > 0) {
+                    $statusKey = 'registered';
+                }
             }
 
             $activeStep = match ($statusKey) {

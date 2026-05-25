@@ -1,0 +1,849 @@
+/*
+ * Custom CSS Improvements - Pustaka Nurja
+ * Perbaikan tampilan berdasarkan template Partsix
+ * Author: Frontend Expert
+ * Version: 1.0
+ */
+
+/* ================================
+   CSS VARIABLES OVERRIDE
+   ================================ */
+:root {
+    --pn-primary: #ED1D24;
+    --pn-primary-dark: #c5171d;
+    --pn-secondary: #212121;
+    --pn-accent: #FF6B35;
+    --pn-success: #10B981;
+    --pn-warning: #F59E0B;
+    --pn-danger: #EF4444;
+    --pn-info: #3B82F6;
+    
+    --pn-bg-light: #F8FAFC;
+    --pn-bg-white: #FFFFFF;
+    --pn-text-dark: #1E293B;
+    --pn-text-muted: #64748B;
+    --pn-border: #E2E8F0;
+    
+    --pn-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --pn-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --pn-shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --pn-shadow-lg: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    
+    --pn-radius-sm: 6px;
+    --pn-radius: 12px;
+    --pn-radius-lg: 16px;
+    --pn-radius-xl: 24px;
+    
+    --pn-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ================================
+   PRELOADER IMPROVEMENTS
+   ================================ */
+#preloader {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.animation-preloader .spinner {
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: var(--pn-primary);
+}
+
+.txt-loading .letters-loading {
+    font-weight: 600;
+    letter-spacing: 4px;
+}
+
+/* ================================
+   HEADER IMPROVEMENTS
+   ================================ */
+.header__topbar {
+    padding: 8px 0;
+    background: linear-gradient(90deg, var(--pn-secondary) 0%, #2d2d2d 100%) !important;
+}
+
+.header__topbar--info {
+    gap: 24px;
+}
+
+.header__info--link {
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--pn-transition);
+    opacity: 0.9;
+}
+
+.header__info--link:hover {
+    opacity: 1;
+    color: var(--pn-primary) !important;
+}
+
+.header__link--menu__text {
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--pn-transition);
+}
+
+.header__link--menu__text:hover {
+    color: var(--pn-primary) !important;
+}
+
+.social__share--icon {
+    width: 32px;
+    height: 32px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    transition: var(--pn-transition);
+}
+
+.social__share--icon:hover {
+    background: var(--pn-primary);
+    transform: translateY(-2px);
+}
+
+/* ================================
+   NAVBAR IMPROVEMENTS
+   ================================ */
+.main__header {
+    background: var(--pn-bg-white);
+    box-shadow: var(--pn-shadow-sm);
+}
+
+.main__logo--img {
+    max-height: 50px;
+    transition: var(--pn-transition);
+}
+
+.header__menu--items {
+    padding: 0 16px;
+}
+
+.header__menu--link {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--pn-text-dark);
+    padding: 12px 0;
+    position: relative;
+    transition: var(--pn-transition);
+}
+
+.header__menu--link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--pn-primary);
+    transition: var(--pn-transition);
+}
+
+.header__menu--link:hover::after,
+.header__menu--items.active .header__menu--link::after {
+    width: 100%;
+}
+
+.header__menu--link:hover {
+    color: var(--pn-primary);
+}
+
+/* Search Box */
+.header__search--box {
+    border-radius: var(--pn-radius);
+    overflow: hidden;
+    box-shadow: var(--pn-shadow-sm);
+    border: 1px solid var(--pn-border);
+}
+
+.header__search--input {
+    border: none;
+    padding: 12px 16px;
+    font-size: 14px;
+}
+
+.header__search--input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.header__search--button {
+    background: var(--pn-primary);
+    border: none;
+    padding: 12px 20px;
+    transition: var(--pn-transition);
+}
+
+.header__search--button:hover {
+    background: var(--pn-primary-dark);
+}
+
+/* Action Icons */
+.header__account--btn,
+.minicart__open--btn {
+    position: relative;
+    padding: 10px;
+    border-radius: var(--pn-radius);
+    transition: var(--pn-transition);
+}
+
+.header__account--btn:hover,
+.minicart__open--btn:hover {
+    background: var(--pn-bg-light);
+}
+
+.items__count {
+    background: var(--pn-primary);
+    font-weight: 600;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 11px;
+}
+
+/* ================================
+   SECTION HEADINGS
+   ================================ */
+.section__heading {
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+}
+
+.section__heading--maintitle {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--pn-text-dark);
+    letter-spacing: -0.5px;
+}
+
+.section__heading--maintitle span {
+    color: var(--pn-primary);
+}
+
+/* ================================
+   BOOK CARDS IMPROVEMENTS
+   ================================ */
+.book-card {
+    background: var(--pn-bg-white);
+    border-radius: var(--pn-radius);
+    padding: 16px;
+    transition: var(--pn-transition);
+    border: 1px solid var(--pn-border);
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--pn-shadow-md);
+    border-color: transparent;
+}
+
+.book-card img {
+    border-radius: var(--pn-radius-sm);
+    transition: var(--pn-transition);
+}
+
+.book-card:hover img {
+    transform: scale(1.02);
+}
+
+/* Product Card */
+.product__items {
+    background: var(--pn-bg-white);
+    border-radius: var(--pn-radius);
+    overflow: hidden;
+    transition: var(--pn-transition);
+    border: 1px solid var(--pn-border);
+}
+
+.product__items:hover {
+    box-shadow: var(--pn-shadow-md);
+    border-color: transparent;
+}
+
+.product__items--thumbnail {
+    overflow: hidden;
+}
+
+.product__items--img {
+    transition: var(--pn-transition);
+}
+
+.product__items:hover .product__items--img {
+    transform: scale(1.05);
+}
+
+.product__items--content {
+    padding: 16px;
+}
+
+.product__items--content__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--pn-text-dark);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.current__price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--pn-primary);
+}
+
+.old__price {
+    font-size: 14px;
+    color: var(--pn-text-muted);
+    text-decoration: line-through;
+}
+
+/* ================================
+   CATEGORIES IMPROVEMENTS
+   ================================ */
+.categories__card--style3 {
+    background: var(--pn-bg-white);
+    border-radius: var(--pn-radius);
+    padding: 16px;
+    transition: var(--pn-transition);
+    border: 1px solid var(--pn-border);
+}
+
+.categories__card--style3:hover {
+    box-shadow: var(--pn-shadow-md);
+    transform: translateY(-4px);
+}
+
+.categories__thumbnail--img {
+    border-radius: var(--pn-radius-sm) !important;
+    transition: var(--pn-transition);
+}
+
+.categories__content--title {
+    font-size: 14px !important;
+    font-weight: 500;
+    color: var(--pn-text-dark);
+    line-height: 1.5;
+}
+
+/* ================================
+   SEARCH FILTER SECTION
+   ================================ */
+.search__filter--inner {
+    background: var(--pn-bg-white);
+    border-radius: var(--pn-radius-lg) !important;
+    padding: 32px;
+    box-shadow: var(--pn-shadow-sm);
+    border: 1px solid var(--pn-border);
+}
+
+/* ================================
+   HERO SECTION
+   ================================ */
+.hero__slider--section {
+    margin: 24px 0;
+}
+
+.slider__thumbnail--img__style5 {
+    border-radius: var(--pn-radius-lg) !important;
+    object-fit: cover;
+}
+
+.hero__content--style5 {
+    padding: 32px;
+}
+
+.hero__content--style5__title {
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ================================
+   BUTTONS IMPROVEMENTS
+   ================================ */
+.primary__btn {
+    background: var(--pn-primary);
+    border: none;
+    padding: 14px 28px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: var(--pn-radius);
+    transition: var(--pn-transition);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.primary__btn:hover {
+    background: var(--pn-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--pn-shadow);
+}
+
+.btn-primary {
+    background: var(--pn-primary) !important;
+    border-color: var(--pn-primary) !important;
+    border-radius: var(--pn-radius-sm);
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: var(--pn-transition);
+}
+
+.btn-primary:hover {
+    background: var(--pn-primary-dark) !important;
+    border-color: var(--pn-primary-dark) !important;
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--pn-primary);
+    color: var(--pn-primary);
+    border-radius: var(--pn-radius-sm);
+    font-weight: 600;
+    transition: var(--pn-transition);
+}
+
+.btn-outline-primary:hover {
+    background: var(--pn-primary);
+    border-color: var(--pn-primary);
+    color: white;
+}
+
+.btn-outline-secondary {
+    border: 1px solid var(--pn-border);
+    color: var(--pn-text-dark);
+    border-radius: var(--pn-radius-sm);
+    transition: var(--pn-transition);
+}
+
+.btn-outline-secondary:hover {
+    background: var(--pn-bg-light);
+    border-color: var(--pn-border);
+}
+
+.btn-outline-danger {
+    border: 2px solid var(--pn-danger);
+    color: var(--pn-danger);
+    border-radius: var(--pn-radius-sm);
+    font-weight: 600;
+}
+
+.btn-outline-danger:hover {
+    background: var(--pn-danger);
+    color: white;
+}
+
+.btn-outline-success {
+    border: 2px solid var(--pn-success);
+    color: var(--pn-success);
+    border-radius: var(--pn-radius-sm);
+    font-weight: 600;
+}
+
+.btn-outline-success:hover {
+    background: var(--pn-success);
+    color: white;
+}
+
+/* ================================
+   FORMS IMPROVEMENTS
+   ================================ */
+.form-control {
+    border: 1px solid var(--pn-border);
+    border-radius: var(--pn-radius-sm);
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: var(--pn-transition);
+}
+
+.form-control:focus {
+    border-color: var(--pn-primary);
+    box-shadow: 0 0 0 3px rgba(237, 29, 36, 0.1);
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--pn-text-dark);
+    margin-bottom: 8px;
+}
+
+.input-group {
+    border-radius: var(--pn-radius-sm);
+    overflow: hidden;
+}
+
+.input-group .form-control {
+    border-radius: 0;
+}
+
+.input-group .btn {
+    border-radius: 0;
+}
+
+/* ================================
+   BREADCRUMB IMPROVEMENTS
+   ================================ */
+.breadcrumb {
+    background: var(--pn-bg-white);
+    padding: 16px 24px;
+    border-radius: var(--pn-radius);
+    box-shadow: var(--pn-shadow-sm);
+    margin-bottom: 24px;
+}
+
+.breadcrumb-item a {
+    color: var(--pn-text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--pn-transition);
+}
+
+.breadcrumb-item a:hover {
+    color: var(--pn-primary);
+}
+
+.breadcrumb-item.active {
+    color: var(--pn-text-dark);
+    font-weight: 600;
+}
+
+/* ================================
+   TABS IMPROVEMENTS
+   ================================ */
+.nav-tabs {
+    border-bottom: 2px solid var(--pn-border);
+    gap: 8px;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--pn-text-muted);
+    font-weight: 600;
+    padding: 12px 24px;
+    margin-bottom: -2px;
+    transition: var(--pn-transition);
+    border-radius: var(--pn-radius-sm) var(--pn-radius-sm) 0 0;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--pn-primary);
+    background: var(--pn-bg-light);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--pn-primary);
+    border-bottom-color: var(--pn-primary);
+    background: transparent;
+}
+
+.tab-content {
+    background: var(--pn-bg-white);
+    border-radius: 0 0 var(--pn-radius) var(--pn-radius);
+    border: 1px solid var(--pn-border);
+    border-top: none;
+}
+
+/* ================================
+   CARDS IMPROVEMENTS
+   ================================ */
+.card {
+    border: 1px solid var(--pn-border);
+    border-radius: var(--pn-radius);
+    overflow: hidden;
+    transition: var(--pn-transition);
+}
+
+.card:hover {
+    box-shadow: var(--pn-shadow-md);
+}
+
+.card-img-top {
+    transition: var(--pn-transition);
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.03);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-weight: 600;
+    color: var(--pn-text-dark);
+    margin-bottom: 12px;
+}
+
+/* ================================
+   MODAL IMPROVEMENTS
+   ================================ */
+.modal-content {
+    border: none;
+    border-radius: var(--pn-radius-lg);
+    box-shadow: var(--pn-shadow-lg);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--pn-border);
+    padding: 20px 24px;
+}
+
+.modal-title {
+    font-weight: 700;
+    color: var(--pn-text-dark);
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--pn-border);
+    padding: 16px 24px;
+}
+
+.btn-close {
+    opacity: 0.5;
+    transition: var(--pn-transition);
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+/* ================================
+   PRODUCT DETAILS PAGE
+   ================================ */
+.product__details--section {
+    background: var(--pn-bg-white);
+    border-radius: var(--pn-radius-lg);
+    box-shadow: var(--pn-shadow-sm);
+    border: 1px solid var(--pn-border);
+}
+
+.product__details--info__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--pn-text-dark);
+    line-height: 1.3;
+}
+
+.product__details--info__price .current__price {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--pn-primary);
+}
+
+.product__media--preview__items--img {
+    border-radius: var(--pn-radius);
+    transition: var(--pn-transition);
+}
+
+.product__media--preview__items--img:hover {
+    box-shadow: var(--pn-shadow-md);
+}
+
+/* ================================
+   FOOTER IMPROVEMENTS
+   ================================ */
+.footer__section {
+    background: linear-gradient(180deg, var(--pn-secondary) 0%, #1a1a1a 100%);
+}
+
+.footer__widget--title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.footer__widget--title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--pn-primary);
+    border-radius: 2px;
+}
+
+.footer__widget--menu__text {
+    font-size: 14px;
+    transition: var(--pn-transition);
+    opacity: 0.8;
+}
+
+.footer__widget--menu__text:hover {
+    opacity: 1;
+    color: var(--pn-primary) !important;
+    padding-left: 8px;
+}
+
+.copyright__content {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 20px 0;
+}
+
+/* ================================
+   UTILITY CLASSES
+   ================================ */
+.shadow-pn {
+    box-shadow: var(--pn-shadow);
+}
+
+.shadow-pn-md {
+    box-shadow: var(--pn-shadow-md);
+}
+
+.rounded-pn {
+    border-radius: var(--pn-radius);
+}
+
+.rounded-pn-lg {
+    border-radius: var(--pn-radius-lg);
+}
+
+.text-primary-pn {
+    color: var(--pn-primary) !important;
+}
+
+.bg-primary-pn {
+    background-color: var(--pn-primary) !important;
+}
+
+.hover-lift {
+    transition: var(--pn-transition);
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+}
+
+/* ================================
+   RESPONSIVE ADJUSTMENTS
+   ================================ */
+@media (max-width: 991px) {
+    .search__filter--inner {
+        padding: 24px 16px;
+    }
+    
+    .section__heading--maintitle {
+        font-size: 20px;
+    }
+    
+    .product__details--info__title {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 767px) {
+    .header__topbar--info {
+        display: none !important;
+    }
+    
+    .section__heading {
+        margin-bottom: 20px;
+    }
+    
+    .section__heading--maintitle {
+        font-size: 18px;
+    }
+    
+    .breadcrumb {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+    
+    .product__details--info__title {
+        font-size: 20px;
+    }
+    
+    .product__details--info__price .current__price {
+        font-size: 22px;
+    }
+}
+
+/* ================================
+   ANIMATIONS
+   ================================ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Stagger animation for lists */
+.stagger-animation > * {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+
+/* Loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ================================
+   SCROLLBAR STYLING
+   ================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--pn-bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--pn-text-muted);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--pn-text-dark);
+}
+
+/* ================================
+   SELECTION STYLING
+   ================================ */
+::selection {
+    background: var(--pn-primary);
+    color: white;
+}

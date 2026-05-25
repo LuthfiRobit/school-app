@@ -82,9 +82,9 @@ class StateMachineService
     {
         return match($enrollment->status) {
             EnrollmentStatus::DRAFT               => [EnrollmentStatus::REGISTERED],
-            EnrollmentStatus::REGISTERED          => [EnrollmentStatus::WAITING_PAYMENT_REG, EnrollmentStatus::VERIFIED_REG],
-            EnrollmentStatus::WAITING_PAYMENT_REG => [EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::REJECTED],
-            EnrollmentStatus::VERIFIED_REG        => [EnrollmentStatus::IN_REVIEW, EnrollmentStatus::REJECTED],
+            EnrollmentStatus::REGISTERED          => [EnrollmentStatus::WAITING_PAYMENT_REG, EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::DRAFT],
+            EnrollmentStatus::WAITING_PAYMENT_REG => [EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
+            EnrollmentStatus::VERIFIED_REG        => [EnrollmentStatus::IN_REVIEW, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
             EnrollmentStatus::IN_REVIEW           => [EnrollmentStatus::PASSED, EnrollmentStatus::WAITING_LIST, EnrollmentStatus::REJECTED],
             EnrollmentStatus::PASSED              => [EnrollmentStatus::WAITING_PAYMENT_FINAL],
             EnrollmentStatus::WAITING_LIST        => [EnrollmentStatus::PASSED, EnrollmentStatus::REJECTED],
@@ -106,9 +106,9 @@ class StateMachineService
         // Build a temporary enrollment stub to resolve allowed transitions
         $allowed = match($from) {
             EnrollmentStatus::DRAFT               => [EnrollmentStatus::REGISTERED],
-            EnrollmentStatus::REGISTERED          => [EnrollmentStatus::WAITING_PAYMENT_REG, EnrollmentStatus::VERIFIED_REG],
-            EnrollmentStatus::WAITING_PAYMENT_REG => [EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::REJECTED],
-            EnrollmentStatus::VERIFIED_REG        => [EnrollmentStatus::IN_REVIEW, EnrollmentStatus::REJECTED],
+            EnrollmentStatus::REGISTERED          => [EnrollmentStatus::WAITING_PAYMENT_REG, EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::DRAFT],
+            EnrollmentStatus::WAITING_PAYMENT_REG => [EnrollmentStatus::VERIFIED_REG, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
+            EnrollmentStatus::VERIFIED_REG        => [EnrollmentStatus::IN_REVIEW, EnrollmentStatus::REJECTED, EnrollmentStatus::DRAFT],
             EnrollmentStatus::IN_REVIEW           => [EnrollmentStatus::PASSED, EnrollmentStatus::WAITING_LIST, EnrollmentStatus::REJECTED],
             EnrollmentStatus::PASSED              => [EnrollmentStatus::WAITING_PAYMENT_FINAL],
             EnrollmentStatus::WAITING_LIST        => [EnrollmentStatus::PASSED, EnrollmentStatus::REJECTED],

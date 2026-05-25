@@ -21,7 +21,7 @@
               <span class="badge bg-danger text-white">Kuota Penuh</span>
             </template>
             <template x-if="!isQuotaFull(track)">
-              <span class="badge bg-light text-primary-800 border border-primary border-opacity-25" 
+              <span class="badge bg-primary text-primary-800 border border-primary border-opacity-25" 
                 x-text="'Sisa ' + getQuotaLeft(track) + ' Kuota'"></span>
             </template>
           </div>

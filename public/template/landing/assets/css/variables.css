@@ -309,14 +309,14 @@
 
 .btn-secondary {
   background-color: var(--color-secondary);
-  color: var(--color-white);
+  color: var(--color-black);
   font-weight: 600;
 }
 
 .btn-secondary:hover,
 .btn-secondary:focus {
   background-color: var(--color-secondary-light);
-  color: var(--color-white) !important;
+  color: var(--color-black) !important;
   transform: translateY(-2px);
   text-decoration: none;
 }
