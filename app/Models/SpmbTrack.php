@@ -29,6 +29,7 @@ class SpmbTrack extends Model
     protected $casts = [
         'quota' => 'integer',
         'registration_fee' => 'decimal:2',
+        'payment_mode' => \App\Enums\PaymentMode::class,
         'allow_carryover' => 'boolean',
         'announcement_date' => 'datetime',
     ];

@@ -61,10 +61,9 @@ class InvoiceGeneratorService
             $totalAmount = $trackFees->sum('amount');
             
             // Check if payment mode is POST_PAYMENT, if so add registration fee
-            $paymentMode = $enrollment->spmbTrack->payment_mode->value ?? $enrollment->spmbTrack->payment_mode;
             $hasRegistrationFee = false;
             $registrationFee = 0;
-            if ($paymentMode === \App\Enums\PaymentMode::POST_PAYMENT->value || $paymentMode === \App\Enums\PaymentMode::POST_PAYMENT) {
+            if ($enrollment->spmbTrack->payment_mode === \App\Enums\PaymentMode::POST_PAYMENT) {
                 // Find if there is a registration fee in spmb_track_fees
                 $regFees = DB::table('spmb_track_fees')
                     ->where('spmb_track_id', $enrollment->spmb_track_id)

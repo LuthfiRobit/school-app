@@ -297,9 +297,8 @@ class ApplicantEnrollmentController extends Controller
 
         // Transisi rute lanjutan berdasarkan nominal pendaftaran & mode pembayaran
         $enrollment->refresh();
-        $paymentMode = $track->payment_mode->value ?? $track->payment_mode;
         
-        if ($paymentMode === 'pre_payment' && $track->registration_fee > 0) {
+        if ($track->payment_mode === \App\Enums\PaymentMode::PRE_PAYMENT && $track->registration_fee > 0) {
             $this->stateMachineService->transition($enrollment, \App\Enums\EnrollmentStatus::WAITING_PAYMENT_REG, 'Menunggu pembayaran biaya pendaftaran.');
         } else {
             $this->stateMachineService->transition($enrollment, \App\Enums\EnrollmentStatus::VERIFIED_REG, 'Pendaftaran langsung aktif tanpa biaya pendaftaran.');

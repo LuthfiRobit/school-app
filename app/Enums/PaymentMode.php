@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum PaymentMode: string
 {
-    case PRE_PAYMENT = 'pre_payment';
-    case POST_PAYMENT = 'post_payment';
+    case PRE_PAYMENT = 'PRE_PAYMENT';
+    case POST_PAYMENT = 'POST_PAYMENT';
 
     public function label(): string
     {

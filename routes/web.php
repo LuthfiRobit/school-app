@@ -7,6 +7,7 @@ use App\Http\Controllers\Applicant\Auth\ApplicantAuthController;
 use App\Http\Controllers\Applicant\PublicTrackController;
 use App\Http\Controllers\Applicant\ApplicantDashboardController;
 use App\Http\Controllers\Applicant\ApplicantEnrollmentController;
+use App\Http\Controllers\Applicant\ApplicantPaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,9 +50,9 @@ Route::prefix('portal')->name('portal.')->middleware(['auth', 'applicant'])->gro
         Route::get('/{enrollmentId}', 'show')->name('show');
     });
 
-    Route::prefix('pembayaran')->name('payment.')->group(function () {
-        Route::get('/{enrollmentId}', function () { return 'Show Payment'; })->name('show');
-        Route::post('/{enrollmentId}/upload', function () { return 'Upload Proof'; })->name('upload');
+    Route::prefix('pembayaran')->name('payment.')->controller(ApplicantPaymentController::class)->group(function () {
+        Route::get('/{enrollmentId}', 'show')->name('show');
+        Route::post('/{enrollmentId}/upload', 'upload')->name('upload');
     });
 
     Route::prefix('daftar-ulang')->name('re-registration.')->group(function () {
