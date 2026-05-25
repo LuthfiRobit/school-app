@@ -232,53 +232,7 @@
         </div>
       </div>
 
-      <!-- 2. WAITING PAYMENT REGISTRATION CARD -->
-      <div class="card portal-status-card card-payment border-start-warning h-100 shadow-sm" x-show="status === 'waiting_payment_reg'" x-transition>
-        <div class="card-body p-4 d-flex flex-column justify-content-between">
-          <div>
-            <div class="badge badge-warning text-white mb-3 bg-warning"><i class="fa-solid fa-wallet me-1"></i> MENUNGGU PEMBAYARAN FORMULIR</div>
-            <h3 class="fw-bold text-primary-900 mb-3">Selesaikan Pembayaran Biaya Pendaftaran</h3>
-            <p class="text-muted leading-relaxed mb-4">
-              Pilihan jalur Anda (<strong>{{ $enrollment && $enrollment->spmbTrack && $enrollment->spmbTrack->trackType ? $enrollment->spmbTrack->trackType->name : '' }}</strong>) telah dikunci. Silakan transfer biaya registrasi pendaftaran sebelum batas waktu untuk masuk ke tahap verifikasi dokumen.
-            </p>
-
-            <div class="invoice-box p-3 bg-light rounded-md mb-4 border">
-              <div class="d-flex justify-content-between mb-2 border-bottom pb-2">
-                <span class="text-muted">Total Tagihan Formulir:</span>
-                <strong class="text-primary-900 text-lg">
-                  Rp {{ $regInvoice ? number_format($regInvoice->total_amount, 0, ',', '.') : ($enrollment ? number_format($enrollment->spmbTrack->registration_fee, 0, ',', '.') : '0') }}
-                </strong>
-              </div>
-              
-              <div class="mb-0">
-                <span class="text-muted d-block mb-2 small fw-semibold">Rekening Bank Yayasan/Sekolah Tujuan:</span>
-                @forelse($bankAccounts as $bank)
-                  <div class="border rounded p-2 mb-2 bg-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="fw-bold text-primary-600">{{ $bank->bank_name }} <small class="text-muted">({{ $bank->branch ?? 'Cabang' }})</small></span>
-                      <span class="text-muted small">a/n {{ $bank->account_holder }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mt-1">
-                      <span class="text-monospace fw-bold text-dark fs-5">{{ $bank->account_number }}</span>
-                      <button class="btn btn-sm btn-light p-1 border" @click="navigator.clipboard.writeText('{{ $bank->account_number }}'); toastr.info('Nomor rekening disalin!')">
-                        <i class="fa-regular fa-copy"></i> Salin
-                      </button>
-                    </div>
-                  </div>
-                @empty
-                  <div class="text-muted small">Belum ada rekening bank yang dikonfigurasi. Hubungi Customer Service untuk bantuan.</div>
-                @endforelse
-              </div>
-            </div>
-          </div>
-
-          <div>
-            @if ($enrollment)
-              <a href="{{ route('portal.payment.show', $enrollment->id) }}" class="btn btn-primary px-4 py-2"><i class="fa-solid fa-upload me-2"></i> Upload Bukti Pembayaran</a>
-            @endif
-          </div>
-        </div>
-      </div>
+      @include('portal.partials.status-waiting-payment')
 
       <!-- 3. REGISTERED (Berkas Dikirim, Menunggu Verifikasi) CARD -->
       <div class="card portal-status-card card-review border-start-info h-100 shadow-sm" x-show="status === 'registered'" x-transition>
@@ -307,79 +261,10 @@
         </div>
       </div>
 
-      <!-- 4. SELECTION / VERIFIED REG (Jadwal CBT/Seleksi Tersedia) CARD -->
-      <div class="card portal-status-card card-selection border-start-accent h-100 shadow-sm" x-show="status === 'verified_reg' || status === 'in_review' || status === 'waiting_list'" x-transition>
-        <div class="card-body p-4 d-flex flex-column justify-content-between">
-          <div>
-            <div class="badge badge-primary bg-accent mb-3"><i class="fa-solid fa-calendar-check me-1"></i> PROSES SELEKSI JALUR</div>
-            <h3 class="fw-bold text-primary-900 mb-3">Ikuti Tahap Seleksi Jalur Pendaftaran</h3>
-            <p class="text-muted leading-relaxed mb-4">
-              Pembayaran registrasi dan berkas pendaftaran Anda dinyatakan <strong>SAH & LOLOS VERIFIKASI</strong>. Anda kini memasuki tahap seleksi evaluasi berkas, pengujian, atau tes potensi sesuai rincian jalur:
-            </p>
+      @include('portal.partials.status-in-review')
+      @include('portal.partials.status-waiting-list')
 
-            <div class="schedule-box p-3 bg-light rounded-md mb-4 border">
-              <div class="row g-3">
-                <div class="col-sm-6">
-                  <span class="text-muted d-block small">Jalur SPMB:</span>
-                  <strong class="text-primary-900">{{ $enrollment && $enrollment->spmbTrack && $enrollment->spmbTrack->trackType ? $enrollment->spmbTrack->trackType->name : '' }}</strong>
-                </div>
-                <div class="col-sm-6">
-                  <span class="text-muted d-block small">Nomor Pendaftaran:</span>
-                  <strong class="text-primary-900 text-monospace">{{ $enrollment->enrollment_number ?? '' }}</strong>
-                </div>
-                <div class="col-12 mt-2 pt-2 border-top">
-                  <span class="text-muted d-block mb-1 small fw-semibold">Komponen Penilaian Seleksi:</span>
-                  @if($enrollment && $enrollment->assessments->isNotEmpty())
-                    <ul class="list-unstyled mb-0 row">
-                      @foreach($enrollment->assessments as $assessment)
-                        <li class="col-sm-6 mb-1 small">
-                          <i class="fa-solid fa-circle-chevron-right me-1 text-primary"></i> 
-                          <strong>{{ $assessment->trackAssessment->assessmentType->name ?? '' }}</strong>: 
-                          <span class="badge {{ $assessment->score ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' }}">
-                            {{ $assessment->score ? 'Nilai: ' . $assessment->score : 'Belum Dinilai' }}
-                          </span>
-                        </li>
-                      @endforeach
-                    </ul>
-                  @else
-                    <span class="small text-muted d-block"><i class="fa-solid fa-circle-info me-1"></i> Penilaian berkas sedang dihitung dan dievaluasi oleh tim penguji.</span>
-                  @endif
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <button class="btn btn-primary px-4 py-2" @click="toastr.info('Mengunduh kartu peserta...');"><i class="fa-solid fa-file-pdf me-2"></i> Unduh Kartu Ujian Peserta</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. PASSED (Lulus Seleksi) CARD -->
-      <div class="card portal-status-card card-passed border-start-success h-100 shadow-sm" x-show="status === 'passed'" x-transition>
-        <div class="card-body p-4 d-flex flex-column justify-content-between">
-          <div>
-            <div class="badge badge-success mb-3"><i class="fa-solid fa-circle-check me-1"></i> SELEKSI LULUS</div>
-            <h3 class="fw-bold text-success mb-3">Selamat, Anda Dinyatakan LULUS Seleksi!</h3>
-            <p class="text-muted leading-relaxed mb-4">
-              Berdasarkan hasil evaluasi tim penguji SPMB {{ $schoolIdentity->school_name ?? 'SMA Tunas Luhur' }}, Anda dinyatakan <strong>LULUS</strong> seleksi pada jalur pendaftaran <strong>{{ $enrollment && $enrollment->spmbTrack && $enrollment->spmbTrack->trackType ? $enrollment->spmbTrack->trackType->name : '' }}</strong>. Silakan segera selesaikan daftar ulang sebelum batas waktu.
-            </p>
-
-            <div class="alert alert-success d-flex align-items-center mb-4">
-              <i class="fa-solid fa-circle-info me-3 fs-3 text-success"></i>
-              <div>
-                <strong>Penting:</strong> Harap lakukan konfirmasi daftar ulang dan mulai membayar tagihan uang pangkal/daftar ulang agar kursi Anda tidak dialihkan.
-              </div>
-            </div>
-          </div>
-
-          <div>
-            @if ($enrollment)
-              <a href="{{ route('portal.re-registration.show', $enrollment->id) }}" class="btn btn-success px-4 py-2"><i class="fa-solid fa-file-invoice-dollar me-2"></i> Lakukan Daftar Ulang Sekarang</a>
-            @endif
-          </div>
-        </div>
-      </div>
+      @include('portal.partials.status-passed')
 
       <!-- 6. PROCESS RE-REGISTRATION (Cicilan Daftar Ulang) CARD -->
       <div class="card portal-status-card card-re-registration border-start-warning h-100 shadow-sm" x-show="status === 'waiting_payment_final' || status === 'settled'" x-transition>
@@ -423,65 +308,9 @@
         </div>
       </div>
 
-      <!-- 7. REJECTED (Seleksi Gagal) CARD -->
-      <div class="card portal-status-card card-rejected border-start-danger h-100 shadow-sm" x-show="status === 'rejected'" x-transition>
-        <div class="card-body p-4 d-flex flex-column justify-content-between">
-          <div>
-            <div class="badge badge-danger mb-3 bg-danger text-white"><i class="fa-solid fa-circle-xmark me-1"></i> SELEKSI SELESAI</div>
-            <h3 class="fw-bold text-danger mb-3">Mohon Maaf, Anda Belum Lulus Seleksi</h3>
-            <p class="text-muted leading-relaxed mb-4">
-              Terima kasih atas minat dan partisipasi Anda dalam pendaftaran SPMB {{ $schoolIdentity->school_name ?? 'SMA Tunas Luhur' }}. Hasil keputusan pleno menyatakan bahwa berkas/nilai seleksi Anda <strong>BELUM MEMENUHI BATAS MINIMUM</strong> untuk jalur ini.
-            </p>
+      @include('portal.partials.status-rejected')
 
-            @php
-              $rejectedLog = $enrollment ? $enrollment->statusLogs()->where('to_status', 'rejected')->latest('changed_at')->first() : null;
-            @endphp
-            <div class="alert alert-danger d-flex align-items-center mb-4 bg-danger-subtle border-danger-subtle text-danger">
-              <i class="fa-solid fa-circle-info me-3 fs-4 text-danger"></i>
-              <div>
-                <strong>Catatan Panitia:</strong> {{ $rejectedLog && $rejectedLog->reason ? $rejectedLog->reason : 'Skor kelulusan belum memenuhi standar minimum jalur pendaftaran yang dipilih.' }}
-              </div>
-            </div>
-
-            <p class="text-muted small">
-              Jangan berkecil hati! Anda masih berkesempatan mendaftar kembali di jalur lain yang saat ini masih aktif. Data diri dasar Anda tidak akan hilang dan akan disalin secara otomatis.
-            </p>
-          </div>
-
-          <div>
-            <a href="{{ route('portal.enrollment.reapply-select') }}" class="btn btn-outline-danger px-4 py-2"><i class="fa-solid fa-rotate-right me-2"></i> Daftar Jalur Lain (Re-Apply)</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 8. PERMANENT STUDENT (Siswa Baru Tetap) CARD -->
-      <div class="card portal-status-card card-permanent border-start-success h-100 shadow-sm" x-show="status === 'permanent_student'" x-transition>
-        <div class="card-body p-4 d-flex flex-column justify-content-between">
-          <div>
-            <div class="badge badge-success mb-3"><i class="fa-solid fa-award me-1"></i> STATUS: SISWA TETAP</div>
-            <h3 class="fw-bold text-success mb-3">Selamat Bergabung di {{ $schoolIdentity->school_name ?? 'SMA Tunas Luhur' }}!</h3>
-            <p class="text-muted leading-relaxed mb-4">
-              Selamat, seluruh proses administrasi daftar ulang Anda telah <strong>LUNAS & TERVERIFIKASI</strong>. Anda secara resmi tercatat sebagai <strong>Siswa Baru Tetap</strong> untuk Tahun Ajaran <strong>{{ $activeConfig->academicYear->year ?? '' }}</strong>.
-            </p>
-
-            <div class="p-3 bg-light rounded-xl mb-4 border border-success-subtle d-flex align-items-center">
-              <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
-                <i class="fa-solid fa-id-card fs-4"></i>
-              </div>
-              <div>
-                <span class="text-muted d-block small">Nomor Induk Siswa Sementara / No Registrasi Anda:</span>
-                <strong class="text-primary-900 text-lg">{{ $enrollment->enrollment_number ?? '' }}</strong>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            @if ($enrollment)
-              <a href="{{ route('portal.letter.download', $enrollment->id) }}" class="btn btn-success px-4 py-2"><i class="fa-solid fa-download me-2"></i> Unduh Surat Pernyataan Siswa Tetap</a>
-            @endif
-          </div>
-        </div>
-      </div>
+      @include('portal.partials.status-permanent')
 
     </div>
 

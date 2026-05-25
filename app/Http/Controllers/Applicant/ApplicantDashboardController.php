@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\SpmbConfigurationRepositoryInterface;
 use App\Repositories\Interfaces\SchoolIdentityRepositoryInterface;
 use App\Repositories\Interfaces\BankAccountRepositoryInterface;
+use App\Repositories\Interfaces\SpmbTrackRepositoryInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,8 +14,9 @@ class ApplicantDashboardController extends Controller
 {
     public function __construct(
         protected SpmbConfigurationRepositoryInterface $spmbConfigRepo,
-        protected SchoolIdentityRepositoryInterface $schoolIdentityRepo,
-        protected BankAccountRepositoryInterface $bankAccountRepo
+        protected SchoolIdentityRepositoryInterface    $schoolIdentityRepo,
+        protected BankAccountRepositoryInterface       $bankAccountRepo,
+        protected SpmbTrackRepositoryInterface         $spmbTrackRepo
     ) {}
 
     /**
@@ -59,9 +61,35 @@ class ApplicantDashboardController extends Controller
         // Determine active step for stepper
         $activeStep = 1;
         $statusKey = 'no_enrollment';
+        $announcementVisible = true;
+        $availableTracksForReapply = collect();
 
         if ($enrollment) {
-            $statusKey = $enrollment->status->value;
+            $realStatusKey = $enrollment->status->value;
+            $statusKey = $realStatusKey;
+
+            // Logika Pengumuman (TPD BL-VAL-03 & FR-26)
+            if (in_array($realStatusKey, ['in_review', 'waiting_list', 'passed', 'rejected'])) {
+                if (!$enrollment->announcement_visible_at || $enrollment->announcement_visible_at->isFuture()) {
+                    $announcementVisible = false;
+                    
+                    // Mask status as 'in_review' if not yet announced
+                    if (in_array($realStatusKey, ['waiting_list', 'passed', 'rejected'])) {
+                        $statusKey = 'in_review';
+                    }
+                }
+            }
+
+            // Fetch alternative tracks for reapply if rejected and announcement is visible
+            if ($realStatusKey === 'rejected' && $announcementVisible) {
+                $usedTrackIds = $applicant->enrollments()->pluck('spmb_track_id')->toArray();
+                $availableTracksForReapply = $this->spmbTrackRepo->getActiveTracksWithQuota()
+                    ->filter(function ($track) use ($usedTrackIds) {
+                        return !in_array($track->id, $usedTrackIds);
+                    })
+                    ->values();
+            }
+
             $activeStep = match ($statusKey) {
                 'draft' => 1,
                 'waiting_payment_reg', 'registered' => 2,
@@ -98,7 +126,9 @@ class ApplicantDashboardController extends Controller
             'activeStep',
             'statusKey',
             'bankAccounts',
-            'asalSekolah'
+            'asalSekolah',
+            'announcementVisible',
+            'availableTracksForReapply'
         ));
     }
 }
