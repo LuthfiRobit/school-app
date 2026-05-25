@@ -9,6 +9,7 @@ use App\Http\Controllers\Applicant\ApplicantDashboardController;
 use App\Http\Controllers\Applicant\ApplicantEnrollmentController;
 use App\Http\Controllers\Applicant\ApplicantPaymentController;
 use App\Http\Controllers\Applicant\ApplicantReRegistrationController;
+use App\Http\Controllers\Applicant\ApplicantHistoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,7 +64,7 @@ Route::prefix('portal')->name('portal.')->middleware(['auth', 'applicant'])->gro
     });
 
     Route::get('/surat/{enrollmentId}', [ApplicantReRegistrationController::class, 'downloadLetter'])->name('letter.download');
-    Route::get('/riwayat', function () { return 'History'; })->name('history.index');
+    Route::get('/riwayat', [ApplicantHistoryController::class, 'index'])->name('history.index');
 });
 
 // === RUTE AUTENTIKASI ADMIN ===
